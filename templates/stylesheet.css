@@ -1,0 +1,10 @@
+.list_stud {
+    position: absolute;
+    left: 20%;
+}
+
+.search_div {
+    position: absolute;
+    left: 50%;
+    margin-top: 1em;
+}
