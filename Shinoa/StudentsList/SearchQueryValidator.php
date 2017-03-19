@@ -43,13 +43,13 @@ class SearchQueryValidator
 
 	public function checkPage(&$offset, &$limit)
 	{
+		$result = false;
 		if ( (array_key_exists('page', $this->input)) && ((int)$this->input['page'] > 0) ) {
 			$pagenum = (int)$this->input['page'];
-			$offset = ($pagenum - 1) * self::STUDENTS_IN_PAGE;
+			$offset = ($pagenum - 1) * self::STUDENTS_IN_PAGE +1;
 			$limit = $pagenum * self::STUDENTS_IN_PAGE;
-		} else {
-			$offset = 0;
-			$limit = self::STUDENTS_IN_PAGE;
 		}
+
+		return $result;
 	}
 }

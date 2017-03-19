@@ -11,13 +11,8 @@ class Registry
     private $docRoot = '';
     private $conf = null;
     private $dsn = '';
-    private $sortby = '';
-    private $order = '';
-    private $offset = '';
-    private $limit = '';
-    private $dataMapper = null;
-	private $view = null;
-
+    private $view = null;
+    private $dataProcessor = null;
 
     private function __construct()
     {
@@ -29,6 +24,24 @@ class Registry
                    self::$instance = new self();
         }
         return self::$instance;
+    }
+
+    private function autoload($className)
+    {
+        $className = ltrim($className, '\\');
+        $fileName = '';
+        $namespace = '';
+        if ($lastNsPos = strrpos($className, '\\')) {
+            $namespace = substr($className, 0, $lastNsPos);
+            $className = substr($className, $lastNsPos + 1);
+            $fileName = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
+        }
+        $fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
+
+        $path = $this->docRoot . DIRECTORY_SEPARATOR . 'Students' . DIRECTORY_SEPARATOR . $fileName;
+	    if (file_exists($path)) {
+		    require $path;
+	    }
     }
 
 	private function setRoot($documentRoot)
@@ -45,161 +58,43 @@ class Registry
         } else throw new RegistryException('Incorrect root to folder');
     }
 
-	/**
-	 * @param string $sortby
-	 */
-	public function setSortby($sortby)
-	{
-		$this->sortby = $sortby;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getSortby()
-	{
-		if (!empty($this->sortby)) {
-			return $this->sortby;
-		} else throw new RegistryException('Trying to retrieve empty parameter');
-	}
-
-	/**
-	 * @param string $order
-	 */
-	public function setOrder($order)
-	{
-		$this->order = $order;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getOrder()
-	{
-		if (!empty($this->order)) {
-			return $this->order;
-		} else throw new RegistryException('Trying to retrieve empty parameter');
-	}
-
-	/**
-	 * @param string $offset
-	 */
-	public function setOffset($offset)
-	{
-		$this->offset = $offset;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getOffset()
-	{
-		if (!empty($this->offset)) {
-			return $this->offset;
-		} else throw new RegistryException('Trying to retrieve empty parameter');
-	}
-
-	/**
-	 * @param string $limit
-	 */
-	public function setLimit($limit)
-	{
-		$this->limit = $limit;
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getLimit()
-	{
-		if (!empty($this->limit)) {
-			return $this->limit;
-		} else throw new RegistryException('Trying to retrieve empty parameter');
-	}
-
-	/**
-	 * @param null $view
-	 */
-	public function setView($view)
-	{
-		$this->view = $view;
-	}
-
-	/**
-	 * @return null
-	 */
-	public function getView()
-	{
-		if (!empty($this->view)) {
-			return $this->view;
-		} else throw new RegistryException('Trying to retrieve empty parameter');
-	}
-
-	/**
-	 * @param null $dataMapper
-	 */
-	public function setDataMapper($dataMapper)
-	{
-		$this->dataMapper = $dataMapper;
-	}
-
-	/**
-	 * @return null
-	 */
-	public function getDataMapper()
-	{
-		if (!empty($this->dataMapper)) {
-			return $this->dataMapper;
-		} else throw new RegistryException('Trying to retrieve empty parameter');
-	}
-	
 	private function setConfig($pathToConf)
 	{
 		if ( file_exists($pathToConf) ) {
 			$this->conf = simplexml_load_file($pathToConf);
 		} else throw new RegistryException('Given path is not file');
-	}
-	
-	
-	public function getDSN()
+    }
+
+
+    public function getDSN()
+    {
+        if ( empty($this->conf) ) {
+	        throw new RegistryException('Configuration is not properly loaded');
+        }
+
+        if ( empty($this->dsn) ) {
+        	$this->dsn = "mysql:host=localhost;dbname={$this->conf['database']['dbname']};charset=utf8";
+        }
+        return $this->dsn;
+    }
+
+	private function loadDatabase()
 	{
-		if ( empty($this->conf) ) {
-			throw new RegistryException('Configuration is not properly loaded');
-		}
-		
-		if ( empty($this->dsn) ) {
-			$this->dsn = "mysql:host=localhost;dbname={$this->conf->database->dbname};charset=utf8";
-		}
-		return $this->dsn;
-	}
-	
-	public function getPDO()
-	{
-		if (!isset($this->conf->database->username)
-			||
-			!isset($this->conf->database->password)) {
-			throw new RegistryException('Config  not loaded or empty');
-		} else {
-			$username = $this->conf->database->username;
-			$password = $this->conf->database->password;
-		}
 		try {
 			$opt = array(
 				\PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
 				\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
 				\PDO::ATTR_EMULATE_PREPARES   => false
 			);
-			$pdo = new \PDO($this->getDSN(), $username, $password, $opt);
-			return $pdo;
-
+			$this->pdo = new \PDO($this->dsn, $this->conf['username'], $this->conf['password'], $opt);
 		} catch (\PDOException $e) {
-			throw new RegistryException('Ошибка при подключении к базе данных', 0, $e);
+			throw new RegistryException('Ошибка при подключении к базе данных'. 0, $e);
 		}
-
     }
 
-    public function init($docRoot, $pathToConf)
+    public function init($docRoot, $pathToConf, $view)
     {
+	    spl_autoload_register(array($this, 'autoload'));
         $this->setRoot($docRoot);
         $this->setConfig($pathToConf);
 
