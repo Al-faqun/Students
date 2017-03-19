@@ -1,36 +1,10 @@
 .list_stud {
-    clear: both;
-    position: relative;
-    left: 10%;
-    width:80%;
-
+    position: absolute;
+    left: 20%;
 }
 
-caption {
-    left: 0%;
-
-}
-th, td {
-    border-right: 1px solid black;
-
-}
-table {
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-    border-collapse: collapse;
-
-}
-tbody {
-    display: table-row-group;
-    vertical-align: middle;
-
-}
 .search_div {
-    float: right;
+    position: absolute;
+    left: 50%;
+    margin-top: 1em;
 }
-
-.search_div [type="submit"] {
-    display: block;
-}
-
