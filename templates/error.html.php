@@ -8,17 +8,32 @@
 		!isset($input_value)) 
 		throw new Exception('No_var'); 
 ?>
+
 <!DOCTYPE html>
 <html>
 	<head>
-		<title>Student's book project: Oops, something went wrong</title>
-		<meta http-equiv="content-type"
-		content="text/html; charset=utf-8"/>
+		<title>Oops, something went wrong</title>
+		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 	</head>
 	<body>
-		<p><?php echo $error; ?></p>
-		<form action="<?php echo $form_action ?>" method="<?php echo $form_method ?>">
-			<input type="submit" value="<?php echo $input_value ?>"/>
+		<blockquote>
+		<?php if (is_array($error)) :
+				foreach ($error as $element) :
+					if (is_array($element)) : ?>
+					<blockquote>
+						<?php foreach ($element as $line) :
+							echo $line . '<br>';
+							endforeach; ?>
+					</blockquote>
+					<?php else : echo $element . '<br>';
+					endif;
+				endforeach; ?>
+		<?php else : ?>
+			<p> <?= $error ?> </p>
+		<?php endif; ?>
+		</blockquote>
+		<form action="<?=$form_action ?>" method="<?=$form_method ?>">
+			<input type="submit" value="<?=$input_value ?>"/>
 		</form>
 	</body>
 </html>
