@@ -17,18 +17,25 @@
 		$registry->setView($view);
 		
 		$validator = new SearchQueryValidator($_GET);
+		$searchText = $validator->checkSearchText();
+		$searchField = $validator->checkSearchField();
 		$sortby = $validator->checkSortBy();
 		$order = $validator->checkOrder();
 		$offset = '';
 		$limit = '';
 		$validator->checkPage($offset, $limit);
 		
+		$registry->setSearchText($searchText);
+		$registry->setSearchField($searchField);
 		$registry->setSortby($sortby);
 		$registry->setOrder($order);
 		$registry->setOffset($offset);
 		$registry->setLimit($limit);
 		
 		$view->render();
+	} catch (\Throwable $e) {
+		$errorHelper = new ErrorHelper('D:\USR\apache\htdocs\s1.localhost\Students\templates');
+		$errorHelper->renderExceptionAndExit($e, '');
 	} catch (\Exception $e) {
 		$errorHelper = new ErrorHelper('D:\USR\apache\htdocs\s1.localhost\Students\templates');
 		$errorHelper->renderExceptionAndExit($e, '');

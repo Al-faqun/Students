@@ -4,73 +4,47 @@ use Shinoa\StudentsList\Exceptions\StudentException;
 
 class StudentMapper
 {
-	const SQL_SELECT_ALL =
-		'SELECT
-		 students.id,
-		 students.name,
-		 students.surname,
-		 students.sex,
-		 students.group_num,
-		 students.email,
-		 students.ege_sum,
-		 students.birth_year,
-		 students.location
-		 FROM
-		 students_book.students
-		 ORDER BY :sort_by, :order
-		 LIMIT :offset, :limit';
-
-	const  SQL_INSERT_STUDENT =
-		'INSERT INTO `students`
-	    (`name`,       `surname`, `sex`, 
-	     `group_num`,  `email`,   `ege_sum`, 
-	     `birth_year`, `location`)
-	    VALUES
-	    (:name, :surname, :sex, 
-	     :group_num, :email, :ege_sum, 
-	     :birth_year, :location)';
-
-	const SQL_SELECT_ALL_BY_ID =
-		'SELECT
-		 students.id,
-		 students.name,
-		 students.surname,
-		 students.sex,
-		 students.group_num,
-		 students.email,
-		 students.ege_sum,
-		 students.birth_year,
-		 students.location
-		 FROM
-		 students_book.students
-		 WHERE `id` = :id
-		 LIMIT 1';
+	const SQL_COUNT_ROWS =
+		 'SELECT COUNT(*)
+	     FROM
+	     students_book.students
+	     ORDER BY :sort_by, :order';
 
 	const SQL_DELETE_BY_ID =
 		'DELETE FROM `students` WHERE `id` = :id';
+	
+	private $SQLBuilder;
+	private $lastSTMT;
+	
+	private $pdo = null;
 
-	public $pdo;
 
 	public function __construct(\PDO $pdo)
 	{
 		$this->pdo = $pdo;
+		$this->SQLBuilder = new SQLBuilder();
 	}
 
-	private static function backticks($name)
-	{
-		$result = "`" .str_replace("`", "``", $name) . "`";
-		return $result;
-	}
-
-	public function getStudents($sortBy = 'surname', $order = 'ASC', $offset = 0, $limit = 5)
+	public function getStudents($sortBy = 'surname', $order = 'ASC',
+	                            $offset = 0, $limit = 5,
+	                            $searchText = '', $searchField = '')
 	{
 		try {
 			$students = array();
-			$stmt = $this->pdo->prepare(self::SQL_SELECT_ALL);
-
-			$sortBy = self::backticks($sortBy);
-			$values = array(':sort_by' => $sortBy, ':order' => $order,
-				            ':offset'  => $offset,  ':limit' => $limit);
+			
+			$this->SQLBuilder->select();
+			if ($searchText !== '') {
+				$this->SQLBuilder->whereLike($searchField);
+			}
+			$this->SQLBuilder->orderBy($sortBy, $order);
+			$this->SQLBuilder->limit($limit, $offset);
+			$sql = $this->SQLBuilder->getSQL();
+			
+			$stmt = $this->pdo->prepare($sql);
+			$values = array();
+			if ($searchText !== '') {
+				$values[':like'] = "%$searchText%";
+			}
 
 			if ($stmt->execute($values)) {
 				while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
@@ -80,10 +54,10 @@ class StudentMapper
 				$students = false;
 			}
 		} catch (\PDOException $e) {
-			print $e->getMessage();
 			throw new StudentException('Ошибка при получении данных студентов', 0, $e);
 		}
-
+		//
+		$this->lastSTMT = $stmt;
 		return $students;
 	}
 
@@ -105,8 +79,9 @@ class StudentMapper
 			if (!is_int($id)) {
 				return false;
 			}
-
-			$stmt = $this->pdo->prepare(self::SQL_SELECT_ALL_BY_ID);
+			
+			$sql = $this->selectSQLBuilder->selectAllByID();
+			$stmt = $this->pdo->prepare($sql);
 			$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
 
 			if ($stmt->execute()) {
@@ -122,7 +97,27 @@ class StudentMapper
 
 		return $student;
 	}
-
+	
+	public function getEntriesCount($sortBy, $order)
+	{
+		try {
+			$stmt = $this->pdo->prepare(self::SQL_COUNT_ROWS);
+			$values = array(':sort_by' => $sortBy, ':order' => $order);
+			
+			if ($stmt->execute($values)) {
+				while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+					$count = $row[0];
+				}
+			} else {
+				$count = 0;
+			}
+		} catch (\PDOException $e) {
+			throw new StudentException('Ошибка при получении числа записей студентов', 0, $e);
+		}
+		
+		return $count;
+	}
+	
 	public function deleteStudentByID($id)
 	{
 		try {
@@ -160,8 +155,8 @@ class StudentMapper
 	public function convertToStatement(Student $student)
 	{
 		try {
-
-			$stmt = $this->pdo->prepare(self::SQL_INSERT_STUDENT);
+			$sql = $this->insertSQLBuilder->insert();
+			$stmt = $this->pdo->prepare($sql);
 			$name = $student->getName();
 			$surname = $student->getSurname();
 			$sex = $student->getSex();
@@ -186,7 +181,10 @@ class StudentMapper
 	}
 }
 
-/*try {
+/*
+include 'Student.php';
+include 'SQLBuilder.php';
+try {
 	$opt = array(
 		\PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
 		\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
@@ -198,10 +196,10 @@ class StudentMapper
 	die;
 }
 $SM = new StudentMapper($pdo);
+
+$students = $SM->getStudents('name', 'DESC');
 echo '<pre>';
-try {
-	var_dump($stmt = $SM->pdo->prepare(StudentMapper::SQL_INSERT_STUDENT));
-} catch (\PDOException $e) {
-	echo  $e->getCode() . PHP_EOL . $e->getMessage();
-}
-echo '</pre>';*/
+print_r($students);
+echo '<pre>';
+*/
+

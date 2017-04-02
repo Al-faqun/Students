@@ -91,6 +91,15 @@ class Student
     {
         return $this->location;
     }
-
+	
+	public function getArray()
+	{
+		$result = array(
+			'name'       => $this->name,        'surname' => $this->surname,
+			'sex'        => $this->sex,       'group_num' => $this->group_num,
+			'email'      => $this->email,       'ege_sum' => $this->ege_sum,
+			'birth_year' => $this->birth_year, 'location' => $this->location );
+		return $result;
+    }
 
 }

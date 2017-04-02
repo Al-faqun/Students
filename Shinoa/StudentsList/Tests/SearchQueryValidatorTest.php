@@ -18,7 +18,7 @@ class SearchQueryValidatorTest extends TestCase
 	{
 	}
 
-	public function testCheckSortBy()
+	public function testCheckSortByWhiteList()
 	{
 		$array = array('кусь' => 'кусьvalue', 'цап' => 'цапvalue', 'sort_by' => 'ege_sum');
 		$validator = new SearchQueryValidator($array);
@@ -26,6 +26,17 @@ class SearchQueryValidatorTest extends TestCase
 		echo $sort_by . PHP_EOL;
 
 		$this->assertContains($sort_by, $this->sortbyWhitelist, 'Значение sort_by не из разрешённого списка');
+	}
+	
+	public function testCheckSortByExact()
+	{
+		$expectedValue = 'ege_sum';
+		$array = array('кусь' => 'кусьvalue', 'цап' => 'цапvalue', 'sort_by' => $expectedValue);
+		$validator = new SearchQueryValidator($array);
+		$sort_by = $validator->checkSortBy();
+		echo $sort_by . PHP_EOL;
+		
+		$this->assertEquals($expectedValue, $sort_by);
 	}
 
 	public function testCheckSortByFailNum()
@@ -38,7 +49,7 @@ class SearchQueryValidatorTest extends TestCase
 		$this->assertContains($sort_by, $this->sortbyWhitelist, 'Значение sort_by не из разрешённого списка');
 	}
 
-	public function testCheckOrder()
+	public function testCheckOrderWhiteList()
 	{
 		$array = array('кусь' => 'кусьvalue', 'цап' => 'цапvalue', 'order' => 'asc');
 		$validator = new SearchQueryValidator($array);
@@ -47,7 +58,19 @@ class SearchQueryValidatorTest extends TestCase
 
 		$this->assertContains($order, $this->orderWhiteList, 'Значение order не из разрешённого списка');
 	}
-
+	
+	public function testCheckOrderExact()
+	{
+		$expectedValue = 'asc';
+		$array = array('кусь' => 'кусьvalue', 'цап' => 'цапvalue', 'order' => $expectedValue);
+		$validator = new SearchQueryValidator($array);
+		$order = $validator->checkOrder();
+		echo $order . PHP_EOL;
+		
+		$this->assertEquals($expectedValue, $order, '',
+			                   0,           10,   false, true);
+	}
+	
 	public function testCheckOrderFailNum()
 	{
 		$array = array('кусь' => 'кусьvalue', 'цап' => 'цапvalue', 'order' => 5);

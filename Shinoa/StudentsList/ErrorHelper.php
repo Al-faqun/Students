@@ -16,15 +16,16 @@ class ErrorHelper {
 		} else throw new Exception("Error Helper faied to be created");
 	}
 	
-	public function renderExceptionAndExit(\Exception $e, $whereToRedirect)
+	public function renderExceptionAndExit(\Throwable $e, $whereToRedirect)
 	{
-		$i = 0;
+		$i = 1;
 		$previous = $e->getPrevious();
-		do {
+		while ($previous !== null)
+		{
 			$i++;
 			$previous = $previous->getPrevious();
 		}
-		while ($previous);
+		
 		
 		$output = array();
 		do {
@@ -33,6 +34,12 @@ class ErrorHelper {
 			$text[] = 'текст: ' . "'" . $e->getMessage() . "'" . ',';
 			$text[] = 'файл: ' . $e->getFile() . ',';
 			$text[] = 'строка:' . $e->getLine() . '.';
+			$trace = explode('#', $e->getTraceAsString());
+			foreach ($trace as $line) {
+				if (!empty($line)) {
+					$text[] = '#' . $line;
+				}
+			}
 			$output[] = $text;
 			$i--;
 			$previous = $e->getPrevious();

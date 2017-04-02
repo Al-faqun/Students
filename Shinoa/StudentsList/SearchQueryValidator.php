@@ -6,7 +6,7 @@ class SearchQueryValidator
 {
 	const STUDENTS_IN_PAGE = 20;
 	private $input = array();
-	private $sortbyWhitelist = array('name',  'surname', 'sex',        'group_num',
+	private $fieldsWhitelist = array('name',  'surname', 'sex',        'group_num',
 	                                 'email', 'ege_sum', 'birth_year', 'location');
 	private $orderWhiteList = array('ASC', 'DESC');
 
@@ -14,17 +14,42 @@ class SearchQueryValidator
 	{
 		$this->input = $input;
 	}
-
+	
+	public function checkSearchField()
+	{
+		$result = false;
+		$fieldname = 'search_field';
+		if (array_key_exists($fieldname, $this->input)
+			&&
+			( ($key = array_search($this->input[$fieldname], $this->fieldsWhitelist, false)) !== false )
+		) {
+			$result = $this->fieldsWhitelist[$key];
+		} else $result = '';
+		
+		return $result;
+	}
+	
+	public function checkSearchText()
+	{
+		$result = false;
+		$fieldname = 'search_text';
+		if (array_key_exists($fieldname, $this->input)) {
+			$result = $this->input[$fieldname];
+		} else $result = '';
+		
+		return $result;
+	}
 	public function checkSortBy()
 	{
 		$result = false;
-		if (array_key_exists('sort_by', $this->input)
+		$fieldname = 'sort_by';
+		if (array_key_exists($fieldname, $this->input)
 			&&
-			$key = array_search($this->input['sort_by'], $this->sortbyWhitelist, true)
+			(($key = array_search($this->input[$fieldname], $this->fieldsWhitelist, false)) !== false)
 		) {
-			$result = $this->sortbyWhitelist[$key];
-		} else $result = $this->sortbyWhitelist[1];
-
+			$result = $this->fieldsWhitelist[$key];
+		} else $result = $this->fieldsWhitelist[1];
+		
 		return $result;
 	}
 

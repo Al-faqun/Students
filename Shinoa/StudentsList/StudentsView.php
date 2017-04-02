@@ -7,8 +7,8 @@ use Shinoa\StudentsList\Exceptions\ViewException;
 class StudentsView
 {
 	const STUDENTS_IN_PAGE = 20;
-	private $registry = null;
-	private $dataMapper = null;
+	private $registry;
+	private $dataMapper;
 	private $templatesDir = '';
 
 	function __construct(Registry $registry, $templatesDir)
@@ -22,22 +22,37 @@ class StudentsView
 		
 	}
 
-	public function getTbody(Student $student)
+	public function getTbodyHtml(Student $student)
 	{
-		$tbody = '<tr>' .
-		            "<td>$student->getName()</td>"        . "<td>$student->getSurname()</td>"  .
-		            "<td>$student->getSex()</td>"         . "<td>$student->getGroupNum()</td>" .
-		            "<td>$student->getEmail()</td>"       . "<td>$student->getEgeSum()</td>"   .
-		            "<td>$student->getYearOfBirth()</td>" . "<td>$student->getLocation()</td>" .
-		         '</tr>';
+		$contents = $student->getArray();
+		$tbody = '<tr>';
+		foreach ($contents as $field) {
+			$field = htmlspecialchars($field);
+			$tbody.= "<td>{$field}</td>";
+		}
+		$tbody.= '</tr>';
+		
 		return $tbody;
 	}
 
+	public function getPaginationQuery($page = 0)
+	{
+		if (is_int($page)) {
+			$_GET['page'] = $page;
+		} else throw new \InvalidArgumentException('Parameter is not int.');
+		
+		ksort($_GET);
+		
+		$query = http_build_query($_GET);
+		
+		return $query;
+	}
+	
 	public function output()
 	{
 		ob_start();
 		$urgentMessage = '';
-		$messages = $this->registry->getMessagesForView();
+		$messages = $this->registry->getMessages();
 		if (!empty($messages)) {
 			foreach ($messages as $message) {
 				$urgentMessage .= "<p>$message</p>";
@@ -48,13 +63,25 @@ class StudentsView
 		$students = $this->dataMapper->getStudents($this->registry->getSortby(),
 		                                           $this->registry->getOrder(),
 		                                           $this->registry->getOffset(),
-			                                       $this->registry->getLimit()
+			                                       $this->registry->getLimit(),
+		                                           $this->registry->getSearchText(),
+		                                           $this->registry->getSearchField()
 		);
+		
+		$entriesCount = $this->dataMapper->getEntriesCount($this->registry->getSortby(),
+		                                            $this->registry->getOrder()
+		);
+		$pageCount = ceil($entriesCount / self::STUDENTS_IN_PAGE);
+		for ($i = 1; $i <= $pageCount; $i++) {
+			$queries[$i] = $this->getPaginationQuery($i);
+		}
+		
+		
 		$tbodyContent = '';
 		foreach ($students as $student) {
-			$tbodyContent .= $this->getTbody($student);
+			$tbodyContent .= $this->getTbodyHtml($student);
 		}
-		$pageCount = ceil(count($students) / self::STUDENTS_IN_PAGE);
+		
 
 		$filepath = $this->templatesDir . '/stud_list.php';
 		if (file_exists($filepath)) {
