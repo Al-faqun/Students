@@ -6,7 +6,7 @@
 	use \Shinoa\StudentsList\ErrorHelper;
 
 	include 'bootstrap.php';
-	
+
 	try {
 		$root = dirname(__DIR__);
 		$registry = Registry::getInstance();
@@ -33,12 +33,30 @@
 		$registry->setLimit($limit);
 		
 		$view->render();
+		
+		
 	} catch (\Throwable $e) {
-		$errorHelper = new ErrorHelper('D:\USR\apache\htdocs\s1.localhost\Students\templates');
-		$errorHelper->renderExceptionAndExit($e, '');
+		switch ($appStatus = $registry->getStatus()) {
+			case $registry::APP_IN_DEVELOPMENT:
+				$errorHelper = new ErrorHelper('D:\USR\apache\htdocs\s1.localhost\Students\templates');
+				$errorHelper->renderExceptionAndExit($e, '');
+				break;
+			case $registry::APP_IN_PRODUCTION:
+				$errorHelper = new ErrorHelper('D:\USR\apache\htdocs\s1.localhost\Students\templates');
+				$errorHelper->renderExceptionAndExit($e, '');
+				break;
+		}
 	} catch (\Exception $e) {
-		$errorHelper = new ErrorHelper('D:\USR\apache\htdocs\s1.localhost\Students\templates');
-		$errorHelper->renderExceptionAndExit($e, '');
+		switch ($appStatus = $registry->getStatus()) {
+			case $registry::APP_IN_DEVELOPMENT:
+				$errorHelper = new ErrorHelper('D:\USR\apache\htdocs\s1.localhost\Students\templates');
+				$errorHelper->renderExceptionAndExit($e, '');
+				break;
+			case $registry::APP_IN_PRODUCTION:
+				$errorHelper = new ErrorHelper('D:\USR\apache\htdocs\s1.localhost\Students\templates');
+				$errorHelper->renderExceptionAndExit($e, '');
+				break;
+		}
 	}
 
 

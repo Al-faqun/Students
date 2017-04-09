@@ -73,6 +73,12 @@ class ErrorHelper {
 		$this->renderErrorPageAndExit($text, $whereToRedirect);
 	}
 	
+	public function addToLog($message, $logpath)
+	{
+		$text = self::arrayToString($message, PHP_EOL, PHP_EOL);
+		error_log($text, 3, $logpath);
+	}
+	
 	public static function splitErrMes($message)
 	{
 		$array = explode('#', $message);
@@ -81,20 +87,27 @@ class ErrorHelper {
 		}
 		return $lines;
 	}
-}
-
-/*	try {
-		throw new \Exception('Первое исключение');
-	} catch (\Exception $e) {
-		try {
-			throw new \Exception('Второе исключение', 0, $e);
-		} catch (\Exception $e) {
-			try {
-				throw new \Exception('Третье исключение', 0, $e);
-			} catch (\Exception $e) {
-				$errorhelper = new ErrorHelper('D:\USR\apache\htdocs\s1.localhost\Students\templates');
-				$errorhelper->renderExceptionAndExit($e);
+	
+	public static function arrayToString($array, $separator, $blockSeparator = '')
+	{
+		$string = '';
+		foreach ($array as $line) {
+			if (is_array($line)) {
+				$string .= self::arrayToString($line, $separator);
+			} else {
+				$string .= $line . $separator;
 			}
 		}
+		if (!empty($blockSeparator)) {
+			$string .= $blockSeparator;
+		}
+		return $string;
 	}
+}
+
+/*
+$errorhelper = new ErrorHelper('D:\USR\apache\htdocs\s1.localhost\Students\templates');
+$errorhelper->addToLog(array('first line', 'second line'),
+                      'D:\USR\apache\htdocs\s1.localhost\Students\errors.log');
+
 */
