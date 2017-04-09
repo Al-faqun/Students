@@ -11,17 +11,19 @@ class SQLBuilder
 	const space = ' ';
 	const SELECT_BASE =
 		'SELECT
-		 students.id,
-		 students.name,
-		 students.surname,
-		 students.sex,
-		 students.group_num,
-		 students.email,
-		 students.ege_sum,
-		 students.birth_year,
-		 students.location
+	      SQL_CALC_FOUND_ROWS
+		  students.id,
+		  students.name,
+		  students.surname,
+		  students.sex,
+		  students.group_num,
+		  students.email,
+		  students.ege_sum,
+		  students.birth_year,
+		  students.location
 		 FROM
-		 students_book.students' . self::space;
+		  students_book.students' . self::space;
+	
 	
 	const INSERT_STUDENT =
 		'INSERT
@@ -36,6 +38,9 @@ class SQLBuilder
 	
 	const DELETE_BY_ID =
 		'DELETE FROM `students` WHERE `id` = :id';
+	
+	const SQL_COUNT_ROWS =
+		'SELECT FOUND_ROWS()';
 	
 	private $sql = '';
 	
@@ -107,6 +112,11 @@ class SQLBuilder
 	public function select()
 	{
 		$this->sql = self::SELECT_BASE;
+	}
+	
+	public function countLastQuery()
+	{
+		return self::SQL_COUNT_ROWS;
 	}
 	
 	/*public function selectAll($sortBy, $order)

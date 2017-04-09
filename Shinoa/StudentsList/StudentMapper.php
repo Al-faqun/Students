@@ -4,14 +4,6 @@ use Shinoa\StudentsList\Exceptions\StudentException;
 
 class StudentMapper
 {
-	const SQL_COUNT_ROWS =
-		 'SELECT COUNT(*)
-	     FROM
-	     students_book.students
-	     ORDER BY :sort_by, :order';
-
-	const SQL_DELETE_BY_ID =
-		'DELETE FROM `students` WHERE `id` = :id';
 	
 	private $SQLBuilder;
 	private $lastSTMT;
@@ -56,7 +48,6 @@ class StudentMapper
 		} catch (\PDOException $e) {
 			throw new StudentException('Ошибка при получении данных студентов', 0, $e);
 		}
-		//
 		$this->lastSTMT = $stmt;
 		return $students;
 	}
@@ -101,10 +92,9 @@ class StudentMapper
 	public function getEntriesCount($sortBy, $order)
 	{
 		try {
-			$stmt = $this->pdo->prepare(self::SQL_COUNT_ROWS);
-			$values = array(':sort_by' => $sortBy, ':order' => $order);
-			
-			if ($stmt->execute($values)) {
+			$sql = $this->SQLBuilder->countLastQuery();
+			$stmt = $this->pdo->prepare($sql);
+			if ($stmt->execute()) {
 				while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
 					$count = $row[0];
 				}
@@ -155,7 +145,7 @@ class StudentMapper
 	public function convertToStatement(Student $student)
 	{
 		try {
-			$sql = $this->insertSQLBuilder->insert();
+			$sql = $this->SQLBuilder->insert();
 			$stmt = $this->pdo->prepare($sql);
 			$name = $student->getName();
 			$surname = $student->getSurname();

@@ -1,7 +1,7 @@
 <?php
 	use \Shinoa\StudentsList\Registry;
 	use \Shinoa\StudentsList\SearchQueryValidator;
-	use \Shinoa\StudentsList\StudentsView;
+	use \Shinoa\StudentsList\StudentView;
 	use \Shinoa\StudentsList\StudentMapper;
 	use \Shinoa\StudentsList\ErrorHelper;
 
@@ -13,7 +13,7 @@
 		$registry->init($root, $root . '/Students/ini/config_test.xml');
 		$dataMapper = new StudentMapper($registry->getPDO());
 		$registry->setDataMapper($dataMapper);
-		$view = new StudentsView($registry, $registry->getRoot() . '/Students/templates');
+		$view = new StudentView($registry, $registry->getRoot() . '/Students/templates');
 		$registry->setView($view);
 		
 		$validator = new SearchQueryValidator($_GET);

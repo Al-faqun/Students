@@ -4,7 +4,7 @@ namespace Shinoa\StudentsList;
 
 use Shinoa\StudentsList\Exceptions\ViewException;
 
-class StudentsView
+class StudentView
 {
 	const STUDENTS_IN_PAGE = 20;
 	private $registry;
@@ -17,9 +17,15 @@ class StudentsView
 		$this->templatesDir = $templatesDir;
 	}
 
-	public function mesToHTML()
+	public function mesToHTML($messages)
 	{
-		
+		$result = '';
+		if (!empty($messages)) {
+			foreach ($messages as $message) {
+				$result .= "<p>$message</p>";
+			}
+		}
+		return $result;
 	}
 
 	public function getTbodyHtml(Student $student)
@@ -53,11 +59,7 @@ class StudentsView
 		ob_start();
 		$urgentMessage = '';
 		$messages = $this->registry->getMessages();
-		if (!empty($messages)) {
-			foreach ($messages as $message) {
-				$urgentMessage .= "<p>$message</p>";
-			}
-		}
+		$urgentMessage = $this->mesToHTML($messages);
 		
 		$this->dataMapper = $this->registry->getDataMapper();
 		$students = $this->dataMapper->getStudents($this->registry->getSortby(),
