@@ -38,7 +38,7 @@ class StudentMapper
 				$values[':like'] = "%$searchText%";
 			}
 
-			if ($stmt->execute($values)) {
+			if ( ($stmt->execute($values)) && ($stmt->rowCount() > 0) )  {
 				while ($row = $stmt->fetch(\PDO::FETCH_ASSOC)) {
 					$students[] = $this->convertToObject($row);
 				}
@@ -71,7 +71,9 @@ class StudentMapper
 				return false;
 			}
 			
-			$sql = $this->selectSQLBuilder->selectAllByID();
+			$this->SQLBuilder->select();
+			$this->SQLBuilder->whereValue('id');
+			$sql = $this->SQLBuilder->getSQL();
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
 
@@ -89,10 +91,11 @@ class StudentMapper
 		return $student;
 	}
 	
-	public function getEntriesCount($sortBy, $order)
+	public function getEntriesCount()
 	{
 		try {
-			$sql = $this->SQLBuilder->countLastQuery();
+			$this->SQLBuilder->countLastQuery();
+			$sql = $this->SQLBuilder->getSQL();
 			$stmt = $this->pdo->prepare($sql);
 			if ($stmt->execute()) {
 				while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
@@ -114,8 +117,9 @@ class StudentMapper
 			if (!is_int($id)) {
 				return false;
 			}
-
-			$stmt = $this->pdo->prepare(self::SQL_DELETE_BY_ID);
+			$this->SQLBuilder->deleteByID();
+			$sql = $this->SQLBuilder->getSQL();
+			$stmt = $this->pdo->prepare($sql);
 			$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
 			if ($stmt->execute()) {
 				$result = true;
@@ -145,7 +149,8 @@ class StudentMapper
 	public function convertToStatement(Student $student)
 	{
 		try {
-			$sql = $this->SQLBuilder->insert();
+			$this->SQLBuilder->insert();
+			$sql = $this->SQLBuilder->getSQL();
 			$stmt = $this->pdo->prepare($sql);
 			$name = $student->getName();
 			$surname = $student->getSurname();

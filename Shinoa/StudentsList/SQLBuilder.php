@@ -116,51 +116,17 @@ class SQLBuilder
 	
 	public function countLastQuery()
 	{
-		return self::SQL_COUNT_ROWS;
+		$this->sql = self::SQL_COUNT_ROWS;
 	}
-	
-	/*public function selectAll($sortBy, $order)
-	{
-		$this->select();
-		$this->orderBy($sortBy, $order);
-		return $this->sql;
-	}
-	
-	public function selectAllSearch($searchField, $sortBy, $order)
-	{
-		$this->select();
-		$this->whereLike($searchField);
-		$this->orderBy($sortBy, $order);
-		return $this->sql;
-	}
-	
-	public function selectAllLimit($searchField, $sortBy, $order, $limit, $offset = '')
-	{
-		$this->select();
-		$this->whereLike($searchField);
-		$this->orderBy($sortBy, $order);
-		$this->limit($limit, $offset);
-		return $this->sql;
-	}
-	
-	public function selectAllByID()
-	{
-		$this->select();
-		$this->whereValue('id');
-		$this->limit(1);
-		return $this->sql;
-	} */
 	
 	public function insert()
 	{
 		$this->sql = self::INSERT_STUDENT;
-		return $this->sql;
 	}
 	
 	public function deleteByID()
 	{
 		$this->sql = self::DELETE_BY_ID;
-		return $this->sql;
 	}
 }
 

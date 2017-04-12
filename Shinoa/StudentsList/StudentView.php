@@ -16,12 +16,18 @@ class StudentView
 		$this->registry = $registry;
 		$this->templatesDir = $templatesDir;
 	}
-
+	
+	public static function esc($value)
+	{
+		$result = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
+		return $result;
+	}
 	public function mesToHTML($messages)
 	{
 		$result = '';
 		if (!empty($messages)) {
 			foreach ($messages as $message) {
+				$message = self::esc($message);
 				$result .= "<p>$message</p>";
 			}
 		}
@@ -33,7 +39,7 @@ class StudentView
 		$contents = $student->getArray();
 		$tbody = '<tr>';
 		foreach ($contents as $field) {
-			$field = htmlspecialchars($field);
+			$field = self::esc($field);
 			$tbody.= "<td>{$field}</td>";
 		}
 		$tbody.= '</tr>';
@@ -57,9 +63,6 @@ class StudentView
 	public function output()
 	{
 		ob_start();
-		$urgentMessage = '';
-		$messages = $this->registry->getMessages();
-		$urgentMessage = $this->mesToHTML($messages);
 		
 		$this->dataMapper = $this->registry->getDataMapper();
 		$students = $this->dataMapper->getStudents($this->registry->getSortby(),
@@ -70,20 +73,23 @@ class StudentView
 		                                           $this->registry->getSearchField()
 		);
 		
-		$entriesCount = $this->dataMapper->getEntriesCount($this->registry->getSortby(),
-		                                            $this->registry->getOrder()
-		);
+		$tbodyContent = '';
+		$urgentMessage = '';
+		$messages = $this->registry->getMessages();
+		if ($students === false) {
+			$messages[] = 'Результат: ничего не найдено.';
+		} else {
+			foreach ($students as $student) {
+				$tbodyContent .= $this->getTbodyHtml($student);
+			}
+		}
+		$urgentMessage = $this->mesToHTML($messages);
+		
+		$entriesCount = $this->dataMapper->getEntriesCount();
 		$pageCount = ceil($entriesCount / self::STUDENTS_IN_PAGE);
 		for ($i = 1; $i <= $pageCount; $i++) {
 			$queries[$i] = $this->getPaginationQuery($i);
 		}
-		
-		
-		$tbodyContent = '';
-		foreach ($students as $student) {
-			$tbodyContent .= $this->getTbodyHtml($student);
-		}
-		
 
 		$filepath = $this->templatesDir . '/stud_list.php';
 		if (file_exists($filepath)) {

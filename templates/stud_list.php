@@ -10,7 +10,7 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-	<link rel="stylesheet" type="text/css" href="/Students/templates/stylesheet.css"/>
+	<link rel="stylesheet" type="text/css" href="/Students/templates/list.css"/>
 	<title>Список абитуриентов</title>
 	<meta charset="utf-8">
 </head>
@@ -18,7 +18,7 @@
 	<div class="search_div">
 		<form action="" method="get">
 			<label for="search_text">Поиск: </label>
-			<input type="search" name="search_text" id="search_text" maxlength="100">
+			<input type="search" name="search_text" id="search_text"  maxlength="100">
 			<label for="search_field">в </label>
 			<select name="search_field">
 				<option value="name">Имя</option>
@@ -85,7 +85,7 @@
 
 	<?php else: ?>
 		<div class="message">
-			<?= htmlspecialchars($urgentMessage); ?>
+			<?=$urgentMessage ?>
 		</div>
 	<?php endif; ?>
 </body>

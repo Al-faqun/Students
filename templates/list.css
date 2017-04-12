@@ -6,6 +6,12 @@
 
 }
 
+.message {
+    clear: both;
+    position: absolute;
+    left: 40%;
+
+}
 caption {
     left: 0%;
 

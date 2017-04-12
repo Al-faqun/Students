@@ -1,0 +1,15 @@
+.fields {
+    position: absolute;
+    left: 40%;
+}
+
+input {
+    display: block;
+    margin-bottom: 10px;
+}
+
+select {
+    display: block;
+    margin-bottom: 10px;
+}
+
