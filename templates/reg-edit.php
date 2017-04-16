@@ -28,7 +28,7 @@
 			</select>
 			
 			<label for="group_num">Номер группы: </label>
-			<input type="text" name="group_num" size="40" maxlength="50">
+			<input type="text" name="group_num" size="40" maxlength="5">
 			
 			<label for="email">Почта: </label>
 			<input type="email" name="email" size="40" maxlength="100">
