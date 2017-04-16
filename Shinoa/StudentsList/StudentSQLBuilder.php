@@ -6,7 +6,7 @@ namespace Shinoa\StudentsList;
 use Shinoa\StudentsList\Exceptions\StudentException;
 use Zend\Cache\Exception\LogicException;
 
-class SQLBuilder
+class StudentSQLBuilder
 {
 	const space = ' ';
 	const SELECT_BASE =
@@ -35,6 +35,16 @@ class SQLBuilder
 	     (:name,       :surname, :sex,
 	      :group_num,  :email,   :ege_sum,
 	      :birth_year, :location)';
+	
+	const UPDATE_STUDENT =
+		'UPDATE `students`
+		 SET
+		 `name`  = :name,  `surname`   = :surname,
+		 `sex`   = :sex,   `group_num` = :group_num,
+		 `email` = :email, `ege_sum`   = :ege_sum,
+		 `birth_year` = :birth_year,
+		 `location`   = :location
+		 WHERE `id` = :id';
 	
 	const DELETE_BY_ID =
 		'DELETE FROM `students` WHERE `id` = :id';
@@ -67,7 +77,7 @@ class SQLBuilder
 			$this->sql .= "WHERE ($column LIKE $placeholder)" . self::space;
 		} else {
 			if (preg_match("/$placeholder/ui", $this->sql) !== 0) {
-				throw new LogicException('Placeholder cannot be used twice');
+				throw new \LogicException('Placeholder cannot be used twice');
 			}
 			$this->sql .= "AND ($column LIKE %$placeholder%)" . self::space;
 		}
@@ -81,7 +91,7 @@ class SQLBuilder
 			$this->sql .= "WHERE ($column = $placeholder)" . self::space;
 		} else {
 			if (preg_match("/$placeholder/ui", $this->sql) !== 0) {
-				throw new LogicException('Placeholder cannot be used twice');
+				throw new \LogicException('Placeholder cannot be used twice');
 			}
 			$this->sql .= "AND ($column = $placeholder)" . self::space;
 		}
@@ -105,7 +115,7 @@ class SQLBuilder
 				$this->sql .= "OFFSET $offset" . self::space;
 			}
 		} else {
-			throw new LogicException('LIMIT keyword cannot be used twice');
+			throw new \LogicException('LIMIT keyword cannot be used twice');
 		}
 	}
 	
@@ -124,6 +134,11 @@ class SQLBuilder
 		$this->sql = self::INSERT_STUDENT;
 	}
 	
+	public function updateById()
+	{
+		$this->sql = self::UPDATE_STUDENT;
+	}
+	
 	public function deleteByID()
 	{
 		$this->sql = self::DELETE_BY_ID;
@@ -131,7 +146,7 @@ class SQLBuilder
 }
 
 /*
-$SQL = new SQLBuilder();
+$SQL = new StudentSQLBuilder();
 echo $SQL->selectAll('testsearchfield', 'sortfield', 'DESC') . '<br>';
 echo $SQL->selectAllLimit('testsearchfield', 'sortfield', 'DESC', 10, 5) . '<br>';
 echo $SQL->selectAllLimit('testsearchfield', 'sortfield', 'DESC', 10) . '<br>';

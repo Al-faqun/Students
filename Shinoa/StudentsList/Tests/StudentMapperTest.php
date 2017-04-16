@@ -51,16 +51,50 @@ class StudentMapperTest extends TestCase
 			                   'BGF5',     'manan@rambler.ru' , 259,
 			                    1997,      'Приезжий');
 		$result = $this->SM->insertStudent($student);
-		array_push($this->insertedIds, (int)$this->pdo->lastInsertId());
+		array_push($this->insertedIds, $this->SM->lastInsertedId());
 		$this->assertNotFalse($result);
 	}
+	
+	public function testInsertStudentWrongParamsFail()
+	{
+		$this->expectException(StudentException::class);
+		
+		$student = new Student('mannanov', 'nikoly',  'М',
+			'BGF5ee',     'manan@rambler.ru' , 259,
+			1997,      'Приезжий');
+		$result = $this->SM->insertStudent($student);
+		array_push($this->insertedIds, $this->SM->lastInsertedId());
 
+	}
+	
+	public function testUpdateStudent()
+	{
+		$this->testInsertStudent();
+		$student = new Student('updated', 'nikoly',  'М',
+			'BGF53',     'manan@rambler.ru' , 259,
+			1997,      'Приезжий');
+		$id = end($this->insertedIds);
+		if ($id !== false) {
+			$result = $this->SM->updateStudent($student, $id);
+		} else $result = false;
+		$this->assertNotFalse($result);
+	}
+	
+	
 	public function testFindStudentByID()
 	{
 		$this->SM = new StudentMapper($this->pdo);
 		$result = $this->SM->findStudentByID(1);
 
 		$this->assertNotFalse($result);
+	}
+	
+	public function testFindStudentByIDFail()
+	{
+		$this->SM = new StudentMapper($this->pdo);
+		$result = $this->SM->findStudentByID(100000);
+		
+		$this->assertFalse($result);
 	}
 
 	public function testFindStudentByIDStringFail()

@@ -24,11 +24,11 @@ class StudentValidatorTest extends TestCase
 	public function testCheck()
 	{
 		$this->studentValidator = new StudentValidator();
-		$test = new Student('name', 'surname', 'masculine', 'grNum5',
+		$test = new Student('name', 'surname', 'masculine', 'grNm5',
 			                'email@gmail.com', 400, 1994, 'Local');
 		$student = $this->studentValidator->check($test, $errors);
 		
-		$this->assertNotFalse($student, print_r($errors));
+		$this->assertNotFalse($student, $errors);
 		
 	}
 	

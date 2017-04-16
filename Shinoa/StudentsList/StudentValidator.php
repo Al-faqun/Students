@@ -11,13 +11,6 @@ class StudentValidator
 	{
 	}
 	
-	public function isString($var)
-	{
-		if (is_string($var) && preg_match('/^[a-zА-Я\p{Han}]/iu', $var)) {
-			return true;
-		} else return false;
-	}
-	
 	public function check(Student $in, &$errors)
 	{
 		$errors = [];
@@ -55,7 +48,14 @@ class StudentValidator
 		}
 	}
 	
-	private function checkString($string, $minlen, $maxlen)
+	public static function startsWithLetter($var)
+	{
+		if ( preg_match('/^\p{L}/iu', $var) ) {
+			return true;
+		} else return false;
+	}
+	
+	private static function checkString($string, $minlen, $maxlen, $startsWithLetter = false)
 	{
 		if ( !is_int($minlen) || !is_int($maxlen) ) {
 			throw new \UnexpectedValueException('Length of string must be integer');
@@ -66,31 +66,23 @@ class StudentValidator
 		) {
 			$result = $string;
 		} else $result = false;
+		
+		if ( $startsWithLetter !== false && !self::startsWithLetter($string) ) {
+			$result = false;
+		}
 		return $result;
 	}
 	
 	private function checkName(Student $in)
 	{
 		$name = $in->getName();
-		if ( is_string($name)
-			  &&
-			 (mb_strlen($name) >= 1 && mb_strlen($name) <= 100)
-		) {
-			$result = $name;
-		} else $result = false;
-		return $result;
+		return self::checkString($name, 1, 100, true);
 	}
 	
 	private function checkSurname(Student $in)
 	{
 		$surname = $in->getSurname();
-		if ( is_string($surname)
-			  &&
-			 (mb_strlen($surname) >= 1 && mb_strlen($surname) <= 100)
-		) {
-			$result = $surname;
-		} else $result = false;
-		return $result;
+		return self::checkString($surname, 1, 100, true);
 	}
 	
 	private function checkSex(Student $in)
@@ -115,13 +107,7 @@ class StudentValidator
 	private function checkGroupNum(Student $in)
 	{
 		$groupNum = $in->getGroupNum();
-		if ( is_string($groupNum)
-			&&
-			(mb_strlen($groupNum) >= 1 && mb_strlen($groupNum) <= 50)
-		) {
-			$result = $groupNum;
-		} else $result = false;
-		return $result;
+		return self::checkString($groupNum, 1, 5);
 	}
 	
 	private function checkEmail(Student $in)

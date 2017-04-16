@@ -14,7 +14,7 @@ class StudentMapper
 	public function __construct(\PDO $pdo)
 	{
 		$this->pdo = $pdo;
-		$this->SQLBuilder = new SQLBuilder();
+		$this->SQLBuilder = new StudentSQLBuilder();
 	}
 
 	public function getStudents($sortBy = 'surname', $order = 'ASC',
@@ -55,7 +55,7 @@ class StudentMapper
 	public function insertStudent(Student $student)
 	{
 		try {
-			$stmt = $this->convertToStatement($student);
+			$stmt = $this->convertToStatement($student, 'insert');
 			$result = $stmt->execute();
 		} catch (\PDOException $e) {
 			throw new StudentException('Ошибка при добавлении данных студента', 0, $e);
@@ -63,7 +63,25 @@ class StudentMapper
 
 		return $result;
 	}
-
+	
+	public function lastInsertedId()
+	{
+		return (int)$this->pdo->lastInsertId();
+	}
+	
+	public function updateStudent(Student $student, $id)
+	{
+		try {
+			$stmt = $this->convertToStatement($student, 'update');
+			$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+			$result = $stmt->execute();
+		} catch (\PDOException $e) {
+			throw new StudentException('Ошибка при обновлении данных студента', 0, $e);
+		}
+		
+		return $result;
+	}
+	
 	public function findStudentByID($id)
 	{
 		try {
@@ -79,7 +97,7 @@ class StudentMapper
 
 			if ($stmt->execute()) {
 				$row = $stmt->fetch(\PDO::FETCH_ASSOC);
-				if ( $row ) {
+				if ( !empty($row) ) {
 					$student = $this->convertToObject($row);
 				} else $student = false;
 			} else $student = false;
@@ -98,11 +116,14 @@ class StudentMapper
 			$sql = $this->SQLBuilder->getSQL();
 			$stmt = $this->pdo->prepare($sql);
 			if ($stmt->execute()) {
+				if ($stmt->rowCount() == 0) {
+					$count = false;
+				}
 				while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
 					$count = $row[0];
 				}
 			} else {
-				$count = 0;
+				$count = false;
 			}
 		} catch (\PDOException $e) {
 			throw new StudentException('Ошибка при получении числа записей студентов', 0, $e);
@@ -115,21 +136,25 @@ class StudentMapper
 	{
 		try {
 			if (!is_int($id)) {
-				return false;
+				$result = false;
+			} else {
+				$this->SQLBuilder->deleteByID();
+				$sql = $this->SQLBuilder->getSQL();
+				$stmt = $this->pdo->prepare($sql);
+				$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
+				if ($stmt->execute()) {
+					$result = true;
+				} else $result = false;
 			}
-			$this->SQLBuilder->deleteByID();
-			$sql = $this->SQLBuilder->getSQL();
-			$stmt = $this->pdo->prepare($sql);
-			$stmt->bindParam(':id', $id, \PDO::PARAM_INT);
-			if ($stmt->execute()) {
-				$result = true;
-			} else $result = false;
 		} catch (\PDOException $e) {
 			throw new StudentException('Ошибка при получении данных студента'. 0, $e);
 		}
 
 		return $result;
 	}
+	
+	
+	
 	private function convertToObject($row)
 	{
 		$required = array('name' => 1, 'surname' => 2, 'sex' => 3, 'group_num' => 4,
@@ -146,12 +171,22 @@ class StudentMapper
 
 	}
 
-	public function convertToStatement(Student $student)
+	public function convertToStatement(Student $student, $typeOfStatement = 'insert')
 	{
 		try {
-			$this->SQLBuilder->insert();
+			switch ( strtolower($typeOfStatement) ) {
+				case 'insert':
+					$this->SQLBuilder->insert();
+					break;
+				case 'update':
+					$this->SQLBuilder->updateById();
+					break;
+				default:
+					throw new StudentException('Incorrect type of statement');
+			}
 			$sql = $this->SQLBuilder->getSQL();
 			$stmt = $this->pdo->prepare($sql);
+			
 			$name = $student->getName();
 			$surname = $student->getSurname();
 			$sex = $student->getSex();
@@ -178,7 +213,7 @@ class StudentMapper
 
 /*
 include 'Student.php';
-include 'SQLBuilder.php';
+include 'StudentSQLBuilder.phpder.php';
 try {
 	$opt = array(
 		\PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
