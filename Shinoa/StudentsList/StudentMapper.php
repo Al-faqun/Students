@@ -213,7 +213,7 @@ class StudentMapper
 
 /*
 include 'Student.php';
-include 'StudentSQLBuilder.phpder.php';
+include 'StudentSQLBuilder.php';
 try {
 	$opt = array(
 		\PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
