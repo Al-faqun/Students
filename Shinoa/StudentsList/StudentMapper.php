@@ -135,7 +135,8 @@ class StudentMapper
 	public function deleteStudentByID($id)
 	{
 		try {
-			if (!is_int($id)) {
+			$id = (int)$id;
+			if ( $id <= 0) {
 				$result = false;
 			} else {
 				$this->SQLBuilder->deleteByID();
@@ -147,7 +148,7 @@ class StudentMapper
 				} else $result = false;
 			}
 		} catch (\PDOException $e) {
-			throw new StudentException('Ошибка при получении данных студента'. 0, $e);
+			throw new StudentException('Ошибка при удалении данных студента'. 0, $e);
 		}
 
 		return $result;

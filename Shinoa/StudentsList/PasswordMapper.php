@@ -24,7 +24,7 @@ class PasswordMapper
 			
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->bindParam(':userid', $userId, \PDO::PARAM_INT);
-			$hash = $this->getNextRow($stmt);
+			$hash = $this->getNextRowFirstEl($stmt);
 		} catch (\PDOException $e) {
 			throw new DbException('Ошибка при получении хешей', 0, $e);
 		}
@@ -50,7 +50,7 @@ class PasswordMapper
 		return $result;
 	}
 	
-	function updateHash($hash, $userId)
+	function updateHash($userId, $hash)
 	{
 		try {
 			$this->sqlBuilder->updateById();
@@ -69,6 +69,29 @@ class PasswordMapper
 		return $result;
 	}
 	
+	function deleteHash($userId)
+	{
+		try {
+			$userId = (int)$userId;
+			if ( $userId <= 0) {
+				$result = false;
+			} else {
+				$this->sqlBuilder->deleteByID();
+				$sql = $this->sqlBuilder->getSQL();
+				$stmt = $this->pdo->prepare($sql);
+				$stmt->bindParam(':userid', $userId, \PDO::PARAM_INT);
+				if ($stmt->execute()) {
+					$result = true;
+				} else $result = false;
+			}
+		} catch (\PDOException $e) {
+			throw new DbException('Ошибка при удалении хеша'. 0, $e);
+		}
+		
+		return $result;
+	}
+	
+	
 	private function getAllRows(\PDOStatement &$stmt, $values = null)
 	{
 		$outArray = false;
@@ -82,20 +105,19 @@ class PasswordMapper
 		return $outArray;
 	}
 	
-	private function getNextRow(\PDOStatement &$stmt, $values = null)
+	private function getNextRowFirstEl(\PDOStatement &$stmt, $values = null)
 	{
-		$outArray = false;
+		$element = false;
 		if ( ($stmt->execute($values)) && ($stmt->rowCount() > 0) ) {
-			$row = $stmt->fetch(\PDO::FETCH_ASSOC);
-			$outArray[] = $row[0];
+			$row = $stmt->fetch(\PDO::FETCH_NUM);
+			$element = $row[0];
 		} else {
-			$outArray = false;
+			$element = false;
 		}
-		return $outArray;
+		return $element;
 	}
 }
-
-
+/*
 include 'PassSQLBuilder.php';
 include 'D:\USR\apache\htdocs\s1.localhost\Students\Shinoa\StudentsList\Exceptions\DbException.php';
 try {
@@ -110,6 +132,6 @@ try {
 	die;
 }
 $mapper = new PasswordMapper($pdo);
-var_dump($mapper->updateHash(3, 'updated hash'));
-
+var_dump($mapper->addHash(5, 'inserted hash'));
+*/
 

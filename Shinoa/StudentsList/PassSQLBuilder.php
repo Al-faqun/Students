@@ -23,7 +23,7 @@ class PassSQLBuilder
 		 WHERE `userid` = :userid' . self::space;
 	
 	const DELETE_BY_ID =
-		'DELETE FROM <table_name> WHERE `id` = :id' . self::space;
+		'DELETE FROM <table_name> WHERE `userid` = :userid' . self::space;
 	
 	const SQL_COUNT_ROWS =
 		'SELECT FOUND_ROWS()' . self::space;
@@ -92,14 +92,14 @@ class PassSQLBuilder
 	function insert()
 	{
 		$search = ['<table_name>', '<columns_set_expressions>'];
-		$replace = [self::spaces($this->tableName), self::spaces($this->columnsSet)];
+		$replace = [self::spaces($this->tableName), self::spaces($this->insertSet)];
 		$this->sql = str_replace($search, $replace, self::INSERT);
 	}
 	
 	function updateById()
 	{
 		$search = ['<table_name>', '<columns_set_expressions>'];
-		$replace = [self::spaces($this->tableName), self::spaces($this->columnsSet)];
+		$replace = [self::spaces($this->tableName), self::spaces($this->updateSet)];
 		$this->sql = str_replace($search, $replace, self::UPDATE);
 	}
 	

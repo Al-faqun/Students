@@ -91,7 +91,7 @@ class StudentView
 			$queries[$i] = $this->getPaginationQuery($i);
 		}
 
-		$filepath = $this->templatesDir . '/stud_list.php';
+		$filepath = $this->templatesDir . '/tpl_stud_list.php';
 		if (file_exists($filepath)) {
 			include $filepath;
 		} else throw new ViewException('File doesnt exist.');

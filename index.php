@@ -5,7 +5,7 @@
 	use \Shinoa\StudentsList\StudentMapper;
 	use \Shinoa\StudentsList\ErrorHelper;
 
-	include 'bootstrap.php';
+	include_once 'bootstrap.php';
 
 	try {
 		$root = dirname(__DIR__);
