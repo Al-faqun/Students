@@ -1,6 +1,8 @@
 <?php
 namespace Shinoa\StudentsList;
 
+use Shinoa\StudentsList\Exceptions\StudentException;
+
 class Student
 {
     private $name = '';
@@ -101,5 +103,22 @@ class Student
 			'birth_year' => $this->birth_year, 'location' => $this->location );
 		return $result;
     }
+	
+	private static function makeStudentFromArray($array)
+	{
+		$name      = $array['name']       ?? false;
+		$surname   = $array['surname']    ?? false;
+		$sex       = $array['sex']        ?? false;
+		$groupNum  = $array['group_num']  ?? false;
+		$email     = $array['email']      ?? false;
+		$egeSum    = ( isset($array['ege_sum']) )  ? (int)$array['ege_sum']  : false;
+		$birthYear = ( isset($array['birth_year']) )  ? (int)$array['birth_year']  : false;
+		$location  = $array['location'] ?? false;
+
+		$student = new Student($name,  $surname,    $sex,
+		                       $groupNum,  $email, $egeSum,
+		                       $birthYear, $location);
+		return $student;
+	}
 
 }

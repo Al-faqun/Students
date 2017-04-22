@@ -2,6 +2,8 @@
 namespace Shinoa\StudentsList;
 
 
+use Shinoa\StudentsList\Exceptions\StudentException;
+
 class StudentValidator
 {
 	private static  $sexWhitelist = ['masculine', 'feminine'];
@@ -11,35 +13,69 @@ class StudentValidator
 	{
 	}
 	
-	public function check(Student $in, &$errors)
+	
+	
+	public function checkInput($input, array &$errors)
 	{
-		$errors = [];
-		$name = $this->checkName($in);
-		$surname = $this->checkSurname($in);
-		$sex = $this->checkSex($in);
-		$groupNum = $this->checkGroupNum($in);
-		$email = $this->checkEmail($in);
-		$egeSum = $this->checkEgeSum($in);
-		$yearOfBirth = $this->checkYearOfBirth($in);
-		$location = $this->checkLocation($in);
+		$errors = array();
+		$name      = (isset($input['name']))       ? $this->checkName($input['name'])            : false;
+		$surname   = (isset($input['surname']))    ? $this->checkSurname($input['surname'])      : false;
+		$sex       = (isset($input['sex']))        ? $this->checkSex($input['sex'])              : false;
+		$groupNum  = (isset($input['group_num']))  ? $this->checkGroupNum($input['group_num'])   : false;
+		$email     = (isset($input['email']))      ? $this->checkEmail($input['email'])          : false;
+		$egeSum    = (isset($input['ege_sum']))    ? $this->checkEgeSum($input['ege_sum'])       : false;
+		$birthYear = (isset($input['birth_year'])) ? $this->checkBirthYear($input['birth_year']) : false;
+		$location  = (isset($input['location']))   ? $this->checkLocation($input['location'])    : false;
 		
-		self::mesIfFalse($name,        $errors,        'Имя');
-		self::mesIfFalse($surname,     $errors,        'Фамилия');
-		self::mesIfFalse($sex,         $errors,        'Пол');
-		self::mesIfFalse($groupNum,    $errors,        'Номер группы');
-		self::mesIfFalse($email,       $errors,        'Почта');
-		self::mesIfFalse($egeSum,      $errors,        'Сумма баллов ЕГЭ');
-		self::mesIfFalse($yearOfBirth, $errors,        'Год рождения');
-		self::mesIfFalse($location,    $errors,        'Происхождение');
+		self::mesIfFalse($name,      $errors, 'Имя');
+		self::mesIfFalse($surname,   $errors, 'Фамилия');
+		self::mesIfFalse($sex,       $errors, 'Пол');
+		self::mesIfFalse($groupNum,  $errors, 'Номер группы');
+		self::mesIfFalse($email,     $errors, 'Почта');
+		self::mesIfFalse($egeSum,    $errors, 'Сумма баллов ЕГЭ');
+		self::mesIfFalse($birthYear, $errors, 'Год рождения');
+		self::mesIfFalse($location,  $errors, 'Происхождение');
+		
 		if ( empty($errors) ) {
-			$result = new Student($name,  $surname, $sex, $groupNum,
-				               $email, $egeSum,  $yearOfBirth, $location);
+			$result = new Student($name,  $surname,    $sex,
+			                      $groupNum,  $email, $egeSum,
+				                  $birthYear, $location);
 		} else {
 			$result = false;
 		}
 		
 		return $result;
 	}
+	
+	public function checkStudent(Student $in, array &$errors)
+	{
+		$name        = $this->checkName( $in->getName() );
+		$surname     = $this->checkSurname( $in->getSurname() );
+		$sex         = $this->checkSex( $in->getSex() );
+		$groupNum    = $this->checkGroupNum( $in->getGroupNum() );
+		$email       = $this->checkEmail( $in->getEmail() );
+		$egeSum      = $this->checkEgeSum( $in->getEgeSum() );
+		$yearOfBirth = $this->checkYearOfBirth( $in->getYearOfBirth() );
+		$location    = $this->checkLocation ($in->getLocation() );
+		
+		self::mesIfFalse($name,        $errors, 'Имя');
+		self::mesIfFalse($surname,     $errors, 'Фамилия');
+		self::mesIfFalse($sex,         $errors, 'Пол');
+		self::mesIfFalse($groupNum,    $errors, 'Номер группы');
+		self::mesIfFalse($email,       $errors, 'Почта');
+		self::mesIfFalse($egeSum,      $errors, 'Сумма баллов ЕГЭ');
+		self::mesIfFalse($yearOfBirth, $errors, 'Год рождения');
+		self::mesIfFalse($location,    $errors, 'Происхождение');
+		if ( empty($errors) ) {
+			$result = true;
+		} else {
+			$result = false;
+		}
+		
+		return $result;
+	}
+	
+	
 	
 	private static function mesIfFalse($var, &$outputArray, $fieldName)
 	{
@@ -73,21 +109,18 @@ class StudentValidator
 		return $result;
 	}
 	
-	private function checkName(Student $in)
+	private function checkName($name)
 	{
-		$name = $in->getName();
 		return self::checkString($name, 1, 100, true);
 	}
 	
-	private function checkSurname(Student $in)
+	private function checkSurname($surname)
 	{
-		$surname = $in->getSurname();
 		return self::checkString($surname, 1, 100, true);
 	}
 	
-	private function checkSex(Student $in)
+	private function checkSex($sex)
 	{
-		$sex = $in->getSex();
 		if ( ($key = array_search(mb_strtolower($sex), self::$sexWhitelist, false)) !== false
 		) {
 			switch ($key) {
@@ -104,24 +137,21 @@ class StudentValidator
 		return $result;
 	}
 	
-	private function checkGroupNum(Student $in)
+	private function checkGroupNum($groupNum)
 	{
-		$groupNum = $in->getGroupNum();
 		return self::checkString($groupNum, 1, 5);
 	}
 	
-	private function checkEmail(Student $in)
+	private function checkEmail($email)
 	{
-		$email = $in->getEmail();
 		if ( filter_var($email, FILTER_VALIDATE_EMAIL) ) {
 			$result = $email;
 		} else $result = false;
 		return $result;
 	}
 	
-	private function checkEgeSum(Student $in)
+	private function checkEgeSum($egeSum)
 	{
-		$egeSum = $in->getEgeSum();
 		$options = ['min_range' => 1, 'max_range' => 500];
 		if ( filter_var($egeSum, FILTER_VALIDATE_INT, $options) ) {
 			$result = $egeSum;
@@ -129,19 +159,17 @@ class StudentValidator
 		return $result;
 	}
 	
-	private function checkYearOfBirth(Student $in)
+	private function checkBirthYear($birthYear)
 	{
-		$yearOfBirth = $in->getYearOfBirth();
 		$options = ['min_range' => 1900, 'max_range' => 2017];
-		if ( filter_var($yearOfBirth, FILTER_VALIDATE_INT, $options) ) {
-			$result = $yearOfBirth;
+		if ( filter_var($birthYear, FILTER_VALIDATE_INT, $options) ) {
+			$result = $birthYear;
 		} else $result = false;
 		return $result;
 	}
 	
-	private function checkLocation(Student $in)
+	private function checkLocation($location)
 	{
-		$location = $in->getLocation();
 		if ( ($key = array_search(mb_strtolower($location), self::$locationWhiteList, false)) !== false
 		) {
 			switch ($key) {
