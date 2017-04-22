@@ -8,39 +8,39 @@
 <body>
 
 <div class="fields">
-	<h1> <?=$caption?> </h1>
-	<form name="registration" action="" method="get">
+	<h1> Регистрация </h1>
+	<form action="" method="get">
 		<label for="name">Имя: </label>
-		<input type="text" name="name" size="40" maxlength="100">
+		<input type="text" name="name" size="40" maxlength="100" value="John" required>
 
 		<label for="name">Фамилия: </label>
-		<input type="text" name="surname" size="40" maxlength="100">
+		<input type="surname" name="surname" size="40" maxlength="100" value="John" required>
 
-		<label for="name">Пол: </label>
-		<select name="sex">
+		<label for="sex">Пол: </label>
+		<select name="sex" value="John">
 			<option value="masculine">Мужской</option>
 			<option value="feminine">Женский</option>
 		</select>
 
-		<label for="name">Номер группы: </label>
-		<input type="text" name="group_num" size="40" maxlength="50">
+		<label for="group_num">Номер группы: </label>
+		<input type="text" name="group_num" size="40" maxlength="5" value="John" required>
 
-		<label for="name">Почта: </label>
-		<input type="email" name="email" size="40" maxlength="100">
+		<label for="email">Почта: </label>
+		<input type="email" name="email" size="40" maxlength="100" value="John" required>
 
-		<label for="name">Сумма баллов ЕГЭ: </label>
-		<input type="number" name="ege_sum" maxlength="10">
+		<label for="ege_sum">Сумма баллов ЕГЭ: </label>
+		<input type="number" name="ege_sum" maxlength="10" value="John" required>
 
-		<label for="name">Год рождения: </label>
-		<input type="number" name="birth_year" maxlength="10">
+		<label for="birth_year">Год рождения: </label>
+		<input type="number" name="birth_year" maxlength="10" value="John" required>
 
-		<label for="name">Происхождение: </label>
-		<select name="location">
-			<option value="local">Местный</option>
-			<option value="non_local">Иногородний</option>
+		<label for="location">Происхождение: </label>
+		<select name="location" >
+			<option value="local" selected >Местный</option>
+			<option value="non_local" >Иногородний</option>
 		</select>
 
-		<input type="submit" value="Отправить">
+		<input type="submit" value="Отправить" >
 	</form>
 
 </div>

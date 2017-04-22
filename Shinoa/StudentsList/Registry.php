@@ -11,23 +11,24 @@ class Registry
 	
     private static $instance;
 
-    private $docRoot = null;
-    private $conf = null;
-    private $dsn = null;
-    private $status = null;
+    private $docRoot;
+    private $conf;
+    private $dsn;
+    private $status;
     
-    private $searchText = null;
-    private $searchField = null;
-    private $sortby = null;
-    private $order = null;
-    private $offset = null;
-    private $limit = null;
+    private $searchText;
+    private $searchField;
+    private $sortby;
+    private $order;
+    private $offset;
+    private $limit;
     
     private $messages = array();
+    private $errors = array();
     private $entriesCount = 0;
-    private $dataMapper = null;
-	private $view = null;
-
+    private $dataMapper ;
+	private $view;
+	private $loginManager;
 
     private function __construct()
     {
@@ -191,18 +192,6 @@ class Registry
 		} else throw new RegistryException('Trying to retrieve empty parameter');
 	}
 	
-	public function setMessages($messages)
-	{
-		if (is_array($messages)) {
-			$this->messages = $messages;
-		} else throw new RegistryException('Setting parameter of incompatible type');
-	}
-	
-	public function getMessages()
-	{
-		return $this->messages;
-	}
-	
 	public function getEntriesCount()
 	{
 	
@@ -212,6 +201,34 @@ class Registry
 	{
 	
 	}
+	
+	public function addMessage($message)
+	{
+		$this->messages[] = $message;
+	}
+	
+	public function getMessages()
+	{
+		return $this->messages;
+	}
+	
+	public function setErrors($errors)
+	{
+		if (is_array($errors)) {
+			$this->errors = $errors;
+		} else throw new RegistryException('Setting parameter of incompatible type');
+	}
+	
+	public function getErrors()
+	{
+		return $this->errors;
+	}
+	
+	public function isLogged()
+	{
+		return $this->loginManager->isLogged();
+	}
+	
 	
 	/**
 	 * @param null $view
@@ -249,13 +266,30 @@ class Registry
 		} else throw new RegistryException('Trying to retrieve empty parameter');
 	}
 	
+	/**
+	 * @param mixed $loginManager
+	 */
+	public function setLoginManager(LoginManager $loginManager)
+	{
+		$this->loginManager = $loginManager;
+	}
+	
+	/**
+	 * @return mixed
+	 */
+	public function getLoginManager()
+	{
+		if (!empty($this->view)) {
+			return $this->loginManager;
+		} else throw new RegistryException('Trying to retrieve empty parameter');
+	}
+	
 	private function setConfig($pathToConf)
 	{
 		if ( file_exists($pathToConf) ) {
 			$this->conf = simplexml_load_file($pathToConf);
 		} else throw new RegistryException('Given path is not file');
 	}
-	
 	
 	public function getDSN()
 	{
@@ -299,7 +333,8 @@ class Registry
     {
         $this->setRoot($docRoot);
         $this->setConfig($pathToConf);
-        //switch ($this->conf->app->status);
+        $this->setStatus();
+        
 
     }
 
