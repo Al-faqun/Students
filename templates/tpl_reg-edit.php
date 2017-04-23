@@ -1,6 +1,6 @@
 <?php
 use Shinoa\StudentsList\RegEditView;
-if (!isset($caption) || !isset($submitButName)
+if (!isset($caption) || !isset($submitButName) || !isset($mesagge) || !isset($error)
 	 ||
 	!isset($defFields['nameVal']) || !isset($defFields['surnameVal'])
 	 ||
@@ -22,10 +22,19 @@ if (!isset($caption) || !isset($submitButName)
 	<meta charset="utf-8">
 </head>
 <body>
+	<div class="left">
+		<a href="/Students">Вернуться на страницу поиска</a>
+	</div>
 	<div class="fields">
 		<h1><?=RegEditView::esc($caption) ?></h1>
-		<strong><?=$errorMes ?></strong>
-		<form action="" method="get">
+		
+		<?php if ( empty($error) ) : ?>
+			<strong><?=$mesagge ?></strong>
+		<?php else : ?>
+			<span class="error"><strong><?=$error ?></strong></span>
+		<?php endif; ?>
+		
+		<form action="" method="post">
 			<label for="name">Имя: </label>
 			<input type="text" name="name" size="40" maxlength="100" value="<?=$defFields['nameVal']?>" required>
 			
@@ -55,8 +64,9 @@ if (!isset($caption) || !isset($submitButName)
 				<option value="local" <?=$defFields['localVal']?> >Местный</option>
 				<option value="non_local" <?=$defFields['nonLocalVal']?> >Иногородний</option>
 			</select>
-	
+			
 			<input type="submit" value="<?=RegEditView::esc($submitButName)?>" >
+			<input type="hidden" name="form_sent" value="1">
 		</form>
 	
 	</div>

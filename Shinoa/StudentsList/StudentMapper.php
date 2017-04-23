@@ -1,6 +1,7 @@
 <?php
 namespace Shinoa\StudentsList;
 use Shinoa\StudentsList\Exceptions\StudentException;
+use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
 
 class StudentMapper
 {
@@ -86,7 +87,7 @@ class StudentMapper
 	{
 		try {
 			if (!is_int($id)) {
-				return false;
+				throw new InvalidTypeException('Параметр должен быть целочисленным');
 			}
 			
 			$this->SQLBuilder->select();

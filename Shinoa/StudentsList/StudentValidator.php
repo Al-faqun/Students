@@ -15,34 +15,42 @@ class StudentValidator
 	
 	
 	
-	public function checkInput($input, array &$errors)
+	public function checkInput($input, array &$errors, &$dataSent)
 	{
 		$errors = array();
-		$name      = (isset($input['name']))       ? $this->checkName($input['name'])            : false;
-		$surname   = (isset($input['surname']))    ? $this->checkSurname($input['surname'])      : false;
-		$sex       = (isset($input['sex']))        ? $this->checkSex($input['sex'])              : false;
-		$groupNum  = (isset($input['group_num']))  ? $this->checkGroupNum($input['group_num'])   : false;
-		$email     = (isset($input['email']))      ? $this->checkEmail($input['email'])          : false;
-		$egeSum    = (isset($input['ege_sum']))    ? $this->checkEgeSum($input['ege_sum'])       : false;
-		$birthYear = (isset($input['birth_year'])) ? $this->checkBirthYear($input['birth_year']) : false;
-		$location  = (isset($input['location']))   ? $this->checkLocation($input['location'])    : false;
-		
-		self::mesIfFalse($name,      $errors, 'Имя');
-		self::mesIfFalse($surname,   $errors, 'Фамилия');
-		self::mesIfFalse($sex,       $errors, 'Пол');
-		self::mesIfFalse($groupNum,  $errors, 'Номер группы');
-		self::mesIfFalse($email,     $errors, 'Почта');
-		self::mesIfFalse($egeSum,    $errors, 'Сумма баллов ЕГЭ');
-		self::mesIfFalse($birthYear, $errors, 'Год рождения');
-		self::mesIfFalse($location,  $errors, 'Происхождение');
-		
-		if ( empty($errors) ) {
-			$result = new Student($name,  $surname,    $sex,
-			                      $groupNum,  $email, $egeSum,
-				                  $birthYear, $location);
+		if ( isset($input['form_sent']) ) {
+			$dataSent = true;
 		} else {
-			$result = false;
+			$dataSent = false;
 		}
+		
+		if ($dataSent) {
+			$name = (isset($input['name'])) ? $this->checkName($input['name']) : false;
+			$surname = (isset($input['surname'])) ? $this->checkSurname($input['surname']) : false;
+			$sex = (isset($input['sex'])) ? $this->checkSex($input['sex']) : false;
+			$groupNum = (isset($input['group_num'])) ? $this->checkGroupNum($input['group_num']) : false;
+			$email = (isset($input['email'])) ? $this->checkEmail($input['email']) : false;
+			$egeSum = (isset($input['ege_sum'])) ? $this->checkEgeSum($input['ege_sum']) : false;
+			$birthYear = (isset($input['birth_year'])) ? $this->checkBirthYear($input['birth_year']) : false;
+			$location = (isset($input['location'])) ? $this->checkLocation($input['location']) : false;
+			
+			self::mesIfFalse($name, $errors, 'Имя');
+			self::mesIfFalse($surname, $errors, 'Фамилия');
+			self::mesIfFalse($sex, $errors, 'Пол');
+			self::mesIfFalse($groupNum, $errors, 'Номер группы');
+			self::mesIfFalse($email, $errors, 'Почта');
+			self::mesIfFalse($egeSum, $errors, 'Сумма баллов ЕГЭ');
+			self::mesIfFalse($birthYear, $errors, 'Год рождения');
+			self::mesIfFalse($location, $errors, 'Происхождение');
+			
+			if (empty($errors)) {
+				$result = new Student($name, $surname, $sex,
+					$groupNum, $email, $egeSum,
+					$birthYear, $location);
+			} else {
+				$result = false;
+			}
+		} else $result = false;
 		
 		return $result;
 	}

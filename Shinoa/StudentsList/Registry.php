@@ -284,6 +284,12 @@ class Registry
 		} else throw new RegistryException('Trying to retrieve empty parameter');
 	}
 	
+	public function getCurrentStudent()
+	{
+		$student = $this->dataMapper->findStudentByID( $this->loginManager->getLoggedID() );
+		return $student;
+	}
+	
 	private function setConfig($pathToConf)
 	{
 		if ( file_exists($pathToConf) ) {

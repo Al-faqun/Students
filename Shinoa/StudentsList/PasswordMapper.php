@@ -18,10 +18,10 @@ class PasswordMapper
 	function getHash($userId)
 	{
 		try {
+			$userId = (int)$userId;
 			$this->sqlBuilder->select();
 			$this->sqlBuilder->whereValue('userid');
 			$sql = $this->sqlBuilder->getSQL();
-			
 			$stmt = $this->pdo->prepare($sql);
 			$stmt->bindParam(':userid', $userId, \PDO::PARAM_INT);
 			$hash = $this->getNextRowFirstEl($stmt);
@@ -110,6 +110,7 @@ class PasswordMapper
 		$element = false;
 		if ( ($stmt->execute($values)) && ($stmt->rowCount() > 0) ) {
 			$row = $stmt->fetch(\PDO::FETCH_NUM);
+			
 			$element = $row[0];
 		} else {
 			$element = false;

@@ -12,6 +12,11 @@
     left: 40%;
 
 }
+
+.left {
+    float: left;
+}
+
 caption {
     left: 0%;
 

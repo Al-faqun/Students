@@ -8,14 +8,17 @@
 	include_once 'bootstrap.php';
 
 	try {
+		//инициализация основных классов
 		$root = dirname(__DIR__);
 		$registry = Registry::getInstance();
 		$registry->init($root, $root . '/Students/ini/config_test.xml');
 		$dataMapper = new StudentMapper($registry->getPDO());
+		$view       = new StudentView($registry, $registry->getRoot() . '/Students/templates');
 		$registry->setDataMapper($dataMapper);
-		$view = new StudentView($registry, $registry->getRoot() . '/Students/templates');
 		$registry->setView($view);
 		
+		//проверка посланных (или нет) данных
+		//если данных нет, используются дефолтные значения
 		$validator = new SearchQueryValidator($_GET);
 		$searchText = $validator->checkSearchText();
 		$searchField = $validator->checkSearchField();
@@ -25,6 +28,7 @@
 		$limit = '';
 		$validator->checkPage($offset, $limit);
 		
+		//сохраняем проверенные данные для последующего использовани другими классами
 		$registry->setSearchText($searchText);
 		$registry->setSearchField($searchField);
 		$registry->setSortby($sortby);
@@ -32,6 +36,7 @@
 		$registry->setOffset($offset);
 		$registry->setLimit($limit);
 		
+		//отображает страницу на основе собранных выше данных
 		$view->render();
 		
 		

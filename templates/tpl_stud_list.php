@@ -15,6 +15,9 @@
 	<meta charset="utf-8">
 </head>
 <body>
+	<div class="left">
+		<a href="reg-edit.php">Добавить сведенья о себе</a>
+	</div>
 	<div class="search_div">
 		<form action="" method="get">
 			<label for="search_text">Поиск: </label>

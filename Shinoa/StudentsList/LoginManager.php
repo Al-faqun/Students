@@ -6,6 +6,7 @@ class LoginManager
 	private $mapper;
 	private $input;
 	private $islogged = false;
+	private $id = 0;
 	
 	function __construct(PasswordMapper $mapper, array $inputArray)
 	{
@@ -26,12 +27,15 @@ class LoginManager
 	
 	function checkAuth()
 	{
-		if ( isset($input['pass']) && isset($input['userid']) )
+		
+		if ( isset($this->input['pass']) && isset($this->input['userid']) )
 		{
-			$password = $input['pass'];
-			$userId = $input['userid'];
+			$password = $this->input['pass'];
+			$userId = (int)$this->input['userid'];
+			$this->id = $userId;
 			$hash = $this->mapper->getHash($userId);
-			if ( ($userId !== false) && ($hash !== false) ) {
+			
+			if ($hash !== false) {
 				//проверка пароля
 				if (password_verify($password, $hash)) {
 					$this->islogged = true;
@@ -54,5 +58,10 @@ class LoginManager
 	function isLogged()
 	{
 		return $this->islogged;
+	}
+	
+	function getLoggedID()
+	{
+		return (int)$this->id;
 	}
 }

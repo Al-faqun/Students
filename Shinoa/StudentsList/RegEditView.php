@@ -26,7 +26,7 @@ class RegEditView
 	{
 		foreach ($array as $key => $value) {
 			$value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-			$array['key'] = $value;
+			$array[$key] = $value;
 		}
 	}
 	
@@ -47,21 +47,23 @@ class RegEditView
 		ob_start();
 		
 		$this->dataMapper = $this->registry->getDataMapper();
-		$student = $this->registry->getStudent();
 		
-		$caption = 'Регистрация';
+		$caption = ($this->registry->isLogged()) ? 'Обновить данные' : 'Регистрация';
 		$submitButName = 'Отправить';
 		
 		$defFields = [];
-		$errorMes = $this->mesToHTML( $this->registry->getErrors() );
+		$error = $this->mesToHTML( $this->registry->getErrors() );
+		$mesagge = $this->mesToHTML( $this->registry->getMessages() );
+		
 		if ( $this->registry->isLogged() ) {
+			$student = $this->registry->getCurrentStudent();
 			$this->setFormDefaultValues($student, $defFields, false);
 		} else {
 			$this->setFormDefaultValues(null, $defFields, true);
 		}
 		self::escAll($defFields);
 		
-		$filepath = $this->templatesDir . '/tpl_reg_edit.php';
+		$filepath = $this->templatesDir . '/tpl_reg-edit.php';
 		if (file_exists($filepath)) {
 			include $filepath;
 		} else throw new ViewException('File doesnt exist.');
@@ -80,11 +82,11 @@ class RegEditView
 	private function setFormDefaultValues($student, &$out, $makeEmpty = true)
 	{
 		$out = array();
-		if ( $makeEmpty ) {
+		if ( $makeEmpty || ($student === false) ) {
 			$out['nameVal']     = ''; $out['surnameVal']  = '';
 			$out['groupVal']    = ''; $out['emailVal']    = '';
 			$out['egeSumVal']   = ''; $out['birthVal']    = '';
-			$out['mascVal']     = ''; $out['$femVal']     = '';
+			$out['mascVal']     = ''; $out['femVal']     = '';
 			$out['localVal']    = ''; $out['nonLocalVal'] = '';
 		} else {
 			$out['nameVal'] = $student->getName();
@@ -95,10 +97,10 @@ class RegEditView
 			$out['birthVal'] = $student->getYearOfBirth();
 			if ($student->getSex() === 'М') {
 				$out['mascVal'] = 'selected';
-				$out['$femVal'] = '';
+				$out['femVal'] = '';
 			} elseif ($student->getSex() === 'Ж') {
 				$out['mascVal'] = '';
-				$out['$femVal'] = 'selected';
+				$out['femVal'] = 'selected';
 			}
 			if ($student->getLocation() === 'Местный') {
 				$out['localVal'] = 'selected';

@@ -1,6 +1,15 @@
+.left {
+    float: left;
+}
+
 .fields {
     position: absolute;
     left: 40%;
+}
+
+.error {
+    color: #ff2000;
+
 }
 
 input {

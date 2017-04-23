@@ -8,7 +8,8 @@
 	
 	function autoload($className)
 	{
-		$root = dirname(__DIR__);
+		//for psr-4: $root эквивалентно $base_dir
+		$base_dir = __DIR__ . DIRECTORY_SEPARATOR;
 		$className = ltrim($className, '\\');
 		$fileName = '';
 		$namespace = '';
@@ -19,7 +20,7 @@
 		}
 		$fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
 		
-		$path = $root . DIRECTORY_SEPARATOR . 'Students' . DIRECTORY_SEPARATOR . $fileName;
+		$path = $base_dir  . $fileName;
 		if (file_exists($path)) {
 			require $path;
 		}
@@ -81,7 +82,7 @@
 	//для нефатальных ошибок
 	set_error_handler('errorHandler', E_ALL);
 	set_exception_handler('exceptionHandler');
-	//error_reporting(0);
+	error_reporting(0);
 
 	
 	
