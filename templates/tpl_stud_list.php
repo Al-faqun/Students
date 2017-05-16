@@ -4,6 +4,8 @@
 	    !isset($tbodyContent)
 	     ||
 	    !isset($pageCount)
+		 ||
+		!isset($appStatusText)
 	) throw new \Shinoa\StudentsList\Exceptions\ViewException('One or more variables not set');
 ?>
 
@@ -15,8 +17,8 @@
 	<meta charset="utf-8">
 </head>
 <body>
-	<div class="left">
-		<a href="reg-edit.php">Добавить сведенья о себе</a>
+	<div class="left ">
+		<a href="reg-edit.php">Добавить сведения о себе</a>
 	</div>
 	<div class="search_div">
 		<form action="" method="get">
@@ -54,8 +56,31 @@
 				<input type="submit" value="Искать">
 			</div>
 		</form>
+		<div class="appstatchoice">
+			<p>Режим: <?=$appStatusText?> </p>
+			<form action="" method="post">
+				<label for="appStatus">Изменить режим работы приложения:</label>
+				<select name="appStatus">
+					<option value="0">'In development'</option>
+					<option value="1" selected>'In production'</option>
+				</select>
+				<input type="submit" value="Изменить">
+			</form>
+			<form action="" method="post">
+				<input type="hidden" name="evokeException">
+				<input type="submit" value="Вызвать исключение">
+			</form>
+			<form action="" method="post">
+				<input type="hidden" name="evokeError">
+				<input type="submit" value="Вызвать ошибку">
+			</form>
+			<a href="/Students/errors.log">Просмотреть лог</a>
+		</div>
+		
+		
+		
 	</div>
-
+	
 	<?php if (empty($urgentMessage)) : ?>
 		<div class="list_stud">
 			<table>

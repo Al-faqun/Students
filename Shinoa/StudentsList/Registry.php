@@ -14,7 +14,7 @@ class Registry
     private $docRoot;
     private $conf;
     private $dsn;
-    private $status;
+    private $status = 0;
     
     private $searchText;
     private $searchField;
@@ -23,8 +23,10 @@ class Registry
     private $offset;
     private $limit;
     
+    private $studentData;
     private $messages = array();
     private $errors = array();
+    private $statusText = '';
     private $entriesCount = 0;
     private $dataMapper ;
 	private $view;
@@ -42,7 +44,33 @@ class Registry
         return self::$instance;
     }
 	
-	public function setStatus()
+	public function setStatus($status = null)
+	{
+		if ( $status === null ) {
+			if (isset($this->conf->app->status)) {
+				$status = $this->conf->app->status;
+				switch ($status) {
+					case 0:
+					case 'APP_IN_DEVELOPMENT':
+						$this->status = APP_IN_DEVELOPMENT;
+						break;
+					case 1:
+					case 'APP_IN_PRODUCTION':
+						$this->status = APP_IN_PRODUCTION;
+						break;
+					default:
+						throw new RegistryException('App status is not properly loaded');
+				}
+			} else throw new RegistryException('App status is not properly loaded');
+		} else {
+			$this->status = $status;
+		}
+    }
+	
+	/**
+	 * @return mixed
+	 */
+	public function statusUseDefault()
 	{
 		if (isset($this->conf->app->status)) {
 			$status = $this->conf->app->status;
@@ -56,10 +84,9 @@ class Registry
 				default:
 					throw new RegistryException('App status is not properly loaded');
 			}
-		}
-		else throw new RegistryException('App status is not properly loaded');
-    }
-    
+		} else throw new RegistryException('App status is not properly loaded');
+	}
+	
 	public function getStatus()
 	{
 		if (isset($this->status)) {
@@ -67,7 +94,23 @@ class Registry
 		} else throw new RegistryException('App status is not properly loaded');
 			
     }
-    
+	
+	/**
+	 * @param string $statusText
+	 */
+	public function setStatusText(string $statusText)
+	{
+		$this->statusText = $statusText;
+	}
+	
+	/**
+	 * @return string
+	 */
+	public function getStatusText()
+	{
+		return $this->statusText;
+	}
+	
 	private function setRoot($documentRoot)
 	{
 		if ( is_dir($documentRoot) ) {
@@ -224,6 +267,7 @@ class Registry
 		return $this->errors;
 	}
 	
+	
 	public function isLogged()
 	{
 		return $this->loginManager->isLogged();
@@ -284,7 +328,17 @@ class Registry
 		} else throw new RegistryException('Trying to retrieve empty parameter');
 	}
 	
-	public function getCurrentStudent()
+	public function saveStudentData(Student $studentData)
+	{
+		$this->studentData = $studentData;
+	}
+	
+	public function getStudentData()
+	{
+		return $this->studentData;
+	}
+	
+	public function getCurrentStudentFromDB()
 	{
 		$student = $this->dataMapper->findStudentByID( $this->loginManager->getLoggedID() );
 		return $student;

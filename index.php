@@ -4,20 +4,52 @@
 	use \Shinoa\StudentsList\StudentView;
 	use \Shinoa\StudentsList\StudentMapper;
 	use \Shinoa\StudentsList\ErrorHelper;
-
+	use \Shinoa\StudentsList\StatusSelector;
+	use \Shinoa\StudentsList\ErrEvoker;
 	include_once 'bootstrap.php';
 
+	//инициализация основных классов
+	$root = dirname(__DIR__);
+	$registry = Registry::getInstance();
+	$registry->init($root, $root . '/Students/ini/config_test.xml');
 	try {
-		//инициализация основных классов
-		$root = dirname(__DIR__);
-		$registry = Registry::getInstance();
-		$registry->init($root, $root . '/Students/ini/config_test.xml');
 		$dataMapper = new StudentMapper($registry->getPDO());
-		$view       = new StudentView($registry, $registry->getRoot() . '/Students/templates');
+		$view = new StudentView($registry, $registry->getRoot() . '/Students/templates');
 		$registry->setDataMapper($dataMapper);
 		$registry->setView($view);
 		
-		//проверка посланных (или нет) данных
+		//проверка отосланных (или нет) пользователем данных о режиме приложения
+		$statusSelector = new StatusSelector();
+		if ($statusSelector->dataIn($_POST) !== false) {
+			$statusText = $statusSelector->dataIn($_POST);
+			$statusSelector->save(StatusSelector::textToCode($statusText));
+			header('Location: ' . '/Students/', true, 303);
+			exit();
+		} elseif ($statusSelector->dataIn($_COOKIE) !== false) {
+			$statusText = $statusSelector->dataIn($_COOKIE);
+			$registry->setStatus(StatusSelector::textToCode($statusText));
+			$registry->setStatusText($statusText);
+		} else {
+			$registry->statusUseDefault();
+			$registry->setStatusText(StatusSelector::codeToText($registry->getStatus()));
+		}
+		
+		//проверка отосланных пользователем данных о нужде вызвать ошибку/исключение для проверки работы сайта
+		$evoker = new ErrEvoker();
+		if ($evoker->isErrorIn($_POST)) {
+			header('Location: ' . '/Students/?error', true, 303);
+			exit();
+		} elseif ($evoker->isExceptionIn($_POST)) {
+			header('Location: ' . '/Students/?exception', true, 303);
+			exit();
+		}
+		if ( isset($_GET['error']) ) {
+			$evoker->evokeError();
+		} elseif ( isset($_GET['exception']) ) {
+			$evoker->evokeException();
+		}
+		
+		//проверка посланных (или нет) данных для поиска
 		//если данных нет, используются дефолтные значения
 		$validator = new SearchQueryValidator($_GET);
 		$searchText = $validator->checkSearchText();
@@ -39,33 +71,22 @@
 		//отображает страницу на основе собранных выше данных
 		$view->render();
 		
-		
 	} catch (\Throwable $e) {
+		$errorHelper = new ErrorHelper($registry->getRoot() . '\Students\templates');
 		switch ($appStatus = $registry->getStatus()) {
 			case $registry::APP_IN_DEVELOPMENT:
-				$errorHelper = new ErrorHelper('D:\USR\apache\htdocs\s1.localhost\Students\templates');
-				$errorHelper->renderExceptionAndExit($e, '');
+				$errorHelper->renderFatalErrorObj($e, '/Students');
 				break;
 			case $registry::APP_IN_PRODUCTION:
-				$errorHelper = new ErrorHelper('D:\USR\apache\htdocs\s1.localhost\Students\templates');
-				$errorHelper->renderExceptionAndExit($e, '');
-				break;
-		}
-	} catch (\Exception $e) {
-		switch ($appStatus = $registry->getStatus()) {
-			case $registry::APP_IN_DEVELOPMENT:
-				$errorHelper = new ErrorHelper('D:\USR\apache\htdocs\s1.localhost\Students\templates');
-				$errorHelper->renderExceptionAndExit($e, '');
-				break;
-			case $registry::APP_IN_PRODUCTION:
-				$errorHelper = new ErrorHelper('D:\USR\apache\htdocs\s1.localhost\Students\templates');
-				$errorHelper->renderExceptionAndExit($e, '');
+				$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
+				//форматируем текст для записи в лог-файл
+				$text = ErrorHelper::errorToText($e);
+				array_unshift($text, date('d-M-Y H:i:s') . ' ');
+				$logpath = __DIR__ . DIRECTORY_SEPARATOR . 'errors.log';
+				$errorHelper->addToLog($text, $registry->getRoot() . '/Students/errors.log');
+				$errorHelper->renderErrorPageAndExit($userMes, '/Students');
 				break;
 		}
 	}
-
-
-
-
 
 

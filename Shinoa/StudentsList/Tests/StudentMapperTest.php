@@ -5,6 +5,8 @@ use PHPUnit\Framework\TestCase;
 use Shinoa\StudentsList\Exceptions\StudentException;
 use Shinoa\StudentsList\StudentMapper;
 use Shinoa\StudentsList\Student;
+use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
+use Zend\Cache\Exception\UnexpectedValueException;
 
 class StudentMapperTest extends TestCase
 {
@@ -14,12 +16,7 @@ class StudentMapperTest extends TestCase
 
 	public function setUp()
 	{
-		$opt = array(
-			\PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-			\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-			\PDO::ATTR_EMULATE_PREPARES   => false);
-		$dsn = 'mysql:host=localhost;dbname=students_book;charset=utf8';
-		$this->pdo = new \PDO($dsn, 'root', 'VtVgfhfif354', $opt);
+		$this->pdo = $GLOBALS['test_pdo'];
 		$this->SM = new StudentMapper($this->pdo);
 	}
 
@@ -37,12 +34,25 @@ class StudentMapperTest extends TestCase
 		$students = $this->SM->getStudents();
 		$this->assertNotFalse($students);
 	}
-
-	public function testGetStudentsWrongParameters()
+	
+	public function testGetStudentsWrongNameFail()
+	{
+		$this->expectException(StudentException::class);
+		
+		$students = $this->SM->getStudents('nonexistant_name');
+	}
+	
+	public function testGetStudentsWrongLimitFailExc()
 	{
 		$this->expectException(StudentException::class);
 
 		$students = $this->SM->getStudents('surname', 'ASC', -5, 5);
+	}
+	
+	public function testGetStudentsLimitAsString()
+	{
+		$students = $this->SM->getStudents('surname', 'ASC', '1', '5');
+		$this->assertNotFalse($students);
 	}
 
 	public function testInsertStudent()
@@ -55,7 +65,7 @@ class StudentMapperTest extends TestCase
 		$this->assertNotFalse($result);
 	}
 	
-	public function testInsertStudentWrongParamsFail()
+	public function testInsertStudentTooLongValueFailExc()
 	{
 		$this->expectException(StudentException::class);
 		
@@ -65,6 +75,18 @@ class StudentMapperTest extends TestCase
 		$result = $this->SM->insertStudent($student);
 		array_push($this->insertedIds, $this->SM->lastInsertedId());
 
+	}
+	
+	public function testInsertNotIntValueFailExc()
+	{
+		$this->expectException(StudentException::class);
+		
+		$student = new Student('mannanov', 'nikoly',  'М',
+			'BGF5ee',     'manan@rambler.ru' , 'not_int_value',
+			1997,      'Приезжий');
+		$result = $this->SM->insertStudent($student);
+		array_push($this->insertedIds, $this->SM->lastInsertedId());
+		
 	}
 	
 	public function testUpdateStudent()
@@ -83,25 +105,29 @@ class StudentMapperTest extends TestCase
 	
 	public function testFindStudentByID()
 	{
-		$this->SM = new StudentMapper($this->pdo);
+		
 		$result = $this->SM->findStudentByID(1);
 
 		$this->assertNotFalse($result);
 	}
 	
-	public function testFindStudentByIDFail()
+	public function testFindStudentByIDString()
 	{
-		$this->SM = new StudentMapper($this->pdo);
+		$result = $this->SM->findStudentByID('1');
+		$this->assertNotFalse($result);
+	}
+	
+	public function testFindStudentByIDTooBigFail()
+	{
 		$result = $this->SM->findStudentByID(100000);
 		
 		$this->assertFalse($result);
 	}
-
-	public function testFindStudentByIDStringFail()
+	
+	public function testFindStudentByIDNegativeValueFailExc()
 	{
-		$this->SM = new StudentMapper($this->pdo);
-		$result = $this->SM->findStudentByID('2');
-
-		$this->assertFalse($result);
+		$this->expectException(\UnexpectedValueException::class);
+		
+		$result = $this->SM->findStudentByID(-10);
 	}
 }

@@ -4,7 +4,7 @@
 	define('APP_IN_PRODUCTION', 1);
 	//переменные, которые нельзя unset
 	//устанавливаем статус для того, чтобы обработчики работали независимо от классов
-	$appStatus = APP_IN_DEVELOPMENT;
+	$appStatus = APP_IN_PRODUCTION;
 	
 	function autoload($className)
 	{
@@ -26,7 +26,8 @@
 		}
 	}
 
-	/* function shutDown()
+	//бывает, что и в php7 выбрасываются несловимые ошибки
+	function shutDown()
 	{
 		$error = error_get_last();
 		if (isset($error['type']) && $error['type'] === E_ERROR) {
@@ -34,8 +35,10 @@
 			$errorHelper->renderFatalError($error, '');
 		}
 	}
-	*/
 	
+	
+	//обработчики ошибок "if everything else fails"
+	//не расчитывайте на них, программируйте обработку ошибок в скриптах
 	function errorHandler($errno, $errstr, $errfile, $errline)
 	{
 		$errorHelper = new \Shinoa\StudentsList\ErrorHelper(dirname(__DIR__) . '\Students\templates');
@@ -47,7 +50,7 @@
 		$text[] = 'строка:' . $errline . '.';
 		switch ($GLOBALS['appStatus']) {
 			case APP_IN_DEVELOPMENT:
-				$errorHelper->renderErrorPageAndExit($text, '');
+				$errorHelper->renderErrorPageAndExit($text, '/Students');
 				break;
 				
 			case APP_IN_PRODUCTION:
@@ -55,7 +58,7 @@
 				array_unshift($text, date('d-M-Y H:i:s') . ' ');
 				$logpath = __DIR__ . DIRECTORY_SEPARATOR . 'errors.log';
 				$errorHelper->addToLog($text, dirname(__DIR__) . '/errors.log');
-				$errorHelper->renderErrorPageAndExit($userMes, '');
+				$errorHelper->renderErrorPageAndExit($userMes, '/Students');
 				break;
 		}
 
@@ -68,22 +71,25 @@
 		switch ($GLOBALS['appStatus']) {
 			case APP_IN_DEVELOPMENT:
 				$errorHelper = new \Shinoa\StudentsList\ErrorHelper(dirname(__DIR__) . '\Students\templates');
-				$errorHelper->renderExceptionAndExit($e, '');
+				$errorHelper->renderExceptionAndExit($e, '/Student');
 				break;
 			case APP_IN_PRODUCTION:
 				$errorHelper = new \Shinoa\StudentsList\ErrorHelper(dirname(__DIR__) . '\Students\templates');
-				$errorHelper->renderExceptionAndExit($e, '');
+				$errorHelper->renderExceptionAndExit($e, '/Student');
 				break;
 		}
 	}
 	
+	//автозагрузчик
 	spl_autoload_register('autoload');
-	//register_shutdown_function('shutDown'); - не нужно, т.к. php7 выбрасывает fatal error  в виде исключений
+	//на случай, если какая-то фатальная ошибка пробралась и прекратила скрипт
+	register_shutdown_function('shutDown');
 	//для нефатальных ошибок
 	set_error_handler('errorHandler', E_ALL);
+	//для throwable
 	set_exception_handler('exceptionHandler');
+	//user must see no thing
 	error_reporting(0);
 
-	
-	
+
 	

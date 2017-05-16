@@ -13,12 +13,7 @@ class PasswordMapperTest extends TestCase
 	
 	public function setUp()
 	{
-		$opt = array(
-			\PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-			\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-			\PDO::ATTR_EMULATE_PREPARES   => false);
-		$dsn = 'mysql:host=localhost;dbname=students_book;charset=utf8';
-		$this->pdo = new \PDO($dsn, 'root', 'VtVgfhfif354', $opt);
+		$this->pdo = $GLOBALS['test_pdo'];
 		$this->mapper = new PasswordMapper($this->pdo);
 	}
 	
@@ -63,17 +58,17 @@ class PasswordMapperTest extends TestCase
 		$this->assertFalse($hash);
 	}
 	
-	public function testGetHashIDAsBool()
+	public function testGetHashIDAsBoolFalse()
 	{
 		$userid = true;
 		$hash = $this->mapper->getHash($userid);
 		
-		$this->assertNotFalse($hash);
+		$this->assertFalse($hash);
 	}
 	
 	public function testGetHashIDAsArrayFail()
 	{
-		$userid = array('dssd');
+		$userid = array('dsssd');
 		$hash = $this->mapper->getHash($userid);
 		
 		$this->assertFalse($hash);

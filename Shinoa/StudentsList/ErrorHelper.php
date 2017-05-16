@@ -73,6 +73,18 @@ class ErrorHelper {
 		$this->renderErrorPageAndExit($text, $whereToRedirect);
 	}
 	
+	public function renderFatalErrorObj(\Throwable $error, $whereToRedirect)
+	{
+		$text = array();
+		$text[] = "Произошла фатальная ошибка, выполнение приложения прекращается:";
+		$text[] = 'текст: ';
+		$text[] = self::splitErrMes($error->getMessage());
+		$text[] = 'файл: ' . $error->getFile() . ',';
+		$text[] = 'строка:' . $error->getLine() . '.';
+		
+		$this->renderErrorPageAndExit($text, $whereToRedirect);
+	}
+	
 	public function addToLog($message, $logpath)
 	{
 		$text = self::arrayToString($message, PHP_EOL, PHP_EOL);
@@ -103,9 +115,23 @@ class ErrorHelper {
 		}
 		return $string;
 	}
+	
+	public static function errorToText(\Throwable $e)
+	{
+		$text = array();
+		$text[] = "Возникла ошибка, выполнение приложения могло бы быть продолжено:";
+		$text[] = 'текст: ';
+		$text[] = ErrorHelper::splitErrMes($e->getMessage());
+		$text[] = 'файл: ' . $e->getFile() . ',';
+		$text[] = 'строка:' . $e->getLine() . '.';
+		
+		return $text;
+	}
 }
 
 /*
+//test code for simple testing
+//to be deleted
 $errorhelper = new ErrorHelper('D:\USR\apache\htdocs\s1.localhost\Students\templates');
 $errorhelper->addToLog(array('first line', 'second line'),
                       'D:\USR\apache\htdocs\s1.localhost\Students\errors.log');

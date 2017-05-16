@@ -85,6 +85,9 @@ class StudentView
 		}
 		$urgentMessage = $this->mesToHTML($messages);
 		
+		//текст для показа пользователю текущего режима программы
+		$appStatusText = $this->registry->getStatusText();
+		
 		$entriesCount = $this->dataMapper->getEntriesCount();
 		$pageCount = ceil($entriesCount / self::STUDENTS_IN_PAGE);
 		for ($i = 1; $i <= $pageCount; $i++) {

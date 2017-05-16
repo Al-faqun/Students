@@ -7,7 +7,7 @@ use Shinoa\StudentsList\SearchQueryValidator;
 class SearchQueryValidatorTest extends TestCase
 {
 	private $sortbyWhitelist = array('name',  'surname', 'sex',        'group_num',
-		'email', 'ege_sum', 'birth_year', 'location');
+	                                 'email', 'ege_sum', 'birth_year', 'location');
 	private $orderWhiteList = array('ASC', 'DESC');
 
 	public function setUp()
@@ -67,8 +67,7 @@ class SearchQueryValidatorTest extends TestCase
 		$order = $validator->checkOrder();
 		echo $order . PHP_EOL;
 		
-		$this->assertEquals($expectedValue, $order, '',
-			                   0,           10,   false, true);
+		$this->assertEquals($expectedValue, $order, '',  0, 10, false, true);
 	}
 	
 	public function testCheckOrderFailNum()

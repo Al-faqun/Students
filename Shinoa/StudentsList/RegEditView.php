@@ -56,10 +56,20 @@ class RegEditView
 		$mesagge = $this->mesToHTML( $this->registry->getMessages() );
 		
 		if ( $this->registry->isLogged() ) {
-			$student = $this->registry->getCurrentStudent();
+			if (!empty($error)) {
+				$student = $this->registry->getStudentData();
+			} else {
+				$student = $this->registry->getCurrentStudentFromDB();
+			}
 			$this->setFormDefaultValues($student, $defFields, false);
-		} else {
-			$this->setFormDefaultValues(null, $defFields, true);
+		} elseif ($this->registry->isLogged() === false) {
+			if (!empty($error)) {
+				$student = $this->registry->getStudentData();
+				$this->setFormDefaultValues($student, $defFields, false);
+			} else {
+				$this->setFormDefaultValues(null, $defFields, true);
+			}
+			
 		}
 		self::escAll($defFields);
 		
@@ -83,31 +93,45 @@ class RegEditView
 	{
 		$out = array();
 		if ( $makeEmpty || ($student === false) ) {
-			$out['nameVal']     = ''; $out['surnameVal']  = '';
-			$out['groupVal']    = ''; $out['emailVal']    = '';
-			$out['egeSumVal']   = ''; $out['birthVal']    = '';
-			$out['mascVal']     = ''; $out['femVal']     = '';
-			$out['localVal']    = ''; $out['nonLocalVal'] = '';
+			$out['nameVal']   = '';   $out['surnameVal']  = '';
+			$out['groupVal']  = '';   $out['emailVal']    = '';
+			$out['egeSumVal'] = '';   $out['birthVal']    = '';
+			$out['mascVal']   = '';   $out['femVal']     = '';
+			$out['localVal']  = '';   $out['nonLocalVal'] = '';
 		} else {
-			$out['nameVal'] = $student->getName();
+			$out['nameVal']    = $student->getName();
 			$out['surnameVal'] = $student->getSurname();
-			$out['groupVal'] = $student->getGroupNum();
-			$out['emailVal'] = $student->getEmail();
-			$out['egeSumVal'] = $student->getEgeSum();
-			$out['birthVal'] = $student->getYearOfBirth();
-			if ($student->getSex() === 'М') {
-				$out['mascVal'] = 'selected';
-				$out['femVal'] = '';
-			} elseif ($student->getSex() === 'Ж') {
-				$out['mascVal'] = '';
-				$out['femVal'] = 'selected';
+			$out['groupVal']   = $student->getGroupNum();
+			$out['emailVal']   = $student->getEmail();
+			$out['egeSumVal']  = $student->getEgeSum();
+			$out['birthVal']   = $student->getYearOfBirth();
+			
+			switch ( $student->getSex() ) {
+				case 'М':
+					$out['mascVal'] = 'selected';
+					$out['femVal'] = '';
+					break;
+				case 'Ж':
+					$out['mascVal'] = '';
+					$out['femVal'] = 'selected';
+					break;
+				default:
+					$out['mascVal'] = '';
+					$out['femVal'] = '';
 			}
-			if ($student->getLocation() === 'Местный') {
-				$out['localVal'] = 'selected';
-				$out['nonLocalVal'] = '';
-			} elseif ($student->getLocation() === 'Иногородний') {
-				$out['localVal'] = '';
-				$out['nonLocalVal'] = 'selected';
+			switch ( $student->getLocation() ) {
+				case 'Местный':
+					$out['localVal'] = 'selected';
+					$out['nonLocalVal'] = '';
+					break;
+				case 'Иногородний':
+					$out['localVal'] = '';
+					$out['nonLocalVal'] = 'selected';
+					break;
+				default:
+					$out['localVal'] = '';
+					$out['nonLocalVal'] = 'selected';
+					break;
 			}
 		}
 	}
