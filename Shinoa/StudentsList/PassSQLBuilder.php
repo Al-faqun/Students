@@ -162,7 +162,10 @@ class PassSQLBuilder
 	
 }
 
-/*$sql = new PassSQLBuilder();
+/*
+//test code for simple testing
+//to be deleted
+$sql = new PassSQLBuilder();
 $sql->select();
 $sql->whereValue('test');
 echo $sql->getSQL(); */

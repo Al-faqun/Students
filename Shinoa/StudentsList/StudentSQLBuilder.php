@@ -6,6 +6,11 @@ namespace Shinoa\StudentsList;
 use Shinoa\StudentsList\Exceptions\StudentException;
 use Zend\Cache\Exception\LogicException;
 
+/**
+ * Class StudentSQLBuilder
+ * @package Shinoa\StudentsList
+ * Use this class to dynamically create sql with `students` table.
+ */
 class StudentSQLBuilder
 {
 	const space = ' ';
@@ -24,7 +29,6 @@ class StudentSQLBuilder
 		 FROM
 		  students_book.students' . self::space;
 	
-	
 	const INSERT_STUDENT =
 		'INSERT
 		 INTO `students`
@@ -34,7 +38,7 @@ class StudentSQLBuilder
 	     VALUES
 	     (:name,       :surname, :sex,
 	      :group_num,  :email,   :ege_sum,
-	      :birth_year, :location)';
+	      :birth_year, :location)' . self::space;
 	
 	const UPDATE_STUDENT =
 		'UPDATE `students`
@@ -44,31 +48,54 @@ class StudentSQLBuilder
 		 `email` = :email, `ege_sum`   = :ege_sum,
 		 `birth_year` = :birth_year,
 		 `location`   = :location
-		 WHERE `id` = :id';
+		 WHERE `id` = :id' . self::space;
 	
 	const DELETE_BY_ID =
 		'DELETE FROM `students` WHERE `id` = :id';
 	
+	const SELECT_DUPLICATE =
+		'SELECT COUNT(*)
+	     FROM students' . self::space;
+	
 	const SQL_COUNT_ROWS =
 		'SELECT FOUND_ROWS()';
 	
+	/**
+	 * @var string
+	 * Holds previously constructed sql.
+	 * Must be constructed by public methods.
+	 */
 	private $sql = '';
 	
 	public function __construct()
 	{
 	}
 	
+	/**
+	 * Quotes given string with backticks (` sign).
+	 * @param string $name
+	 * @return string Quoted with backticks result
+	 */
 	private static function backticks($name)
 	{
 		$result = "`" .str_replace("`", "``", $name) . "`";
 		return $result;
 	}
 	
+	/**
+	 * Returns currently constructed sql.
+	 * @return string
+	 */
 	public function getSQL()
 	{
 		return $this->sql;
 	}
 	
+	/**
+	 * Adds to sql WHERE clause with LIKE keyword;
+	 * Use :like placeholder to bind variable to query.
+	 * @param string $column
+	 */
 	public function whereLike($column)
 	{
 		$placeholder = ':like';
@@ -83,6 +110,11 @@ class StudentSQLBuilder
 		}
 	}
 	
+	/**
+	 * Adds to sql WHERE clause, i.e. "WHERE columnName = columnValue";
+	 * Use :name, where 'name' is the name of your column, as placeholder to bind variable to query.
+	 * @param string $column
+	 */
 	public function whereValue($column)
 	{
 		$placeholder = ":$column";
@@ -97,6 +129,11 @@ class StudentSQLBuilder
 		}
 	}
 	
+	/**
+	 * Adds ORDER BY clase with provided column name and direction of sotring
+	 * @param string $column name of column to sort by
+	 * @param string $order either 'ASC' or 'DESC', caseinsensitive
+	 */
 	public function orderBy($column, $order)
 	{
 		$column = self::backticks($column);
@@ -107,8 +144,15 @@ class StudentSQLBuilder
 		}
 	}
 	
-	public function limit($limit, $offset = '')
+	/**
+	 * Adds LIMIT clause starting with $offset and containing $limit rows
+	 * @param int $limit Number of rows that must be affected with query
+	 * @param int $offset Number of row, from which starts the counting
+	 */
+	public function limit($limit, $offset)
 	{
+		$limit = (int)$limit;
+		$offset = (int)$offset;
 		if (preg_match('/LIMIT/ui', $this->sql) == 0) {
 			$this->sql .= "LIMIT $limit" . self::space;
 			if ($offset !== '') {
@@ -119,38 +163,78 @@ class StudentSQLBuilder
 		}
 	}
 	
+	/**
+	 * Sets internal sql to basic SELECT query.
+	 */
 	public function select()
 	{
 		$this->sql = self::SELECT_BASE;
 	}
 	
+	/**
+	 * Sets internal sql to query for counting number of rows,
+	 * that COULD be affected by last select query !without! additional clauses.
+	 */
 	public function countLastQuery()
 	{
 		$this->sql = self::SQL_COUNT_ROWS;
 	}
 	
+	/**
+	 * Sets internal sql to  INSERT query.
+	 */
 	public function insert()
 	{
 		$this->sql = self::INSERT_STUDENT;
 	}
 	
+	/**
+	 * Sets internal sql to UPDATE query with :id placeholder.
+	 */
 	public function updateById()
 	{
 		$this->sql = self::UPDATE_STUDENT;
 	}
 	
+	/**
+	 * Sets internal sql to DELETE query with :id placeholder.
+	 */
 	public function deleteByID()
 	{
 		$this->sql = self::DELETE_BY_ID;
+	}
+	
+	/**
+	 * Sets internal sql to SELECT COUNT(*) query.
+	 * You need to use this with WHERE clause to get meaningful result.
+	 */
+	public function selectDuplicate()
+	{
+		$this->sql = self::SELECT_DUPLICATE;
 	}
 }
 
 /*
 $SQL = new StudentSQLBuilder();
-echo $SQL->selectAll('testsearchfield', 'sortfield', 'DESC') . '<br>';
-echo $SQL->selectAllLimit('testsearchfield', 'sortfield', 'DESC', 10, 5) . '<br>';
-echo $SQL->selectAllLimit('testsearchfield', 'sortfield', 'DESC', 10) . '<br>';
-echo $SQL->selectAllByID() . '<br>';
-echo $SQL->insert() . '<br>';
-echo $SQL->deleteByID() . '<br>';
+$SQL->selectDuplicate('email');
+$sql = $SQL->getSQL();
+echo $sql;
+try {
+	$opt = array(
+		\PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
+		\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
+		\PDO::ATTR_EMULATE_PREPARES   => false
+	);
+	$pdo = new \PDO('mysql:host=localhost;dbname=students_book;charset=utf8', 'root', 'VtVgfhfif354', $opt);
+} catch (\PDOException $e) {
+	echo  $e->getCode() . PHP_EOL . $e->getMessage();
+	die;
+}
+
+$stmt = $pdo->prepare($sql);
+$mail  = 'testmail';
+$stmt->bindParam(':email', $mail);
+$stmt->execute();
+var_dump($stmt);
+
 */

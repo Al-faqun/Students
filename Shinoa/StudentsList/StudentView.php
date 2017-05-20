@@ -4,36 +4,33 @@ namespace Shinoa\StudentsList;
 
 use Shinoa\StudentsList\Exceptions\ViewException;
 
-class StudentView
+/**
+ * Class StudentView is used to construct and show to user the page: list of students
+ * @package Shinoa\StudentsList
+ */
+class StudentView extends CommonView
 {
+	/**
+	 * How many records must be displayed per page.
+	 */
 	const STUDENTS_IN_PAGE = 20;
-	private $registry;
-	private $dataMapper;
-	private $templatesDir = '';
-
+	
+	/**
+	 * StudentView constructor.
+	 * @param Registry $registry
+	 * @param string $templatesDir
+	 */
 	function __construct(Registry $registry, $templatesDir)
 	{
-		$this->registry = $registry;
-		$this->templatesDir = $templatesDir;
+		parent::__construct($registry, $templatesDir);
 	}
 	
-	public static function esc($value)
-	{
-		$result = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-		return $result;
-	}
-	public function mesToHTML($messages)
-	{
-		$result = '';
-		if (!empty($messages)) {
-			foreach ($messages as $message) {
-				$message = self::esc($message);
-				$result .= "<p>$message</p>";
-			}
-		}
-		return $result;
-	}
-
+	/**
+	 * Return table-body code (one row), ready for use in html. Just paste it between tbody /tbody tags.
+	 *
+	 * @param Student $student Object to convert into table row.
+	 * @return string One table row.
+	 */
 	public function getTbodyHtml(Student $student)
 	{
 		$contents = $student->getArray();
@@ -46,7 +43,12 @@ class StudentView
 		
 		return $tbody;
 	}
-
+	
+	/**
+	 * Fetches current get parameter and produces query for them. Just append it to url with '?'.
+	 * @param int $page
+	 * @return string
+	 */
 	public function getPaginationQuery($page = 0)
 	{
 		if (is_int($page)) {
@@ -60,10 +62,18 @@ class StudentView
 		return $query;
 	}
 	
+	/**
+	 * Loads all values and preferences for a template, then loads the template into string.
+	 * @todo Yeah, I know its nasty code, with no standard and reusability. Gotcha do smth with that.
+	 * @return string
+	 * @throws ViewException
+	 */
 	public function output()
 	{
+		//в конце мы сохраним всю страницу в строку
 		ob_start();
 		
+		//главный маппер - выдаёт список студентов
 		$this->dataMapper = $this->registry->getDataMapper();
 		$students = $this->dataMapper->getStudents($this->registry->getSortby(),
 		                                           $this->registry->getOrder(),
@@ -73,7 +83,9 @@ class StudentView
 		                                           $this->registry->getSearchField()
 		);
 		
+		//таблица со студентами
 		$tbodyContent = '';
+		//различные текстовые сообщения пользователю
 		$urgentMessage = '';
 		$messages = $this->registry->getMessages();
 		if ($students === false) {
@@ -83,17 +95,25 @@ class StudentView
 				$tbodyContent .= $this->getTbodyHtml($student);
 			}
 		}
+		//эта переменная идёт в шаблон
 		$urgentMessage = $this->mesToHTML($messages);
 		
 		//текст для показа пользователю текущего режима программы
 		$appStatusText = $this->registry->getStatusText();
 		
+		//пажинация
+		//полное число найденных результатов для последнего поискового запроса (getStudents)
 		$entriesCount = $this->dataMapper->getEntriesCount();
+		//число страниц, на которых можно отобразить все  результаты
 		$pageCount = ceil($entriesCount / self::STUDENTS_IN_PAGE);
+		//для каждой из страниц создаём оригинальную ссылку
 		for ($i = 1; $i <= $pageCount; $i++) {
 			$queries[$i] = $this->getPaginationQuery($i);
 		}
 
+		//загружаем шаблон, который использует вышеописанные переменные
+		//обратите внимание! в начале шаблона прописаны все необходимые для его работы перменные.
+		// Если хоть одна из них не установлена, приложение сваливается с исключением!
 		$filepath = $this->templatesDir . '/tpl_stud_list.php';
 		if (file_exists($filepath)) {
 			include $filepath;
@@ -102,12 +122,5 @@ class StudentView
 		return ob_get_clean();
 
 	}
-
-	public function render()
-	{
-		header('Content-type: text/html; charset=utf-8');
-		$contents = $this->output();
-		echo $contents;
-	}
-
+	
 }

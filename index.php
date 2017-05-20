@@ -1,11 +1,11 @@
 <?php
-	use \Shinoa\StudentsList\Registry;
-	use \Shinoa\StudentsList\SearchQueryValidator;
-	use \Shinoa\StudentsList\StudentView;
-	use \Shinoa\StudentsList\StudentMapper;
-	use \Shinoa\StudentsList\ErrorHelper;
-	use \Shinoa\StudentsList\StatusSelector;
-	use \Shinoa\StudentsList\ErrEvoker;
+	use Shinoa\StudentsList\Registry;
+	use Shinoa\StudentsList\SearchQueryValidator;
+	use Shinoa\StudentsList\StudentView;
+	use Shinoa\StudentsList\StudentMapper;
+	use Shinoa\StudentsList\ErrorHelper;
+	use Shinoa\StudentsList\StatusSelector;
+	use Shinoa\StudentsList\ErrEvoker;
 	include_once 'bootstrap.php';
 
 	//инициализация основных классов
@@ -71,12 +71,16 @@
 		//отображает страницу на основе собранных выше данных
 		$view->render();
 		
+	//ловим уловимые ошибки и исключения - код расчитан на php 7+
 	} catch (\Throwable $e) {
+		//класс, заведующий обработкой ошибок
 		$errorHelper = new ErrorHelper($registry->getRoot() . '\Students\templates');
+		//предпринимаем действия, в зависимости от режима приложения: 'в разработке' или 'в поизводстве'
 		switch ($appStatus = $registry->getStatus()) {
 			case $registry::APP_IN_DEVELOPMENT:
-				$errorHelper->renderFatalErrorObj($e, '/Students');
+				$errorHelper->renderExceptionAndExit($e, '/Students');
 				break;
+				
 			case $registry::APP_IN_PRODUCTION:
 				$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
 				//форматируем текст для записи в лог-файл

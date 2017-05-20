@@ -5,8 +5,8 @@ use PHPUnit\Framework\TestCase;
 use Shinoa\StudentsList\Exceptions\StudentException;
 use Shinoa\StudentsList\StudentMapper;
 use Shinoa\StudentsList\Student;
-use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
-use Zend\Cache\Exception\UnexpectedValueException;
+use UnexpectedValueException;
+use InvalidArgumentException;
 
 class StudentMapperTest extends TestCase
 {

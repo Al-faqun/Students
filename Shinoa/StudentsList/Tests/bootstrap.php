@@ -18,4 +18,4 @@ if ( file_exists($pathToConf) ) {
 		\PDO::MYSQL_ATTR_FOUND_ROWS   => true
 	);
 	$test_pdo = new \PDO($test_dsn, $test_username, $tets_password, $test_opt);
-} else throw new Exception('Path to config is wrong! Failure to execute');
+} else throw new Exception('Path to testsuit config is wrong! Failure to execute');

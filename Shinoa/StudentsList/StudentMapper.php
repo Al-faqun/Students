@@ -1,23 +1,52 @@
 <?php
 namespace Shinoa\StudentsList;
 use Shinoa\StudentsList\Exceptions\StudentException;
-use Symfony\Component\Config\Definition\Exception\InvalidTypeException;
+use InvalidArgumentException;
 
+/**
+ * Class StudentMapper.
+ * Allowes handy retrieving, inserting, updating, deleting of Students with `Student` table of DB.
+ *
+ * Attention! This mapper uses provided data 'as is' and do NOT perform any checks of data's sanity.
+ *
+ * Use dedicated data validators before passing any input to this class!
+ * @package Shinoa\StudentsList
+ */
 class StudentMapper
 {
-	
+	/**
+	 * @var StudentSQLBuilder
+	 * Provides dynamic sql sequences.
+	 */
 	private $SQLBuilder;
-	private $lastSTMT;
 	
-	private $pdo = null;
-
-
+	/**
+	 * @var \PDO
+	 */
+	private $pdo;
+	
+	/**
+	 * StudentMapper constructor.
+	 * @param \PDO $pdo
+	 */
 	public function __construct(\PDO $pdo)
 	{
 		$this->pdo = $pdo;
 		$this->SQLBuilder = new StudentSQLBuilder();
 	}
-
+	
+	
+	/**
+	 * Fetch a number of students from database.
+	 * @param string $sortBy Name of column to search.
+	 * @param string $order Order of search: 'ASC' or 'DESC', caseinsensitive.
+	 * @param int $offset Start position in search result.
+	 * @param int $limit Number of rows, retrieved from the starting position.
+	 * @param string $searchText Text, that MUST occur in target column.
+	 * @param string $searchField Name of column, where searchText must appear.
+	 * @return array|bool Array of class Student or FALSE on failure.
+	 * @throws StudentException
+	 */
 	public function getStudents($sortBy = 'surname', $order = 'ASC',
 	                            $offset = 0, $limit = 5,
 	                            $searchText = '', $searchField = '')
@@ -49,10 +78,15 @@ class StudentMapper
 		} catch (\PDOException $e) {
 			throw new StudentException('Ошибка при получении данных студентов', 0, $e);
 		}
-		$this->lastSTMT = $stmt;
 		return $students;
 	}
-
+	
+	/**
+	 * Adds student data to  database.
+	 * @param Student $student
+	 * @return bool TRUE on succesful retrieval from DB, FALSE on failure
+	 * @throws StudentException
+	 */
 	public function insertStudent(Student $student)
 	{
 		try {
@@ -65,11 +99,21 @@ class StudentMapper
 		return $result;
 	}
 	
+	/**
+	 * @return int id of last inserted ID or 0 if cannot retrieve
+	 */
 	public function lastInsertedId()
 	{
 		return (int)$this->pdo->lastInsertId();
 	}
 	
+	/**
+	 * Changes data of chosen Student in database by id.
+	 * @param Student $student
+	 * @param $id
+	 * @return bool true if successfully updated student data, or false
+	 * @throws StudentException
+	 */
 	public function updateStudent(Student $student, $id)
 	{
 		try {
@@ -83,11 +127,17 @@ class StudentMapper
 		return $result;
 	}
 	
+	/**
+	 * Retrieves student from database by it's ID.
+	 * @param string|int $id String or integer
+	 * @return bool|Student Student on succes, else FALSE
+	 * @throws StudentException|InvalidTypeException
+	 */
 	public function findStudentByID($id)
 	{
 		try {
-			if (!is_int($id)) {
-				throw new InvalidTypeException('Параметр должен быть целочисленным');
+			if ( (int)$id <= 0 ) {
+				throw new \UnexpectedValueException('Параметр должен быть больше нуля');
 			}
 			
 			$this->SQLBuilder->select();
@@ -110,17 +160,62 @@ class StudentMapper
 		return $student;
 	}
 	
+	/**
+	 * Checks database for duplicates of a specific column with a specific value
+	 * @param string $columnName Name of column in database
+	 * @param mixed $columnValue Value of the named column, which will be checked for duplicates
+	 * @return bool TRUE if value already exists in that column, otherwise FALSE
+	 * @throws StudentException
+	 */
+	public function existsValue($columnName, $columnValue)
+	{
+		try {
+			$result = false;
+			$this->SQLBuilder->selectDuplicate();
+			$this->SQLBuilder->whereValue($columnName);
+			$sql = $this->SQLBuilder->getSQL();
+			$stmt = $this->pdo->prepare($sql);
+			
+			if (is_int($columnValue)) {
+				$stmt->bindParam($columnName, $columnValue, \PDO::PARAM_INT);
+			} else {
+				$stmt->bindParam($columnName, $columnValue, \PDO::PARAM_STR);
+			}
+			
+			if ( $stmt->execute() ) {
+				$row = $stmt->fetch(\PDO::FETCH_NUM);
+				if ( !empty($row) && $row[0] > 0) {
+					$result = true;
+				} else $result = false;
+			} else $result = false;
+			
+		} catch (\PDOException $e) {
+			throw new StudentException('Ошибка при получении данных студента', 0, $e);
+		}
+		return $result;
+	}
+	
+	/**
+	 * Gets number of rows, affected by last select query, !without! WHERE clauses.
+	 * @return mixed|bool number of rows on success, FALSE if failure.
+	 * @throws StudentException
+	 */
 	public function getEntriesCount()
 	{
 		try {
+			//initialize default value of result
+			$count = false;
+			//get sql
 			$this->SQLBuilder->countLastQuery();
 			$sql = $this->SQLBuilder->getSQL();
 			$stmt = $this->pdo->prepare($sql);
 			if ($stmt->execute()) {
+				//if get nothing from DB
 				if ($stmt->rowCount() == 0) {
 					$count = false;
 				}
 				while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
+					//on success we get only one item from DB
 					$count = $row[0];
 				}
 			} else {
@@ -133,6 +228,12 @@ class StudentMapper
 		return $count;
 	}
 	
+	/**
+	 * Deletes student from database by it's ID
+	 * @param mixed $id ID of student to delete from database
+	 * @return bool true if successfully deleted, otherwise false
+	 * @throws StudentException
+	 */
 	public function deleteStudentByID($id)
 	{
 		try {
@@ -149,14 +250,19 @@ class StudentMapper
 				} else $result = false;
 			}
 		} catch (\PDOException $e) {
-			throw new StudentException('Ошибка при удалении данных студента'. 0, $e);
+			throw new StudentException('Ошибка при удалении данных студента', 0, $e);
 		}
 
 		return $result;
 	}
 	
-	
-	
+	/**
+	 * Converts array with student data into Student object.
+	 * @param array $row Array that contains items,
+	 * named after Student class public fields.
+	 * @return Student
+	 * @throws StudentException
+	 */
 	private function convertToObject($row)
 	{
 		$required = array('name' => 1, 'surname' => 2, 'sex' => 3, 'group_num' => 4,
@@ -172,8 +278,14 @@ class StudentMapper
 		return $student;
 
 	}
-
-	public function convertToStatement(Student $student, $typeOfStatement = 'insert')
+	
+	/**
+	 * @param Student $student
+	 * @param string $typeOfStatement either 'insert' or 'update' (case insensitive)
+	 * @return \PDOStatement If 'insert', needs only to execute; if 'update', separetely bind :id
+	 * @throws StudentException
+	 */
+	private function convertToStatement(Student $student, $typeOfStatement = 'insert')
 	{
 		try {
 			switch ( strtolower($typeOfStatement) ) {
@@ -214,8 +326,11 @@ class StudentMapper
 }
 
 /*
+//test code for simple testing
+//to be deleted
 include 'Student.php';
 include 'StudentSQLBuilder.php';
+include 'Exceptions/StudentException.php';
 try {
 	$opt = array(
 		\PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
@@ -229,9 +344,12 @@ try {
 }
 $SM = new StudentMapper($pdo);
 
-$students = $SM->getStudents('name', 'DESC');
+$student = new Student('mannanov', 'nikoly',  'М',
+	'BGF5ee343434',     'manan@rambler.ru' , 259,
+	1997,      'Приезжий');
+$result = $SM->insertStudent($student);
 echo '<pre>';
-print_r($students);
+var_dump($result);
 echo '<pre>';
 */
 
