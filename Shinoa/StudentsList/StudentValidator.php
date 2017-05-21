@@ -28,12 +28,34 @@ class StudentValidator
 	private $mapper;
 	
 	/**
+	 * @var array
+	 */
+	private $input;
+	
+	/**
 	 * StudentValidator constructor.
 	 * @param StudentMapper $mapper
+	 * @param array $input Array of GET, POST, SESSION or other.
+	 * It must contain fields of student and also 'form_sent' hidden field.
 	 */
-	public function __construct(StudentMapper $mapper)
+	public function __construct(StudentMapper $mapper, array $input = [])
 	{
 		$this->mapper = $mapper;
+		$this->input = $input;
+	}
+	
+	/**
+	 * @return bool TRUE if student data was sent FALSE is not.
+	 */
+	public function dataSent()
+	{
+		$input = $this->input;
+		if ( isset($input['form_sent']) ) {
+			$dataSent = true;
+		} else {
+			$dataSent = false;
+		}
+		return $dataSent;
 	}
 	
 	/**
@@ -41,25 +63,20 @@ class StudentValidator
 	 * It must contain fields of student and also 'form_sent'.
 	 * @param null|array $errors (by reference). This variable is emptied and then filled with messages
 	 * if some student field is not right. Use it to check for succesful validation and also to display messages.
-	 * @param bool $dataSent (by reference) This variable is set according to input data to indicate,
-	 * whether the proper data of student was indeed sent.
+	 * @param bool $dataSent  Indicated whether the  data of student was indeed sent.
+	 * @param bool $update TRUE if data would be updated, false if inserted.
 	 * @return bool|Student Student if everything allright, otherwise FALSE.
 	 */
-	public function checkInput(array $input, &$errors, &$dataSent)
+	public function checkInput(&$errors, $dataSent, $update = false)
 	{
 		$errors = array();
-		if ( isset($input['form_sent']) ) {
-			$dataSent = true;
-		} else {
-			$dataSent = false;
-		}
-		
+		$input = $this->input;
 		if ($dataSent) {
 			$name      = ( isset($input['name']) )       ? $this->checkName($input['name'])            : false;
 			$surname   = ( isset($input['surname']) )    ? $this->checkSurname($input['surname'])      : false;
 			$sex       = ( isset($input['sex']) )        ? $this->checkSex($input['sex'])              : false;
 			$groupNum  = ( isset($input['group_num']) )  ? $this->checkGroupNum($input['group_num'])   : false;
-			$email     = ( isset($input['email']) )      ? $this->checkEmail($input['email'])          : false;
+			$email     = ( isset($input['email']) )      ? $this->checkEmail($input['email'], $update)          : false;
 			$egeSum    = ( isset($input['ege_sum']) )    ? $this->checkEgeSum($input['ege_sum'])       : false;
 			$birthYear = ( isset($input['birth_year']) ) ? $this->checkBirthYear($input['birth_year']) : false;
 			$location  = ( isset($input['location']) )   ? $this->checkLocation($input['location'])    : false;
@@ -90,15 +107,16 @@ class StudentValidator
 	 * @param Student $in Student object to test for validity.
 	 * @param array $errors (by reference). This array is emptied and then filled with messages
 	 * if some student field is not right. Use it to check for succesful validation and also to display messages.
+	 * @param bool $updated TRUE if data would be updated, false if inserted.
 	 * @return bool TRUE if Student complies to rules of validator, else FALSE.
 	 */
-	public function checkStudent(Student $in, &$errors)
+	public function checkStudent(Student $in, &$errors, $updated = false)
 	{
 		$name        = $this->checkName( $in->getName() );
 		$surname     = $this->checkSurname( $in->getSurname() );
 		$sex         = $this->checkSex( $in->getSex() );
 		$groupNum    = $this->checkGroupNum( $in->getGroupNum() );
-		$email       = $this->checkEmail( $in->getEmail() );
+		$email       = $this->checkEmail($in->getEmail(), $updated);
 		$egeSum      = $this->checkEgeSum( $in->getEgeSum() );
 		$yearOfBirth = $this->checkBirthYear( $in->getYearOfBirth() );
 		$location    = $this->checkLocation ($in->getLocation() );
@@ -236,14 +254,18 @@ class StudentValidator
 	/**
 	 * Checks string with rules for 'Email' field.
 	 * @param string $email
+	 * @param bool $update TRUE if data would be updated, FALSE if inserted.
 	 * @return bool|string String if checks right or FALSE on fail.
 	 */
-	private function checkEmail($email)
+	private function checkEmail($email, $update = false)
 	{
 		$email = trim($email);
 		if ( filter_var($email, FILTER_VALIDATE_EMAIL)
 			  &&
-		     !$this->mapper->existsValue('email', $email)
+			//если значение обновляется, а не вставляется
+			//- проверка на уникальность противопоказана
+			( !$this->mapper->existsValue('email', $email)
+				|| $update !== false)
 		) {
 			$result = $email;
 		} else $result = false;

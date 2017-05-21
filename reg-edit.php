@@ -20,21 +20,12 @@
 	$registry->init($root, $root . '/Students/ini/config_test.xml');
 	try {
 		$dataMapper = new StudentMapper($registry->getPDO());
-		$loginMan = new LoginManager(new PasswordMapper($registry->getPDO()), $_COOKIE);
-		$view = new RegEditView($registry, $registry->getRoot() . '/Students/templates');
+		$loginMan   = new LoginManager(new PasswordMapper($registry->getPDO()), $_COOKIE);
+		$view       = new RegEditView($registry, $registry->getRoot() . '/Students/templates');
 		//добавляем их в регистр, для единообразия доступа к ним другив классов
 		$registry->setDataMapper($dataMapper);
 		$registry->setLoginManager($loginMan);
 		$registry->setView($view);
-		
-		//установка статуса приложения в зависимости от кук
-		$statusSelector = new StatusSelector();
-		if ($statusSelector->dataIn($_COOKIE) !== false) {
-			$statusText = $statusSelector->dataIn($_COOKIE);
-			$registry->setStatus(StatusSelector::textToCode($statusText));
-		} else {
-			$registry->statusUseDefault();
-		}
 		
 		//сообщения в случае успешно выполненных действий, после редиректа
 		//не знаю, как красиво оформить этот код
@@ -46,11 +37,19 @@
 			$registry->addMessage('Ваши данные успешно обновлены!');
 		}
 		
+		//установка статуса приложения в зависимости от кук
+		$statusSelector = new StatusSelector();
+		if ($statusSelector->dataIn($_COOKIE) !== false) {
+			$statusText = $statusSelector->dataIn($_COOKIE);
+			$registry->setStatus(StatusSelector::textToCode($statusText));
+		} else {
+			$registry->statusUseDefault();
+		}
+		
 		//ошибки заполнения данных студента при регистрации или обновлении
-		$errors = array();
-		$validator = new StudentValidator($dataMapper);
-		//если данные формы заполнены верно, возвращает class Student, во всех остальных случаях - false
-		$student = $validator->checkInput($_POST, $errors, $dataSent);
+		$errors    = array();
+		$validator = new StudentValidator($dataMapper, $_POST);
+		$dataSent  = $validator->dataSent();
 		$loginMan->checkAuth();
 		
 		//если юзер не залогинен - значит, он ещё не добавлял свои данные в БД
@@ -58,6 +57,8 @@
 			//если данные вообще были посланы -
 			//только тогда выполняем какие-либо манипуляции
 			if ($dataSent) {
+				//если данные формы заполнены верно, возвращает class Student, во всех остальных случаях - false
+				$student = $validator->checkInput($errors, $dataSent, false);
 				//данные посланы, ошибок нет - можно добавлять в БД
 				if (empty($errors)) {
 					try {
@@ -89,7 +90,9 @@
 			//если юзер залогинен, значит, его данные уже добавлены в БД
 		} elseif ($loginMan->isLogged() === true) {
 			if ($dataSent) {
-				//данные посланы, ошибок нет - можно  передавать обновлённыеданные в БД
+				//если данные формы заполнены верно, возвращает class Student, во всех остальных случаях - false
+				$student = $validator->checkInput($errors, $dataSent, true);
+				//данные посланы, ошибок нет - можно  передавать обновлённые данные в БД
 				if (empty($errors)) {
 					$dataMapper->updateStudent($student, $loginMan->getLoggedID());
 					//редирект для очищения POST
@@ -114,7 +117,7 @@
 			case $registry::APP_IN_DEVELOPMENT:
 				$errorHelper->renderExceptionAndExit($e, '/Students');
 				break;
-			
+				
 			case $registry::APP_IN_PRODUCTION:
 				$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
 				//форматируем текст для записи в лог-файл

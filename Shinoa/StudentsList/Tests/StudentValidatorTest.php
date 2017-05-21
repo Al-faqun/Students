@@ -8,12 +8,13 @@ use PHPUnit\Framework\TestCase;
 
 class StudentValidatorTest extends TestCase
 {
+	private $pdo;
 	private $studentValidator;
 	private $errors;
 	
 	public function setUp()
 	{
-		$this->studentValidator = new StudentValidator(new StudentMapper($GLOBALS['test_pdo']));
+		$this->pdo = $GLOBALS['test_pdo'];
 		$this->errors = [];
 		
 	}
@@ -27,7 +28,9 @@ class StudentValidatorTest extends TestCase
 		$input = array('form_sent' => '1', 'name' => 'testname', 'surname' => 'testsurname', 'sex' => 'masculine',
 			                               'group_num' => 'grNm5', 'email' => 'email@gmail.com', 'ege_sum' => 400,
 			                               'birth_year' => 1994, 'location' => 'Local');
-		$student = $this->studentValidator->checkInput($input, $errors, $datasent);
+		$this->studentValidator = new StudentValidator(new StudentMapper($this->pdo), $input);
+		$datasent = $this->studentValidator->dataSent();
+		$student = $this->studentValidator->checkInput($errors, $datasent);
 		
 		$this->assertNotFalse($student, $errors);
 		
@@ -38,7 +41,9 @@ class StudentValidatorTest extends TestCase
 		$input = array('form_sent' => '1', 'name' => '5abra', 'surname' => 'testsurname', 'sex' => 'masculine',
 		                                   'group_num' => 'grNm5', 'email' => 'email@gmail.com', 'ege_sum' => 400,
 			                               'birth_year' => 1994, 'location' => 'Local');
-		$student = $this->studentValidator->checkInput($input, $errors, $datasent);
+		$this->studentValidator = new StudentValidator(new StudentMapper($this->pdo), $input);
+		$datasent = $this->studentValidator->dataSent();
+		$student = $this->studentValidator->checkInput($errors, $datasent);
 		
 		$this->assertFalse($student);
 		
@@ -49,7 +54,9 @@ class StudentValidatorTest extends TestCase
 		$input = array('form_sent' => '1', 'name' => 'testname', 'surname' => array('testsurname'), 'sex' => 'masculine',
 		                                   'group_num' => 'grNm5', 'email' => 'email@gmail.com', 'ege_sum' => 400,
 			                               'birth_year' => 1994, 'location' => 'Local');
-		$student = $this->studentValidator->checkInput($input, $errors, $datasent);
+		$this->studentValidator = new StudentValidator(new StudentMapper($this->pdo), $input);
+		$datasent = $this->studentValidator->dataSent();
+		$student = $this->studentValidator->checkInput($errors, $datasent);
 		
 		$this->assertFalse($student);
 		
@@ -60,7 +67,9 @@ class StudentValidatorTest extends TestCase
 		$input = array('form_sent' => '1', 'name' => 'testname', 'surname' => true, 'sex' => 'masculine',
 		                                   'group_num' => 'grNm5', 'email' => 'email@gmail.com', 'ege_sum' => 400,
 		                                   'birth_year' => 1994, 'location' => 'Local');
-		$student = $this->studentValidator->checkInput($input, $errors, $datasent);
+		$this->studentValidator = new StudentValidator(new StudentMapper($this->pdo), $input);
+		$datasent = $this->studentValidator->dataSent();
+		$student = $this->studentValidator->checkInput($errors, $datasent);
 		
 		$this->assertFalse($student);
 		
@@ -71,7 +80,9 @@ class StudentValidatorTest extends TestCase
 		$input = array('form_sent' => '1', 'name' => 'testname', 'surname' => 'testsurname', 'sex' => 'transsexual',
 		                                   'group_num' => 'grNm5', 'email' => 'email@gmail.com', 'ege_sum' => 400,
 		                                   'birth_year' => 1994, 'location' => 'Local');
-		$student = $this->studentValidator->checkInput($input, $errors, $datasent);
+		$this->studentValidator = new StudentValidator(new StudentMapper($this->pdo), $input);
+		$datasent = $this->studentValidator->dataSent();
+		$student = $this->studentValidator->checkInput($errors, $datasent);
 		
 		$this->assertFalse($student);
 		
@@ -82,7 +93,9 @@ class StudentValidatorTest extends TestCase
 		$input = array('form_sent' => '1', 'name' => 'testname', 'surname' => 'testsurname', 'sex' => 'masculine',
 			                               'group_num' => 'grNm5', 'email' => 'email@gmail', 'ege_sum' => 400,
 		                                   'birth_year' => 1994, 'location' => 'Local');
-		$student = $this->studentValidator->checkInput($input, $errors, $datasent);
+		$this->studentValidator = new StudentValidator(new StudentMapper($this->pdo), $input);
+		$datasent = $this->studentValidator->dataSent();
+		$student = $this->studentValidator->checkInput($errors, $datasent);
 		
 		$this->assertFalse($student);
 		
@@ -93,7 +106,9 @@ class StudentValidatorTest extends TestCase
 		$input = array('form_sent' => '1', 'name' => 'testname', 'surname' => 'testsurname', 'sex' => 'masculine',
 		                                   'group_num' => 'grNm5', 'email' => 'email@gmail.com', 'ege_sum' => 900,
 		                                   'birth_year' => 1994, 'location' => 'Local');
-		$student = $this->studentValidator->checkInput($input, $errors, $datasent);
+		$this->studentValidator = new StudentValidator(new StudentMapper($this->pdo), $input);
+		$datasent = $this->studentValidator->dataSent();
+		$student = $this->studentValidator->checkInput($errors, $datasent);
 		
 		$this->assertFalse($student);
 		
@@ -104,7 +119,9 @@ class StudentValidatorTest extends TestCase
 		$input = array('form_sent' => '1', 'name' => 'testname', 'surname' => 'testsurname', 'sex' => 'masculine',
 		                                   'group_num' => 'grNm5', 'email' => 'email@gmail.com', 'ege_sum' => 0,
 			                               'birth_year' => 1994, 'location' => 'Local');
-		$student = $this->studentValidator->checkInput($input, $errors, $datasent);
+		$this->studentValidator = new StudentValidator(new StudentMapper($this->pdo), $input);
+		$datasent = $this->studentValidator->dataSent();
+		$student = $this->studentValidator->checkInput($errors, $datasent);
 		
 		$this->assertFalse($student);
 		
@@ -115,7 +132,9 @@ class StudentValidatorTest extends TestCase
 		$input = array('form_sent' => '1', 'name' => 'testname', 'surname' => 'testsurname', 'sex' => 'masculine',
 		                                   'group_num' => 'grNm5', 'email' => 'email@gmail.com', 'ege_sum' => 400,
 		                                   'birth_year' => 1876, 'location' => 'Local');
-		$student = $this->studentValidator->checkInput($input, $errors, $datasent);
+		$this->studentValidator = new StudentValidator(new StudentMapper($this->pdo), $input);
+		$datasent = $this->studentValidator->dataSent();
+		$student = $this->studentValidator->checkInput($errors, $datasent);
 		
 		$this->assertFalse($student);
 		
@@ -126,7 +145,9 @@ class StudentValidatorTest extends TestCase
 		$input = array('form_sent' => '1', 'name' => 'testname', 'surname' => 'testsurname', 'sex' => 'masculine',
 		                                   'group_num' => 'grNm5', 'email' => 'email@gmail.com', 'ege_sum' => 400,
 		                                   'birth_year' => 2280, 'location' => 'Local');
-		$student = $this->studentValidator->checkInput($input, $errors, $datasent);
+		$this->studentValidator = new StudentValidator(new StudentMapper($this->pdo), $input);
+		$datasent = $this->studentValidator->dataSent();
+		$student = $this->studentValidator->checkInput($errors, $datasent);
 		
 		$this->assertFalse($student);
 		
@@ -137,7 +158,9 @@ class StudentValidatorTest extends TestCase
 		$input = array('form_sent' => '1', 'name' => 'testname', 'surname' => 'testsurname', 'sex' => 'masculine',
 			                               'group_num' => 'grNm5', 'email' => 'email@gmail.com', 'ege_sum' => 400,
 		                                   'birth_year' => 1994, 'location' => 'Vietnam');
-		$student = $this->studentValidator->checkInput($input, $errors, $datasent);
+		$this->studentValidator = new StudentValidator(new StudentMapper($this->pdo), $input);
+		$datasent = $this->studentValidator->dataSent();
+		$student = $this->studentValidator->checkInput($errors, $datasent);
 		
 		$this->assertFalse($student);
 		
@@ -147,6 +170,7 @@ class StudentValidatorTest extends TestCase
 	{
 		$test = new Student('name', 'surname', 'masculine', 'grNm5',
 			                'email@gmail.com', 400, 1994, 'Local');
+		$this->studentValidator = new StudentValidator( new StudentMapper($this->pdo) );
 		$student = $this->studentValidator->checkStudent($test, $errors);
 		
 		$this->assertNotFalse($student, $errors);
@@ -157,6 +181,7 @@ class StudentValidatorTest extends TestCase
 	{
 		$test = new Student('', 'surname', 'masculine', 'grNum5',
 			'email@gmail.com', 400, 1994, 'Local');
+		$this->studentValidator = new StudentValidator( new StudentMapper($this->pdo) );
 		$student = $this->studentValidator->checkStudent($test, $errors);
 		
 		$this->assertFalse($student);
@@ -167,6 +192,7 @@ class StudentValidatorTest extends TestCase
 	{
 		$test = new Student('name1', false, 'masculine', 'grNum5',
 			'email@gmail.com', 400, 1994, 'Local');
+		$this->studentValidator = new StudentValidator( new StudentMapper($this->pdo) );
 		$student = $this->studentValidator->checkStudent($test, $errors);
 		
 		$this->assertFalse($student);
@@ -177,6 +203,7 @@ class StudentValidatorTest extends TestCase
 	{
 		$test = new Student('name1', '5', 'masculine', 'grNum5',
 			'email@gmail.com', 400, 1994, 'Local');
+		$this->studentValidator = new StudentValidator( new StudentMapper($this->pdo) );
 		$student = $this->studentValidator->checkStudent($test, $errors);
 		
 		$this->assertFalse($student);
@@ -187,6 +214,7 @@ class StudentValidatorTest extends TestCase
 	{
 		$test = new Student('name1', 'gfg', 'm', 'grNum5',
 			'email@gmail.com', 400, 1994, 'Local');
+		$this->studentValidator = new StudentValidator( new StudentMapper($this->pdo) );
 		$student = $this->studentValidator->checkStudent($test, $errors);
 		
 		$this->assertFalse($student);
@@ -197,6 +225,7 @@ class StudentValidatorTest extends TestCase
 	{
 		$test = new Student('name1', 'gfg', 'masculine', 'grNum5',
 			'email@gmail', 400, 1994, 'Local');
+		$this->studentValidator = new StudentValidator( new StudentMapper($this->pdo) );
 		$student = $this->studentValidator->checkStudent($test, $errors);
 		
 		$this->assertFalse($student);
@@ -207,6 +236,7 @@ class StudentValidatorTest extends TestCase
 	{
 		$test = new Student('name1', 'gfg', 'masculine', 'grNum5',
 			'email@gmail', 'gf', 1994, 'Local');
+		$this->studentValidator = new StudentValidator( new StudentMapper($this->pdo) );
 		$student = $this->studentValidator->checkStudent($test, $errors);
 		
 		$this->assertFalse($student);
@@ -217,6 +247,7 @@ class StudentValidatorTest extends TestCase
 	{
 		$test = new Student('name1', 'gfg', 'masculine', 'grNum5',
 			'email@gmail', 700, 1994, 'Local');
+		$this->studentValidator = new StudentValidator( new StudentMapper($this->pdo) );
 		$student = $this->studentValidator->checkStudent($test, $errors);
 		
 		$this->assertFalse($student);
@@ -227,6 +258,7 @@ class StudentValidatorTest extends TestCase
 	{
 		$test = new Student('name1', 'gfg', 'masculine', 'grNum5',
 			'email@gmail', 300, 1234, 'Local');
+		$this->studentValidator = new StudentValidator( new StudentMapper($this->pdo) );
 		$student = $this->studentValidator->checkStudent($test, $errors);
 		
 		$this->assertFalse($student);
@@ -237,6 +269,7 @@ class StudentValidatorTest extends TestCase
 	{
 		$test = new Student('name1', 'gfg', 'masculine', 'grNum5',
 			'email@gmail', 300, 1976, 'Local');
+		$this->studentValidator = new StudentValidator( new StudentMapper($this->pdo) );
 		$student = $this->studentValidator->checkStudent($test, $errors);
 		
 		$this->assertFalse($student);
@@ -247,6 +280,7 @@ class StudentValidatorTest extends TestCase
 	{
 		$test = new Student('name1', 'gfg', 'masculine', 'grNum5',
 			'email@gmail', 300, 'abra', 'fgfg');
+		$this->studentValidator = new StudentValidator( new StudentMapper($this->pdo) );
 		$student = $this->studentValidator->checkStudent($test, $errors);
 		
 		$this->assertFalse($student);

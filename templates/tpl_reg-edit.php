@@ -64,7 +64,7 @@ if (!isset($caption) || !isset($submitButName) || !isset($mesagge) || !isset($er
 			<div class = "field">
 				<label for="email">Почта: </label>
 				<input type="email" name="email" size="40" maxlength="100" value="<?=$defFields['emailVal']?>" required>
-				<span class="description">В соответствии с RFC 822, длина до 254 символов</span>
+				<span class="description">В соответствии с RFC 822, длина до 254 символов. Должна быть уникальной!</span>
 			</div>
 
 			<div class = "field">
