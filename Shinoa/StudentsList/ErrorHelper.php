@@ -112,7 +112,7 @@ class ErrorHelper {
 	 */
 	public function renderFatalErrorObj(\Throwable $error, $whereToRedirect)
 	{
-		$text = self::errorToText($error);
+		$text = self::errorToArray($error);
 
 		$this->renderErrorPageAndExit($text, $whereToRedirect);
 	}
@@ -170,11 +170,11 @@ class ErrorHelper {
 	}
 	
 	/**
-	 *
+	 * Returns array of text strings.
 	 * @param \Throwable $e
 	 * @return array
 	 */
-	public static function errorToText(\Throwable $e)
+	public static function errorToArray(\Throwable $e)
 	{
 		$text = array();
 		$text[] = "Возникла ошибка, выполнение приложения прекращено:";

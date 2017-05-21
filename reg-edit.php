@@ -37,6 +37,12 @@
 			$registry->addMessage('Ваши данные успешно обновлены!');
 		}
 		
+		//запоминает номер пользователя, если он есть в куки, если нет - ставим 0 по умолчанию
+		//значение будет использоваться при записи в лог ошибок
+		if (array_key_exists('userid', $_COOKIE) && is_string($_COOKIE['userid'])) {
+			$registry->setUserID( (int)$_COOKIE['userid'] );
+		} else $registry->setUserID(0);
+		
 		//установка статуса приложения в зависимости от кук
 		$statusSelector = new StatusSelector();
 		if ($statusSelector->dataIn($_COOKIE) !== false) {
@@ -121,8 +127,9 @@
 			case $registry::APP_IN_PRODUCTION:
 				$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
 				//форматируем текст для записи в лог-файл
-				$text = ErrorHelper::errorToText($e);
+				$text = ErrorHelper::errorToArray($e);
 				array_unshift($text, date('d-M-Y H:i:s') . ' ');
+				$text[] = 'UserID = ' . $registry->getUserID();
 				$logpath = __DIR__ . DIRECTORY_SEPARATOR . 'errors.log';
 				$errorHelper->addToLog($text, $registry->getRoot() . '/Students/errors.log');
 				$errorHelper->renderErrorPageAndExit($userMes, '/Students');

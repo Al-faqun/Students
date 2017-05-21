@@ -1,1 +1,32 @@
-﻿
+﻿21-May-2017 18:44:52 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#You triggered exception
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:62.
+UserID = 0
+
+21-May-2017 18:44:56 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#Call to undefined method stdClass::callToNonExistantFunction()
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:53.
+UserID = 0
+
+21-May-2017 18:45:55 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#Call to undefined method stdClass::callToNonExistantFunction()
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:53.
+UserID = 84
+
+21-May-2017 18:46:01 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#You triggered exception
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:62.
+UserID = 84
+

@@ -68,13 +68,19 @@
 	
 	function exceptionHandler(Throwable $e)
 	{
+		$root = dirname(__DIR__);
+		$errorHelper = new \Shinoa\StudentsList\ErrorHelper($root . '\Students\templates');
 		switch ($GLOBALS['appStatus']) {
 			case APP_IN_DEVELOPMENT:
-				$errorHelper = new \Shinoa\StudentsList\ErrorHelper(dirname(__DIR__) . '\Students\templates');
 				$errorHelper->renderExceptionAndExit($e, '/Student');
 				break;
 			case APP_IN_PRODUCTION:
-				$errorHelper = new \Shinoa\StudentsList\ErrorHelper(dirname(__DIR__) . '\Students\templates');
+				$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
+				//форматируем текст для записи в лог-файл
+				$text = \Shinoa\StudentsList\ErrorHelper::errorToArray($e);
+				array_unshift($text, date('d-M-Y H:i:s') . ' ');
+				$logpath = $root . DIRECTORY_SEPARATOR . 'Students' . DIRECTORY_SEPARATOR . 'errors.log';
+				$errorHelper->addToLog($text, $root . '/Students/errors.log');
 				$errorHelper->renderExceptionAndExit($e, '/Student');
 				break;
 		}

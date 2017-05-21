@@ -40,6 +40,9 @@ class Registry
 	private $view;
 	private $loginManager;
 	
+	//id user'a (если есть) для нужд логов ошибок
+	private $userID = 0;
+	
 	//различные переменные для отображения данных пользователю
 	//обычные сообщения, например, об успехе операции
     private $messages = array();
@@ -557,4 +560,21 @@ class Registry
 		return $this->loginManager->isLogged();
 	}
 	
+	/**
+	 * Memorizes ID of logged user.
+	 * @param int $userID
+	 */
+	public function setUserID(int $userID)
+	{
+		$this->userID = $userID;
+	}
+	
+	/**
+	 * Returns ID of logged user (if exists), or 0 if isn't logged.
+	 * @return int
+	 */
+	public function getUserID(): int
+	{
+		return $this->userID;
+	}
 }
