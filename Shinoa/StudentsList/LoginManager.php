@@ -2,6 +2,8 @@
 namespace Shinoa\StudentsList;
 
 
+use Shinoa\StudentsList\Exceptions\StudentException;
+
 class LoginManager
 {
 	/**
@@ -41,9 +43,7 @@ class LoginManager
 	 */
 	function logIn($userId)
 	{
-		$factory = new \RandomLib\Factory;
-		$generator = $factory->getMediumStrengthGenerator();
-		$password = $generator->generateString(32);
+		$password = self::genRandString(32);
 		$hash = password_hash($password, PASSWORD_DEFAULT);
 		$this->mapper->addHash($userId, $hash);
 		setcookie('pass',   $password, time()+60*60*24*360, null, null, null, true);
@@ -107,6 +107,27 @@ class LoginManager
 	function getLoggedID()
 	{
 		return (int)$this->id;
+	}
+	
+	/**
+	 * Generates cryptographically secure string of given length.
+	 * @param int $length Length of desired random string.
+	 * @param string $chars Only these characters may be included into string.
+	 * @return string
+	 * @throws StudentException
+	 */
+	private static function genRandString($length, $chars='0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ+/')
+	{
+		if (!is_string($chars) || strlen($chars) == 0) {
+			throw new StudentException('Parameter is not string or is empty');
+		}
+		
+		$str = '';
+		$keysize = strlen($chars) -1;
+		for ($i = 0; $i < $length; ++$i) {
+			$str .= $chars[random_int(0, $keysize)];
+		}
+		return $str;
 	}
 }
 

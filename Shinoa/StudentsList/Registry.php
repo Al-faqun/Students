@@ -8,7 +8,7 @@ use Shinoa\StudentsList\Exceptions\RegistryException;
  * This class forms the link between various parts of application,
  * like userinput checkout, database interaction, and output of result to enduser.
  * This class isn't pretty, and I'm going to do something about it.
- * 
+ *
  * @package Shinoa\StudentsList
  */
 class Registry
