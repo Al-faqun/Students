@@ -1,12 +1,24 @@
 <?php
 namespace Shinoa\StudentsList;
 
+use Shinoa\StudentsList\Exceptions\StudentException;
+
+/**
+ * Class Student
+ * @package Shinoa\StudentsList
+ * Contains data of student (from database, input or other source).
+ *
+ * Allowes it's transformations.
+ *
+ * Be careful! This class contains no validation (except casting egesum and birthyear to int).
+ * Use dedicated validators if you want this data to apply for constraints.
+ */
 class Student
 {
     private $name = '';
     private $surname = '';
     private $sex = '';
-    private $group_num = 0;
+    private $group_num = '';
     private $email = '';
     private $ege_sum = 0;
     private $birth_year = 0;
@@ -91,6 +103,42 @@ class Student
     {
         return $this->location;
     }
+	
+	/**
+	 * Returns associative map with keys like object's public fields and values as its values.
+	 * @return array
+	 */
+	public function getArray()
+	{
+		$result = array(
+			'name'       => $this->name,        'surname' => $this->surname,
+			'sex'        => $this->sex,       'group_num' => $this->group_num,
+			'email'      => $this->email,       'ege_sum' => $this->ege_sum,
+			'birth_year' => $this->birth_year, 'location' => $this->location );
+		return $result;
+    }
+	
+	/**
+	 * Makes Student object from array's fields. If correct field is not specified,
+	 * empty string '' is set to object's field instead.
+	 * @param array $array Contains fields with names of class's variables.
+	 * @return Student
+	 */
+	public static function makeStudentFromArray(array $array)
+	{
+		$name      = $array['name']      ?? '';
+		$surname   = $array['surname']   ?? '';
+		$sex       = $array['sex']       ?? '';
+		$groupNum  = $array['group_num'] ?? '';
+		$email     = $array['email']     ?? '';
+		$egeSum    = ( isset($array['ege_sum']) )     ? (int)$array['ege_sum']     : '';
+		$birthYear = ( isset($array['birth_year']) )  ? (int)$array['birth_year']  : '';
+		$location  = $array['location']  ?? '';
 
+		$student = new Student($name,  $surname,    $sex,
+		                       $groupNum,  $email, $egeSum,
+		                       $birthYear, $location);
+		return $student;
+	}
 
 }

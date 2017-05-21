@@ -4,7 +4,7 @@
 
 namespace Composer\Autoload;
 
-class ComposerStaticInitb761fea8af55e9b7e5f10f6d47e618e9
+class ComposerStaticInit97d287343da2b9cb711d2892edf36884
 {
     public static $prefixLengthsPsr4 = array (
         'p' => 
@@ -44,6 +44,20 @@ class ComposerStaticInitb761fea8af55e9b7e5f10f6d47e618e9
     );
 
     public static $prefixesPsr0 = array (
+        'S' => 
+        array (
+            'SecurityLib' => 
+            array (
+                0 => __DIR__ . '/..' . '/ircmaxell/security-lib/lib',
+            ),
+        ),
+        'R' => 
+        array (
+            'RandomLib' => 
+            array (
+                0 => __DIR__ . '/..' . '/ircmaxell/random-lib/lib',
+            ),
+        ),
         'P' => 
         array (
             'Prophecy\\' => 
@@ -353,6 +367,7 @@ class ComposerStaticInitb761fea8af55e9b7e5f10f6d47e618e9
         'PHP_Token_NEW' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_NS_C' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_NS_SEPARATOR' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
+        'PHP_Token_NULLSAFE_OBJECT_OPERATOR' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_NUM_STRING' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_OBJECT_CAST' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
         'PHP_Token_OBJECT_OPERATOR' => __DIR__ . '/..' . '/phpunit/php-token-stream/src/Token.php',
@@ -447,6 +462,7 @@ class ComposerStaticInitb761fea8af55e9b7e5f10f6d47e618e9
         'SebastianBergmann\\CodeCoverage\\Report\\Html\\Renderer' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/Report/Html/Renderer.php',
         'SebastianBergmann\\CodeCoverage\\Report\\PHP' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/Report/PHP.php',
         'SebastianBergmann\\CodeCoverage\\Report\\Text' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/Report/Text.php',
+        'SebastianBergmann\\CodeCoverage\\Report\\Xml\\BuildInformation' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/Report/Xml/BuildInformation.php',
         'SebastianBergmann\\CodeCoverage\\Report\\Xml\\Coverage' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/Report/Xml/Coverage.php',
         'SebastianBergmann\\CodeCoverage\\Report\\Xml\\Directory' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/Report/Xml/Directory.php',
         'SebastianBergmann\\CodeCoverage\\Report\\Xml\\Facade' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/Report/Xml/Facade.php',
@@ -461,6 +477,7 @@ class ComposerStaticInitb761fea8af55e9b7e5f10f6d47e618e9
         'SebastianBergmann\\CodeCoverage\\RuntimeException' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/Exception/RuntimeException.php',
         'SebastianBergmann\\CodeCoverage\\UnintentionallyCoveredCodeException' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/Exception/UnintentionallyCoveredCodeException.php',
         'SebastianBergmann\\CodeCoverage\\Util' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/Util.php',
+        'SebastianBergmann\\CodeCoverage\\Version' => __DIR__ . '/..' . '/phpunit/php-code-coverage/src/Version.php',
         'SebastianBergmann\\CodeUnitReverseLookup\\Wizard' => __DIR__ . '/..' . '/sebastian/code-unit-reverse-lookup/src/Wizard.php',
         'SebastianBergmann\\Comparator\\ArrayComparator' => __DIR__ . '/..' . '/sebastian/comparator/src/ArrayComparator.php',
         'SebastianBergmann\\Comparator\\Comparator' => __DIR__ . '/..' . '/sebastian/comparator/src/Comparator.php',
@@ -508,10 +525,10 @@ class ComposerStaticInitb761fea8af55e9b7e5f10f6d47e618e9
     public static function getInitializer(ClassLoader $loader)
     {
         return \Closure::bind(function () use ($loader) {
-            $loader->prefixLengthsPsr4 = ComposerStaticInitb761fea8af55e9b7e5f10f6d47e618e9::$prefixLengthsPsr4;
-            $loader->prefixDirsPsr4 = ComposerStaticInitb761fea8af55e9b7e5f10f6d47e618e9::$prefixDirsPsr4;
-            $loader->prefixesPsr0 = ComposerStaticInitb761fea8af55e9b7e5f10f6d47e618e9::$prefixesPsr0;
-            $loader->classMap = ComposerStaticInitb761fea8af55e9b7e5f10f6d47e618e9::$classMap;
+            $loader->prefixLengthsPsr4 = ComposerStaticInit97d287343da2b9cb711d2892edf36884::$prefixLengthsPsr4;
+            $loader->prefixDirsPsr4 = ComposerStaticInit97d287343da2b9cb711d2892edf36884::$prefixDirsPsr4;
+            $loader->prefixesPsr0 = ComposerStaticInit97d287343da2b9cb711d2892edf36884::$prefixesPsr0;
+            $loader->classMap = ComposerStaticInit97d287343da2b9cb711d2892edf36884::$classMap;
 
         }, null, ClassLoader::class);
     }
