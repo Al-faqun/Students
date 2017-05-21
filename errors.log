@@ -187,3 +187,38 @@
 файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
 строка:53.
 
+20-May-2017 23:23:32 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#You triggered exception
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:62.
+
+21-May-2017 01:10:00 
+Возникла ошибка, выполнение приложения могло бы быть продолжено:
+текст: 
+#Function mcrypt_module_open() is deprecated
+файл: F:\xammp\htdocs\s1.localhost\Students\vendor\ircmaxell\random-lib\lib\RandomLib\AbstractMcryptMixer.php,
+строка:75.
+
+21-May-2017 07:34:58 
+Возникла ошибка, выполнение приложения могло бы быть продолжено:
+текст: 
+#Function mcrypt_module_open() is deprecated
+файл: F:\xammp\htdocs\s1.localhost\Students\vendor\ircmaxell\random-lib\lib\RandomLib\AbstractMcryptMixer.php,
+строка:75.
+
+21-May-2017 11:08:03 
+Возникла ошибка, выполнение приложения могло бы быть продолжено:
+текст: 
+#Function mcrypt_module_open() is deprecated
+файл: F:\xammp\htdocs\s1.localhost\Students\vendor\ircmaxell\random-lib\lib\RandomLib\AbstractMcryptMixer.php,
+строка:75.
+
+21-May-2017 11:09:17 
+Возникла ошибка, выполнение приложения могло бы быть продолжено:
+текст: 
+#Uninitialized string offset: 64
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\LoginManager.php,
+строка:128.
+

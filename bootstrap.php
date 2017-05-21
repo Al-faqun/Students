@@ -57,7 +57,7 @@
 				$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
 				array_unshift($text, date('d-M-Y H:i:s') . ' ');
 				$logpath = __DIR__ . DIRECTORY_SEPARATOR . 'errors.log';
-				$errorHelper->addToLog($text, dirname(__DIR__) . '/errors.log');
+				$errorHelper->addToLog($text, __DIR__ . '/errors.log');
 				$errorHelper->renderErrorPageAndExit($userMes, '/Students');
 				break;
 		}
