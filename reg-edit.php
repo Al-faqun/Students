@@ -7,6 +7,8 @@
 	use Shinoa\StudentsList\PasswordMapper;
 	use Shinoa\StudentsList\StudentValidator;
 	use Shinoa\StudentsList\ErrorHelper;
+	use Shinoa\StudentsList\StatusSelector;
+    use Shinoa\StudentsList\Exceptions\StudentException;
 	
 	include_once 'bootstrap.php';
 	//автозагрузчик для классов Composer'а
@@ -25,12 +27,32 @@
 		$registry->setLoginManager($loginMan);
 		$registry->setView($view);
 		
+		//установка статуса приложения в зависимости от кук
+		$statusSelector = new StatusSelector();
+		if ($statusSelector->dataIn($_COOKIE) !== false) {
+			$statusText = $statusSelector->dataIn($_COOKIE);
+			$registry->setStatus(StatusSelector::textToCode($statusText));
+		} else {
+			$registry->statusUseDefault();
+		}
+		
+		//сообщения в случае успешно выполненных действий, после редиректа
+		//не знаю, как красиво оформить этот код
+		if (isset($_GET['uploaded'])) {
+			//сохраняем сообщение для View
+			$registry->addMessage('Ваши данные успешно добавлены!');
+		}
+		if (isset($_GET['updated'])) {
+			$registry->addMessage('Ваши данные успешно обновлены!');
+		}
+		
 		//ошибки заполнения данных студента при регистрации или обновлении
 		$errors = array();
 		$validator = new StudentValidator($dataMapper);
 		//если данные формы заполнены верно, возвращает class Student, во всех остальных случаях - false
 		$student = $validator->checkInput($_POST, $errors, $dataSent);
 		$loginMan->checkAuth();
+		
 		//если юзер не залогинен - значит, он ещё не добавлял свои данные в БД
 		if ($loginMan->isLogged() === false) {
 			//если данные вообще были посланы -
@@ -38,12 +60,24 @@
 			if ($dataSent) {
 				//данные посланы, ошибок нет - можно добавлять в БД
 				if (empty($errors)) {
-					$dataMapper->insertStudent($student);
-					$insertedID = $dataMapper->lastInsertedId();
-					$loginMan->logIn($insertedID);
+					try {
+						//поскольку у нас две взаимосвязанных запроса - открываем транзакцию
+						$registry->getPDO()->beginTransaction();
+						$dataMapper->insertStudent($student);
+						$insertedID = $dataMapper->lastInsertedId();
+						$loginMan->logIn($insertedID);
+						//если нет ошибок - подтверждаем запрос в бд
+						$registry->getPDO()->commit();
+						
+					} catch (Throwable $e) {
+						//если ошибка - откатываемся и передаём наверх
+						$registry->getPDO()->rollBack();
+						throw new StudentException('Error commiting data to Database', 0, $e);
+					}
 					//редирект для очищения POST
 					header('Location: reg-edit.php?uploaded', true, 303);
 					exit();
+					
 				} else {
 					//заполненный ошибками массив сохраняем для View
 					$registry->setErrors($errors);
@@ -51,6 +85,7 @@
 					$registry->saveStudentData(Student::makeStudentFromArray($_POST));
 				}
 			}
+			
 			//если юзер залогинен, значит, его данные уже добавлены в БД
 		} elseif ($loginMan->isLogged() === true) {
 			if ($dataSent) {
@@ -65,16 +100,6 @@
 					$registry->saveStudentData(Student::makeStudentFromArray($_POST));
 				}
 			}
-		}
-		
-		//сообщения в случае успешно выполненных действий, после редиректа
-		//не знаю, как красиво оформить этот код
-		if (isset($_GET['uploaded'])) {
-			//сохраняем сообщение для View
-			$registry->addMessage('Ваши данные успешно добавлены!');
-		}
-		if (isset($_GET['updated'])) {
-			$registry->addMessage('Ваши данные успешно обновлены!');
 		}
 		
 		//отображает страницу на основе собранных выше данных
