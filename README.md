@@ -3,29 +3,44 @@ Educational project: you can **browse** list of students, use **search**, add **
 
 We use mysql/MariaDB with two tables: one holding data about **profiles**, another manipulates **password** hashes.
 
-Now I will say a few words about Project's structure:
-|-Students/ (main folder, lies at of the site, i.e. htdocs/s1.localhost/Students)
-----index.php     : first entry point. From here user can view the table, search, change app mode (per user), etc.
+## Used technologies
 
+1. PHP 7.2
+2. Composer
+3. PHPUnit
+4. PHPDoc
+5. PHPStorm
 
-----reg-edit.php  : second entry point. From here user can register (insert his data) or change info in his profile.
-----bootstrap.php : contains basic initialization for both entry scripts.
-----errors.log    : here scripts write info about errors if in 'production' mode.
-----About modes: there are two of them, indicating how much info about errors user can get. 
------If 'production', user gets only fact of error, if 'development' - details of error, including filepaths and       ------structure.
-----ini/ (contains configuration files) (if you deploy database, be sure to edit your name/pass here)
-----Shinoa/ (basic folder for class files like in psr-1) ('vendor' namespace)
------- StudentList/ (project name) 
----------SearchQueryValidator, StudentValidator.php : they check input data and always produce correct/secure values.
----------StudentMapper, PasswordMapper : interaction with database tables. Need to get SQL somewhere.
----------StudentSQLBuilder, PassSQLBuilder.php : (semi)dynamically produces SQL for various tasks.
----------LoginManager : logs and logs out users, checks their credeintials, using cookies.
----------CommonView, StudentView, RegEditView.php : displays result to user.
----------StatusSelector : Manages user's choice of app mode.
----------ErrHelper, ErrEvoker.php : works with errors and exceptions, also displays them instead of ...View.php
-----------Be ware, that bootstrap.php also contains error handling in case everything in scripts fails.
--------Registry : stores data for communication between different layers of app. Replaces part of global variables, ----------provides interface for them.
-       
+## Prerequisites: 
 
+1. PHP >= 7.0
+2. Composer
+3. PHPUnit
+4. PHPDoc (?)
+
+Now I will say a few words about Project's structure: https://pastebin.com/vmEff7ih
+
+--- 
+
+Учебный проект: вы можете просматривать список студентов, пользоваться поиском, добавлять свои собственые данные на сайт, тем самым получая "членство", сохраняемое в куки; посредством этого вы можете в дальнейшем редактировать свои данные в удобной форме.
+
+Мы используем для этой цели mysql/MariaDB с двумя таблицами: одна хранит данные о студентах, другая - о хэшах их паролей.
+
+## Использованные технологии
+
+1. PHP 7.2
+2. Composer
+3. PHPUnit
+4. PHPDoc
+5. PHPStorm
+
+## Зависимости: 
+
+1. PHP >= 7.0
+2. Composer
+3. PHPUnit
+4. PHPDoc (?)
+
+Несколько слов о структуре проекта для простоты понимания: https://pastebin.com/vmEff7ih
 
 
