@@ -324,32 +324,3 @@ class StudentMapper
 		return $stmt;
 	}
 }
-
-/*
-//test code for simple testing
-//to be deleted
-include 'Student.php';
-include 'StudentSQLBuilder.php';
-include 'Exceptions/StudentException.php';
-try {
-	$opt = array(
-		\PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-		\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-		\PDO::ATTR_EMULATE_PREPARES   => false
-	);
-	$pdo = new \PDO('mysql:host=localhost;dbname=students_book;charset=utf8', 'root', 'VtVgfhfif354', $opt);
-} catch (\PDOException $e) {
-	echo  $e->getCode() . PHP_EOL . $e->getMessage();
-	die;
-}
-$SM = new StudentMapper($pdo);
-
-$student = new Student('mannanov', 'nikoly',  'М',
-	'BGF5ee343434',     'manan@rambler.ru' , 259,
-	1997,      'Приезжий');
-$result = $SM->insertStudent($student);
-echo '<pre>';
-var_dump($result);
-echo '<pre>';
-*/
-

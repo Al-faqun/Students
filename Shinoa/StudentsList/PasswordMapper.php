@@ -197,24 +197,4 @@ class PasswordMapper
 	}
 }
 
-/*
-//test code for simple testing
-//to be deleted
-include 'PassSQLBuilder.php';
-include 'D:\USR\apache\htdocs\s1.localhost\Students\Shinoa\StudentsList\Exceptions\DbException.php';
-try {
-	$opt = array(
-		\PDO::ATTR_ERRMODE            => \PDO::ERRMODE_EXCEPTION,
-		\PDO::ATTR_DEFAULT_FETCH_MODE => \PDO::FETCH_ASSOC,
-		\PDO::ATTR_EMULATE_PREPARES   => false
-	);
-	$pdo = new \PDO('mysql:host=localhost;dbname=students_book;charset=utf8', 'root', 'VtVgfhfif354', $opt);
-} catch (\PDOException $e) {
-	echo  $e->getCode() . PHP_EOL . $e->getMessage();
-	die;
-}
-$mapper = new PasswordMapper($pdo);
-$result = $mapper->getHash(1);
-var_dump($result);
-*/
 
