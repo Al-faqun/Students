@@ -6,6 +6,8 @@ We use mysql/MariaDB with two tables: one holding data about **profiles**, anoth
 Now I will say a few words about Project's structure:
 |-Students/ (main folder, lies at of the site, i.e. htdocs/s1.localhost/Students)
 ----index.php     : first entry point. From here user can view the table, search, change app mode (per user), etc.
+
+
 ----reg-edit.php  : second entry point. From here user can register (insert his data) or change info in his profile.
 ----bootstrap.php : contains basic initialization for both entry scripts.
 ----errors.log    : here scripts write info about errors if in 'production' mode.
