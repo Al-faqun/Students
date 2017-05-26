@@ -5,7 +5,7 @@ We use mysql/MariaDB with two tables: one holding data about **profiles**, anoth
 
 ## Used technologies
 
-1. PHP 7.2
+1. PHP 7.1.2
 2. MariaDB 10.1.21
 3. phpmyadmin
 4. Composer
@@ -16,7 +16,6 @@ We use mysql/MariaDB with two tables: one holding data about **profiles**, anoth
 
 1. PHP >= 7.0
 2. MySQL/MariaDB with two tables: [here you can download needed dumps](http://zalivalka.ru/359753).
-2. Composer
 3. PHPUnit
 4. PHPDoc 
 
@@ -30,7 +29,7 @@ Now I will say a few words about Project's structure: https://pastebin.com/vmEff
 
 ## Использованные технологии
 
-1. PHP 7.2
+1. PHP 7.1.2
 2. MariaDB 10.1.21
 3. phpmyadmin
 4. Composer
@@ -41,9 +40,8 @@ Now I will say a few words about Project's structure: https://pastebin.com/vmEff
 
 1. PHP >= 7.0
 2. MySQL/MariaDB с двумя таблицами: [здесь вы можете их загрузить](http://zalivalka.ru/359753).
-2. Composer
-3. PHPUnit
-4. PHPDoc
+2. PHPUnit
+3. PHPDoc
 
 Несколько слов о структуре проекта для простоты понимания: https://pastebin.com/vmEff7ih
 
