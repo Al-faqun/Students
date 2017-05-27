@@ -1,6 +1,7 @@
 <?php
 	use \Shinoa\StudentsList\ErrorHelper;
-	//не забывать поддерживать значения констант на том же уровне, что и в спец. классах
+	
+	//не забывать поддерживать значения констант на том же уровне, что и в Registry
 	define('APP_IN_DEVELOPMENT', 0);
 	define('APP_IN_PRODUCTION', 1);
 	//переменные, которые нельзя unset
@@ -112,7 +113,7 @@
 	//для throwable
 	set_exception_handler('exceptionHandler');
 	//user must see no thing
-	error_reporting(1);
+	error_reporting(0);
 
 
 	
