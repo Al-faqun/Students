@@ -12,6 +12,5 @@
   ],
   "require": {
     "phpunit/phpunit": "6.0.7",
-    "ircmaxell/random-lib": "1.1.x-dev"
   }
 }

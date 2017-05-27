@@ -21,6 +21,3 @@ if (isset($_COOKIE['testpass']) && $_COOKIE['testpass'] == 2) {
 	setcookie('testpass', 3,   time()-60*60, null, null, null, true);
 }
 */
-setcookie('pass',   'baka', time()+60*60*24*360, null, null, null, true);
-setcookie('userid', 'waka',   time()+60*60*24*360, null, null, null, true);
-var_dump($_COOKIE);
