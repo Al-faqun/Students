@@ -114,24 +114,24 @@
 		//отображает страницу на основе собранных выше данных
 		$view->render();
 		
-		//ловим уловимые ошибки и исключения - код расчитан на php 7+
+	//ловим уловимые ошибки и исключения - код расчитан на php 7+
 	} catch (\Throwable $e) {
 		//класс, заведующий обработкой ошибок
-		$errorHelper = new ErrorHelper($registry->getRoot() . '\Students\templates');
+		$errorHelper = new ErrorHelper( appendFilePath([$registry->getRoot(), 'Students', 'templates']) );
 		//предпринимаем действия, в зависимости от режима приложения: 'в разработке' или 'в поизводстве'
 		switch ($appStatus = $registry->getStatus()) {
 			case $registry::APP_IN_DEVELOPMENT:
 				$errorHelper->renderExceptionAndExit($e, '/Students');
 				break;
-				
+			
 			case $registry::APP_IN_PRODUCTION:
 				$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
 				//форматируем текст для записи в лог-файл
 				$text = ErrorHelper::errorToArray($e);
 				array_unshift($text, date('d-M-Y H:i:s') . ' ');
 				$text[] = 'UserID = ' . $registry->getUserID();
-				$logpath = __DIR__ . DIRECTORY_SEPARATOR . 'errors.log';
-				$errorHelper->addToLog($text, $registry->getRoot() . '/Students/errors.log');
+				$logpath = appendFilePath( [$registry->getRoot(), 'Students', 'errors.log'] );
+				$errorHelper->addToLog($text, $logpath);
 				$errorHelper->renderErrorPageAndExit($userMes, '/Students');
 				break;
 		}

@@ -30,3 +30,83 @@ UserID = 84
 строка:62.
 UserID = 84
 
+27-May-2017 14:31:45 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#Error Helper faied to be created
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrorHelper.php,
+строка:24.
+
+27-May-2017 14:32:21 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#Error Helper faied to be created
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrorHelper.php,
+строка:24.
+
+27-May-2017 14:32:25 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#Error Helper faied to be created
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrorHelper.php,
+строка:24.
+
+27-May-2017 14:32:28 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#Error Helper faied to be created
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrorHelper.php,
+строка:24.
+
+27-May-2017 14:32:33 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#Error Helper faied to be created
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrorHelper.php,
+строка:24.
+
+27-May-2017 14:32:35 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#Error Helper faied to be created
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrorHelper.php,
+строка:24.
+
+27-May-2017 14:32:41 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#Error Helper faied to be created
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrorHelper.php,
+строка:24.
+
+27-May-2017 14:32:52 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#Error Helper faied to be created
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrorHelper.php,
+строка:24.
+
+27-May-2017 14:33:44 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#You triggered exception
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:62.
+UserID = 84
+
+27-May-2017 14:34:17 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#You triggered exception
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:62.
+UserID = 84
+
+27-May-2017 14:34:19 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#Call to undefined method stdClass::callToNonExistantFunction()
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:53.
+UserID = 84
+

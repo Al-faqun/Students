@@ -11,10 +11,10 @@
 	//инициализация основных классов
 	$root = dirname(__DIR__);
 	$registry = Registry::getInstance();
-	$registry->init($root, $root . '/Students/ini/config_test.xml');
+	$registry->init( $root, appendFilePath([$root, 'Students', 'ini', 'config_test.xml']) );
 	try {
 		$dataMapper = new StudentMapper($registry->getPDO());
-		$view = new StudentView($registry, $registry->getRoot() . '/Students/templates');
+		$view = new StudentView( $registry, appendFilePath([$registry->getRoot(), 'Students', 'templates']) );
 		$registry->setDataMapper($dataMapper);
 		$registry->setView($view);
 		
@@ -80,7 +80,7 @@
 	//ловим уловимые ошибки и исключения - код расчитан на php 7+
 	} catch (\Throwable $e) {
 		//класс, заведующий обработкой ошибок
-		$errorHelper = new ErrorHelper($registry->getRoot() . '\Students\templates');
+		$errorHelper = new ErrorHelper( appendFilePath([$registry->getRoot(), 'Students', 'templates']) );
 		//предпринимаем действия, в зависимости от режима приложения: 'в разработке' или 'в поизводстве'
 		switch ($appStatus = $registry->getStatus()) {
 			case $registry::APP_IN_DEVELOPMENT:
@@ -93,8 +93,8 @@
 				$text = ErrorHelper::errorToArray($e);
 				array_unshift($text, date('d-M-Y H:i:s') . ' ');
 				$text[] = 'UserID = ' . $registry->getUserID();
-				$logpath = __DIR__ . DIRECTORY_SEPARATOR . 'errors.log';
-				$errorHelper->addToLog($text, $registry->getRoot() . '/Students/errors.log');
+				$logpath = appendFilePath( [$registry->getRoot(), 'Students', 'errors.log'] );
+				$errorHelper->addToLog($text, $logpath);
 				$errorHelper->renderErrorPageAndExit($userMes, '/Students');
 				break;
 		}

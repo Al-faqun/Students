@@ -21,7 +21,7 @@ class ErrorHelper {
 	public function __construct($templateDir) {
 		if (is_dir($templateDir)) {
 			$this->templateDir = $templateDir;
-		} else throw new \Exception("Error Helper faied to be created");
+		} else throw new \Exception("Error Helper failed to be created");
 	}
 	
 	/**

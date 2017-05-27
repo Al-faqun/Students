@@ -1,10 +1,26 @@
 <?php
+	use \Shinoa\StudentsList\ErrorHelper;
 	//не забывать поддерживать значения констант на том же уровне, что и в спец. классах
 	define('APP_IN_DEVELOPMENT', 0);
 	define('APP_IN_PRODUCTION', 1);
 	//переменные, которые нельзя unset
 	//устанавливаем статус для того, чтобы обработчики работали независимо от классов
 	$appStatus = APP_IN_PRODUCTION;
+
+	/**
+	 * Creates OS-independent path from array of folders or files
+	 * @param array $folder array of strings, WITHOUT delimiters '/', '\'
+	 */
+	function appendFilePath(array $folders)
+	{
+		$firstFolder = trim($folders[0], "\t\n\r\0\x0B\\\/");
+		$path = $firstFolder . DIRECTORY_SEPARATOR;
+		for ( $i = 1; $i < count($folders); $i++ ) {
+			$path.= $folders[$i] . DIRECTORY_SEPARATOR;
+		}
+		$path = rtrim($path, "\t\n\r\0\x0B\\\/");
+		return $path;
+	}
 	
 	function autoload($className)
 	{
@@ -31,7 +47,7 @@
 	{
 		$error = error_get_last();
 		if (isset($error['type']) && $error['type'] === E_ERROR) {
-			$errorHelper = new \Shinoa\StudentsList\ErrorHelper(dirname(__DIR__) . '\Students\templates');
+			$errorHelper = new ErrorHelper( appendFilePath([__DIR__, 'Students','templates']) );
 			$errorHelper->renderFatalError($error, '');
 		}
 	}
@@ -41,7 +57,8 @@
 	//не расчитывайте на них, программируйте обработку ошибок в скриптах
 	function errorHandler($errno, $errstr, $errfile, $errline)
 	{
-		$errorHelper = new \Shinoa\StudentsList\ErrorHelper(dirname(__DIR__) . '\Students\templates');
+		$root = dirname(__DIR__);
+		$errorHelper = new ErrorHelper( appendFilePath([$root, 'Students', 'templates']) );
 		$text = array();
 		$text[] = "Возникла ошибка, выполнение приложения могло бы быть продолжено:";
 		$text[] = 'текст: ';
@@ -56,8 +73,8 @@
 			case APP_IN_PRODUCTION:
 				$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
 				array_unshift($text, date('d-M-Y H:i:s') . ' ');
-				$logpath = __DIR__ . DIRECTORY_SEPARATOR . 'errors.log';
-				$errorHelper->addToLog($text, __DIR__ . '/errors.log');
+				$logpath = appendFilePath( [$root, 'Students', 'errors.log'] );
+				$errorHelper->addToLog($text, $logpath);
 				$errorHelper->renderErrorPageAndExit($userMes, '/Students');
 				break;
 		}
@@ -69,19 +86,19 @@
 	function exceptionHandler(Throwable $e)
 	{
 		$root = dirname(__DIR__);
-		$errorHelper = new \Shinoa\StudentsList\ErrorHelper($root . '\Students\templates');
+		$errorHelper = new ErrorHelper( appendFilePath([$root, 'Students', 'templates']) );
 		switch ($GLOBALS['appStatus']) {
 			case APP_IN_DEVELOPMENT:
-				$errorHelper->renderExceptionAndExit($e, '/Student');
+				$errorHelper->renderExceptionAndExit($e, '/Students');
 				break;
 			case APP_IN_PRODUCTION:
 				$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
 				//форматируем текст для записи в лог-файл
 				$text = \Shinoa\StudentsList\ErrorHelper::errorToArray($e);
 				array_unshift($text, date('d-M-Y H:i:s') . ' ');
-				$logpath = $root . DIRECTORY_SEPARATOR . 'Students' . DIRECTORY_SEPARATOR . 'errors.log';
-				$errorHelper->addToLog($text, $root . '/Students/errors.log');
-				$errorHelper->renderExceptionAndExit($e, '/Student');
+				$logpath = appendFilePath( [$root, 'Students', 'errors.log'] );
+				$errorHelper->addToLog($text, $logpath);
+				$errorHelper->renderExceptionAndExit($e, '/Students');
 				break;
 		}
 	}
@@ -95,7 +112,7 @@
 	//для throwable
 	set_exception_handler('exceptionHandler');
 	//user must see no thing
-	error_reporting(0);
+	error_reporting(1);
 
 
 	
