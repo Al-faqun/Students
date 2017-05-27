@@ -6,7 +6,7 @@
 	<database>
 		<username>insert your username</username>
 		<password>here your passport</password>
-		<dbname>name of the database, containing `Students` and `Passwords` folder</dbname>
+		<dbname>name of the database, containing `Students` and `Passwords` tables</dbname>
 	</database>
 
 </conf>
