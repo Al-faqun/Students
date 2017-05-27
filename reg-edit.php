@@ -15,9 +15,8 @@
 	include_once __DIR__ . '/vendor/autoload.php';
 	
 	//инициализация основных классов
-	$root = dirname(__DIR__);
 	$registry = Registry::getInstance();
-	$registry->init($root, $root . '/Students/ini/config_test.xml');
+$registry->init( $root, $configPath );
 	try {
 		$dataMapper = new StudentMapper($registry->getPDO());
 		$loginMan   = new LoginManager(new PasswordMapper($registry->getPDO()), $_COOKIE);

@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<conf>
+	<app>
+		<status>APP_IN_PRODUCTION</status>
+	</app>
+	<database>
+		<username>root</username>
+		<password>VtVgfhfif354</password>
+		<dbname>students_book</dbname>
+	</database>
+
+</conf>

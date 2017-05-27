@@ -9,9 +9,8 @@
 	include_once 'bootstrap.php';
 
 	//инициализация основных классов
-	$root = dirname(__DIR__);
 	$registry = Registry::getInstance();
-	$registry->init( $root, appendFilePath([$root, 'Students', 'ini', 'config_test.xml']) );
+	$registry->init( $root, $configPath );
 	try {
 		$dataMapper = new StudentMapper($registry->getPDO());
 		$view = new StudentView( $registry, appendFilePath([$registry->getRoot(), 'Students', 'templates']) );
