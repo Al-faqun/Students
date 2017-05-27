@@ -11,6 +11,7 @@
 	/**
 	 * Creates OS-independent path from array of folders or files
 	 * @param array $folder array of strings, WITHOUT delimiters '/', '\'
+	 * @return string valid path
 	 */
 	function appendFilePath(array $folders)
 	{
@@ -114,6 +115,17 @@
 	set_exception_handler('exceptionHandler');
 	//user must see no thing
 	error_reporting(0);
+	
+	//корень сайта
+	$root = dirname(__DIR__);
+	//путь к конфигу
+	if ( file_exists(appendFilePath([$root, 'Students', 'ini', 'config.xml'])) ) {
+		$configPath = appendFilePath([$root, 'Students', 'ini', 'config.xml']);
+	} elseif ( file_exists(appendFilePath([$root, 'Students', 'ini', 'config_test.xml'])) ) {
+		$configPath = appendFilePath([$root, 'Students', 'ini', 'config_test.xml']);
+	} else {
+		throw new Exception('Cannot load config! Exiting');
+	}
 
 
 	
