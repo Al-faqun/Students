@@ -27,7 +27,7 @@ class StudentSQLBuilder
 		  students.birth_year,
 		  students.location
 		 FROM
-		  students_book.students' . self::space;
+		  students' . self::space;
 	
 	const INSERT_STUDENT =
 		'INSERT

@@ -6,19 +6,21 @@
 	define('APP_IN_PRODUCTION', 1);
 	//переменные, которые нельзя unset
 	//устанавливаем статус для того, чтобы обработчики работали независимо от классов
-	$appStatus = APP_IN_PRODUCTION;
+	$appStatus = APP_IN_DEVELOPMENT;
 
 	/**
 	 * Creates OS-independent path from array of folders or files
-	 * @param array $folder array of strings, WITHOUT delimiters '/', '\'
+	 * @param array $folder array of strings, WITHOUT delimiters '/', '\',
+	 * except first folder in linux system must be prepended with '/'
 	 * @return string valid path
 	 */
 	function appendFilePath(array $folders)
 	{
-		$firstFolder = trim($folders[0], "\t\n\r\0\x0B\\\/");
+		$firstFolder = rtrim($folders[0], "\t\n\r\0\x0B\\\/");
 		$path = $firstFolder . DIRECTORY_SEPARATOR;
 		for ( $i = 1; $i < count($folders); $i++ ) {
-			$path.= $folders[$i] . DIRECTORY_SEPARATOR;
+			$nextFolder = trim($folders[$i], "\t\n\r\0\x0B\\\/");
+			$path.= $nextFolder . DIRECTORY_SEPARATOR;
 		}
 		$path = rtrim($path, "\t\n\r\0\x0B\\\/");
 		return $path;
@@ -96,7 +98,7 @@
 			case APP_IN_PRODUCTION:
 				$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
 				//форматируем текст для записи в лог-файл
-				$text = \Shinoa\StudentsList\ErrorHelper::errorToArray($e);
+				$text = ErrorHelper::errorToArray($e);
 				array_unshift($text, date('d-M-Y H:i:s') . ' ');
 				$logpath = appendFilePath( [$root, 'Students', 'errors.log'] );
 				$errorHelper->addToLog($text, $logpath);
@@ -114,7 +116,7 @@
 	//для throwable
 	set_exception_handler('exceptionHandler');
 	//user must see no thing
-	error_reporting(0);
+	error_reporting(1);
 	
 	//корень сайта
 	$root = dirname(__DIR__);
@@ -126,6 +128,8 @@
 	} else {
 		throw new Exception('Cannot load config! Exiting');
 	}
+	//timezone для логов
+	date_default_timezone_set('Europe/Moscow');
 
 
 	

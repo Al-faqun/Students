@@ -110,3 +110,77 @@ UserID = 84
 строка:53.
 UserID = 84
 
+27-May-2017 17:56:57 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#You triggered exception
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:62.
+UserID = 84
+
+27-May-2017 18:14:36 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#You triggered exception
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:62.
+UserID = 84
+
+27-May-2017 18:14:39 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#Call to undefined method stdClass::callToNonExistantFunction()
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:53.
+UserID = 84
+
+27-May-2017 18:50:17 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#You triggered exception
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:62.
+UserID = 84
+
+27-May-2017 18:50:20 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#Call to undefined method stdClass::callToNonExistantFunction()
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:53.
+UserID = 84
+
+27-May-2017 18:54:17 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#You triggered exception
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:62.
+UserID = 84
+
+27-May-2017 18:54:19 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#Call to undefined method stdClass::callToNonExistantFunction()
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:53.
+UserID = 84
+
+27-May-2017 18:59:11 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#You triggered exception
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:62.
+UserID = 84
+
+27-May-2017 19:00:21 
+Возникло исключение #1 класса Shinoa\StudentsList\Exceptions\StudentException:
+текст: 'You triggered exception',
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:62.
+#0 F:\xammp\htdocs\s1.localhost\Students\index.php(54): Shinoa\StudentsList\ErrEvoker->evokeException()
+
+#1 {main}
+UserID = 84
+

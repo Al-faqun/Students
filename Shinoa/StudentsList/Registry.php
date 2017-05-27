@@ -134,7 +134,7 @@ class Registry
 				);
 				$this->pdo = new \PDO($this->getDSN(), $username, $password, $opt);
 			} catch (\PDOException $e) {
-				throw new RegistryException('Ошибка при подключении к базе данных', 0, $e);
+				throw new RegistryException('Ошибка при подключении к базе данных');
 			}
 		}
 		return $this->pdo;

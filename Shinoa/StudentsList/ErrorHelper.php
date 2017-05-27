@@ -35,33 +35,8 @@ class ErrorHelper {
 	 */
 	public function renderExceptionAndExit(\Throwable $e, $whereToRedirect)
 	{
-		//recursively get info about exception and it's possible parents
-		$i = 1;
-		$previous = $e->getPrevious();
-		while ($previous !== null)
-		{
-			$i++;
-			$previous = $previous->getPrevious();
-		}
-		
-		$output = array();
-		do {
-			$text = array();
-			$text[] = "Возникло исключение #{$i} класса " . get_class($e) . ':';
-			$text[] = 'текст: ' . "'" . $e->getMessage() . "'" . ',';
-			$text[] = 'файл: ' . $e->getFile() . ',';
-			$text[] = 'строка:' . $e->getLine() . '.';
-			$trace = explode('#', $e->getTraceAsString());
-			foreach ($trace as $line) {
-				if (!empty($line)) {
-					$text[] = '#' . $line;
-				}
-			}
-			$output[] = $text;
-			$i--;
-			$previous = $e->getPrevious();
-		}
-		while ($e = $previous);
+		//get text of exception and it's previous exceptions
+		$output = self::excepTextRecursive($e);
 		
 		//show info to the user and end main script
 		$this->renderErrorPageAndExit($output, $whereToRedirect);
@@ -125,6 +100,43 @@ class ErrorHelper {
 	{
 		$text = self::arrayToString($message, PHP_EOL, PHP_EOL);
 		error_log($text, 3, $logpath);
+	}
+	
+	/**
+	 * Parses Throwable (and all of it's previous if exist) into array of strings, each presenting one line.
+	 * @param \Throwable $e
+	 * @return array array of strings
+	 */
+	public static function excepTextRecursive(\Throwable $e)
+	{
+		//recursively get info about exception and it's possible parents
+		$i = 1;
+		$previous = $e->getPrevious();
+		if ($previous !== null)
+		{
+			$i++;
+			$previous = $previous->getPrevious();
+		}
+		
+		$output = array();
+		do {
+			$text = array();
+			$text[] = "Возникло исключение #{$i} класса " . get_class($e) . ':';
+			$text[] = 'текст: ' . "'" . $e->getMessage() . "'" . ',';
+			$text[] = 'файл: ' . $e->getFile() . ',';
+			$text[] = 'строка:' . $e->getLine() . '.';
+			$trace = explode('#', $e->getTraceAsString());
+			foreach ($trace as $line) {
+				if (!empty($line)) {
+					$text[] = '#' . $line;
+				}
+			}
+			$output[] = $text;
+			$i--;
+			$previous = $e->getPrevious();
+		}
+		while ($e = $previous);
+		return $output;
 	}
 	
 	/**
