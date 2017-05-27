@@ -6,11 +6,11 @@
 	define('APP_IN_PRODUCTION', 1);
 	//переменные, которые нельзя unset
 	//устанавливаем статус для того, чтобы обработчики работали независимо от классов
-	$appStatus = APP_IN_DEVELOPMENT;
+	$appStatus = APP_IN_PRODUCTION;
 
 	/**
 	 * Creates OS-independent path from array of folders or files
-	 * @param array $folder array of strings, WITHOUT delimiters '/', '\',
+	 * @param array $folders array of strings, WITHOUT delimiters '/', '\',
 	 * except first folder in linux system must be prepended with '/'
 	 * @return string valid path
 	 */
