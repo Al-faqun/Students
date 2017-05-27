@@ -1,4 +1,7 @@
-# Students
+# Students  
+
+(русская версия ниже)
+
 Educational project: you can **browse** list of students, use **search**, add **your** own data, which will give you cookie token, so you could **edit** your 'Student profile' later.
 
 We use mysql/MariaDB with two tables: one holding data about **profiles**, another manipulates **password** hashes.
@@ -16,6 +19,7 @@ We use mysql/MariaDB with two tables: one holding data about **profiles**, anoth
 
 1. PHP >= 7.0
 2. MySQL/MariaDB with two tables: [here you can download needed dumps](http://zalivalka.ru/359753).
+3. Composer
 3. PHPUnit
 4. PHPDoc 
 
@@ -40,9 +44,10 @@ Now I will say a few words about Project's structure: https://pastebin.com/vmEff
 
 1. PHP >= 7.0
 2. MySQL/MariaDB с двумя таблицами: [здесь вы можете их загрузить](http://zalivalka.ru/359753).
-2. PHPUnit
-3. PHPDoc
+3. Composer
+4. PHPUnit
+5. PHPDoc
 
-Несколько слов о структуре проекта для простоты понимания: https://pastebin.com/vmEff7ih
+Несколько слов о структуре проекта для простоты понимания: https://pastebin.com/qqr8QZ46
 
 
