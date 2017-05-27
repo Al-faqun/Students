@@ -116,7 +116,7 @@
 	//для throwable
 	set_exception_handler('exceptionHandler');
 	//user must see no thing
-	error_reporting(1);
+	error_reporting(0);
 	
 	//корень сайта
 	$root = dirname(__DIR__);
