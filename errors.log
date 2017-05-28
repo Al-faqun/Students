@@ -184,3 +184,19 @@ UserID = 84
 #1 {main}
 UserID = 84
 
+28-May-2017 14:47:11 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#You triggered exception
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:62.
+UserID = 84
+
+28-May-2017 14:47:13 
+Возникла ошибка, выполнение приложения прекращено:
+текст: 
+#Call to undefined method stdClass::callToNonExistantFunction()
+файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
+строка:53.
+UserID = 84
+
