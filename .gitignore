@@ -3,3 +3,4 @@ vendor/
 vendor
 ini/config.xml
 *.log
+errors.log
