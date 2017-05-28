@@ -1,3 +1,0 @@
-<Files ~ "\.xml$">
-  Require all denied
-</Files>
