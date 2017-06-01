@@ -1,6 +1,7 @@
 .idea/
 vendor/
-vendor
 ini/config.xml
 *.log
 errors.log
+tests.php
+test_bootstrap.php
