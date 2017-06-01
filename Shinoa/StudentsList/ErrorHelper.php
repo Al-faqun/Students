@@ -99,20 +99,7 @@ class ErrorHelper {
 	public function addToLog($message, $logpath)
 	{
 		$text = self::arrayToString($message, PHP_EOL, PHP_EOL);
-		if ( file_exists($logpath) )
-			if ( is_writable($logpath) ) {
-				error_log($text, 3, $logpath);
-			}
-			else throw new \Exception('Filepath is now writable');
-		else {
-			if ( is_writable(dir($logpath)) ){
-				touch($logpath);
-				error_log($text, 3, $logpath);
-			}
-			else throw new \Exception('Filepath is now writable');
-			
-		}
-		
+		error_log($text, 3, $logpath);
 	}
 	
 	/**
