@@ -6,7 +6,7 @@
 	define('APP_IN_PRODUCTION', 1);
 	//переменные, которые нельзя unset
 	//устанавливаем статус для того, чтобы обработчики работали независимо от классов
-	$appStatus = APP_IN_PRODUCTION;
+	$appStatus = APP_IN_DEVELOPMENT;
 
 	/**
 	 * Creates OS-independent path from array of folders or files
@@ -109,27 +109,17 @@
 	
 	//автозагрузчик
 	spl_autoload_register('autoload');
+    //автозагрузчик для классов Composer'а
+    include_once __DIR__ . '/vendor/autoload.php';
 	//на случай, если какая-то фатальная ошибка пробралась и прекратила скрипт
 	register_shutdown_function('shutDown');
-	//для нефатальных ошибок
+	//для нефатальных ошибок, warning и notices выбрасывают Throwable
 	set_error_handler('errorHandler', E_ALL);
 	//для throwable
 	set_exception_handler('exceptionHandler');
 	//user must see no thing
 	error_reporting(0);
-	
-	//корень сайта
-	$root = dirname(__DIR__);
-	//путь к конфигу
-	if ( file_exists(appendFilePath([$root, 'Students', 'ini', 'config.xml'])) ) {
-		$configPath = appendFilePath([$root, 'Students', 'ini', 'config.xml']);
-	} elseif ( file_exists(appendFilePath([$root, 'Students', 'ini', 'config_test.xml'])) ) {
-		$configPath = appendFilePath([$root, 'Students', 'ini', 'config_test.xml']);
-	} else {
-		throw new Exception('Cannot load config! Exiting');
-	}
-	//timezone для логов
-	date_default_timezone_set('Europe/Moscow');
+
 
 
 	

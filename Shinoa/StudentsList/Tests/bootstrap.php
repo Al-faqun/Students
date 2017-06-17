@@ -5,7 +5,7 @@ include_once('root.php');
 include_once('autoload.php');
 
 $pathToConf = \Shinoa\StudentsList\Tests\DOC_ROOT . DIRECTORY_SEPARATOR . 'Students'
-	                . DIRECTORY_SEPARATOR . 'ini' . DIRECTORY_SEPARATOR . 'config_test.xml';
+	                . DIRECTORY_SEPARATOR . 'ini' . DIRECTORY_SEPARATOR . 'config.xml';
 if ( file_exists($pathToConf) ) {
 	$test_conf = simplexml_load_file($pathToConf);
 	$test_dsn = "mysql:host=localhost;dbname={$test_conf->database->dbname};charset=utf8";

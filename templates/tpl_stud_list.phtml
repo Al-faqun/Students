@@ -1,14 +1,3 @@
-<?php
-	if (!isset($urgentMessage)
-	     ||
-	    !isset($tbodyContent)
-	     ||
-	    !isset($pageCount)
-		 ||
-		!isset($appStatusText)
-	) throw new \Shinoa\StudentsList\Exceptions\ViewException('One or more variables not set');
-?>
-
 <!DOCTYPE html>
 <html lang="ru">
 <head>
@@ -47,17 +36,16 @@
 					<option value="birth_year">Год рождения</option>
 					<option value="location">Происхождение</option>
 				</select>
-
 				<label for="asc">По возр.</label>
 				<input type="radio" name="order" id="asc" value="asc" checked="checked">
 				<label for="desc">По убыв.</label>
 				<input type="radio" name="order" id="desc" value="desc">
-
+    
 				<input type="submit" value="Искать">
 			</div>
 		</form>
 		<div class="appstatchoice">
-			<p>Режим: <?=$appStatusText?> </p>
+			<p>Режим: <?=self::esc($appStatusText)?> </p>
 			<form action="" method="post">
 				<label for="appStatus">Изменить режим работы приложения:</label>
 				<select name="appStatus">
@@ -66,19 +54,16 @@
 				</select>
 				<input type="submit" value="Изменить">
 			</form>
-			<form action="" method="post">
+			<form action="" method="get">
 				<input type="hidden" name="evokeException">
 				<input type="submit" value="Вызвать исключение">
 			</form>
-			<form action="" method="post">
+			<form action="" method="get">
 				<input type="hidden" name="evokeError">
 				<input type="submit" value="Вызвать ошибку">
 			</form>
 			<a href="/Students/errors.log">Просмотреть лог</a>
 		</div>
-		
-		
-		
 	</div>
 	
 	<?php if (empty($urgentMessage)) : ?>
@@ -103,14 +88,13 @@
 			</table>
 			<div class="pagination">
 				<form action="" method="get">
-					<?php for ($i = 1; $i <= $pageCount; $i++): ?>
+					<?php for ($i = 1; $i <= count($queries); $i++): ?>
 						<a href="?<?=$queries[$i]?>" class="inline-block"> <?=$i?> </a>
 					<?php endfor; ?>
 				</form>
 			</div>
 		</div>
-		
-
+  
 	<?php else: ?>
 		<div class="message">
 			<?=$urgentMessage ?>

@@ -13,6 +13,8 @@ use Shinoa\StudentsList\Exceptions\StudentException;
  */
 class ErrEvoker
 {
+	public static $keyError = 'evokeError';
+	public static $keyExcep = 'evokeException';
 	function __construct()
 	{
 	}
@@ -24,7 +26,7 @@ class ErrEvoker
 	 */
 	function isErrorIn(array $array)
 	{
-		if ( array_key_exists('evokeError', $array) ) {
+		if ( array_key_exists(self::$keyError, $array) ) {
 			$result = true;
 		} else $result = false;
 		return $result;
@@ -37,7 +39,7 @@ class ErrEvoker
 	 */
 	function isExceptionIn(array $array)
 	{
-		if ( array_key_exists('evokeException', $array) ) {
+		if ( array_key_exists(self::$keyExcep, $array) ) {
 			$result = true;
 		} else $result = false;
 		return $result;
@@ -47,7 +49,7 @@ class ErrEvoker
 	 * Evokes error (by calling nonexistant method of existant class).
 	 * The error can be catched as Throwable.
 	 */
-	function evokeError()
+	static function evokeError()
 	{
 		$test = new \stdClass();
 		$test->callToNonExistantFunction();
@@ -57,7 +59,7 @@ class ErrEvoker
 	 * Evokes default exeption of the project.
 	 * @throws StudentException
 	 */
-	function evokeException()
+	static function evokeException()
 	{
 		throw new StudentException('You triggered exception');
 	}

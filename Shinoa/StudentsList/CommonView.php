@@ -1,30 +1,68 @@
 <?php
 namespace Shinoa\StudentsList;
-
+use Shinoa\StudentsList\Exceptions\ViewException;
 /**
  * Abstract class CommonView
  * @package Shinoa\StudentsList
  */
 abstract class CommonView
 {
-	//link to the registry object, from which are retrieved all the data.
-	protected $registry;
-	//interactions with the database
-	protected $dataMapper;
-	//full path to the folder with templates
+    /**
+     * @var array Array of strings.
+     */
+    protected $requiredFields;
+    
+    
+    /**
+     * @var string Full path to the folder with templates
+     */
 	protected $templatesDir = '';
 	
 	/**
 	 * CommonView constructor.
-	 * @param Registry $registry
 	 * @param string $templatesDir
 	 */
-	function __construct(Registry $registry, $templatesDir)
+	function __construct($templatesDir)
 	{
-		$this->registry = $registry;
 		$this->templatesDir = $templatesDir;
 	}
 	
+	/**
+	 * Throws exception if at least one parameter is not defined.
+	 * Exception text contains name of the missing key.
+	 * @param $params
+	 * @throws ViewException
+	 */
+	protected function ensureParams($params)
+	{
+		if ( $this->checkParams($params) !== true ) {
+			$missing = $this->checkParams($params);
+			throw new ViewException("Missing key: $missing");
+		}
+	}
+	
+    /**
+     * Checks whether provided array has all the required fields to run the View.
+     * Values of the $params array are not checked.
+     * Returns bool any way.
+     *
+     * @param $params
+     * @return bool|string|int TRUE if array has all the required keys; first missing key otherwise.
+     */
+	protected function checkParams($params)
+    {
+        $result = false;
+        if (is_array($params)) {
+            foreach ($this->requiredFields as $required) {
+                if ( !array_key_exists($required, $params) ) {
+                    $result = $required;
+                    break;
+                } else $result = true;
+            }
+        } else $result = false;
+        return $result;
+    }
+    
 	/**
 	 * Escapes value for html use.
 	 *
@@ -56,7 +94,7 @@ abstract class CommonView
 	 * @param array $messages
 	 * @return string
 	 */
-	public function mesToHTML($messages)
+    function mesToHTML($messages)
 	{
 		$result = '';
 		if (!empty($messages)) {
@@ -70,23 +108,18 @@ abstract class CommonView
 	
 	/**
 	 * Outputs page to user.
-	 */
-	public function render()
+     * @var $params array Link to the params array, from which are retrieved all the data.
+     */
+    function render($params)
 	{
 		//посылаем нужный заголовок
 		header('Content-type: text/html; charset=utf-8');
 		//отсылаем страницу пользователю
-		$contents = $this->output();
+		$contents = $this->output($params);
 		echo $contents;
 	}
 	
-	/**
-	 * Must return code of page.
-	 *
-	 * @return string
-	 */
-	abstract function output();
-	
+
 	
 	
 	

@@ -13,7 +13,7 @@ class SearchQueryValidator
 	/**
 	 *How many students displays one page.
 	 */
-	const STUDENTS_IN_PAGE = 20;
+	const STUDENTS_IN_PAGE = Pager::STUDENTS_IN_PAGE;
 	
 	/**
 	 * @var array Contains (or not) values of various search fields, that must be checked.
@@ -40,6 +40,18 @@ class SearchQueryValidator
 		$this->input = $input;
 	}
 	
+	public function genSearchData()
+	{
+		$text = $this->checkSearchText();
+		$field = $this->checkSearchField();
+		$sortby = $this->checkSortBy();
+		$order = $this->checkOrder();
+		$offset = '';
+		$limit = '';
+		$this->checkPage($offset, $limit);
+		$result = new SearchData($text, $field, $sortby, $order, $offset, $limit);
+		return $result;
+	}
 	/**
 	 * Checks provided earlier input array for specific field,
 	 * that contains name of database field, for which text value will be searched.

@@ -2,6 +2,6 @@
 namespace Shinoa\StudentsList\Exceptions;
 
 
-class RegistryException extends \Exception
+class LoaderException extends \Exception
 {
 }

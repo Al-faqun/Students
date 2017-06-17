@@ -60,7 +60,6 @@ class LoginManager
 	 */
 	function checkAuth()
 	{
-		
 		if ( isset($this->input['pass']) && isset($this->input['userid']) )
 		{
 			$password = $this->input['pass'];

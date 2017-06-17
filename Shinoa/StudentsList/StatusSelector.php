@@ -6,7 +6,9 @@ use Shinoa\StudentsList\Exceptions\StudentException;
 
 class StatusSelector
 {
-	private static $key = 'appStatus';
+	const APP_IN_DEVELOPMENT = 0;
+	const APP_IN_PRODUCTION  = 1;
+	public static $key = 'appStatus';
 	private static $const = array('APP_IN_DEVELOPMENT', 'APP_IN_PRODUCTION');
 	private static $texts = array('In development', 'In production');
 	
@@ -14,11 +16,11 @@ class StatusSelector
 	{
 	}
 	
-	
+	/*
 	function dataIn(array $input)
 	{
-		if (array_key_exists('appStatus', $input)) {
-			switch ($input['appStatus']) {
+		if (array_key_exists(self::$key, $input)) {
+			switch ($input[self::$key]) {
 				case '0':
 					$result = self::$texts[0];
 					break;
@@ -33,6 +35,59 @@ class StatusSelector
 		return $result;
 		
 	}
+	*/
+	
+	function checkCode($value)
+	{
+		switch ($value) {
+			case '0':
+				$result = 0;
+				break;
+			case '1':
+				$result = 1;
+				break;
+			default:
+				$result = false;
+				break;
+		}
+		return $result;
+	}
+	
+	function checkText($value)
+	{
+		$code = $this->checkCode($value);
+		if ( $code !== false ) {
+			$text = self::codeToText($code);
+		} else $text = false;
+		return $text;
+	}
+	
+	function getCode($input)
+	{
+		if (array_key_exists(self::$key, $input)) {
+			switch ($input[self::$key]) {
+				case '0':
+					$result = 0;
+					break;
+				case '1':
+					$result = 1;
+					break;
+				default:
+					$result = false;
+					break;
+			}
+		} else $result = false;
+		return $result;
+	}
+	
+	function getText($input)
+	{
+		$code = $this->getCode($input);
+		if ( $code !== false ) {
+			$text = self::codeToText($code);
+		} else $text = false;
+		return $text;
+	}
 	
 	function save($value)
 	{
@@ -40,6 +95,28 @@ class StatusSelector
 			setcookie(self::$key, $value, time() + 60 * 60 * 24 * 360,
 				 null, null, null, true);
 		}
+	}
+	
+	function getDefaultCode($statusFromConfig)
+	{
+		if (isset($statusFromConfig)) {
+			switch ($statusFromConfig) {
+				case 'APP_IN_DEVELOPMENT':
+					$status = APP_IN_DEVELOPMENT;
+					break;
+				case 'APP_IN_PRODUCTION':
+					$status = APP_IN_PRODUCTION;
+					break;
+				default:
+					throw new StudentException('App status is not properly loaded');
+			}
+		} else throw new StudentException('App status is not properly loaded');
+		return $status;
+	}
+	
+	function useDefaultText($statusFromConfig)
+	{
+		return self::codeToText( $this->useDefaultCode($statusFromConfig) );
 	}
 	
 	public static function textToCode($statusText)
@@ -58,9 +135,9 @@ class StatusSelector
 		return $result;
 	}
 	
-	public static function codeToText($statusText)
+	public static function codeToText($statusCode)
 	{
-		switch ($statusText) {
+		switch ($statusCode) {
 			case 0:
 				$result = self::$texts[0];
 				break;

@@ -38,25 +38,21 @@ class StudentMapper
 	
 	/**
 	 * Fetch a number of students from database.
-	 * @param string $sortBy Name of column to search.
-	 * @param string $order Order of search: 'ASC' or 'DESC', caseinsensitive.
-	 * @param int $offset Start position in search result.
-	 * @param int $limit Number of rows, retrieved from the starting position.
-	 * @param string $searchText Text, that MUST occur in target column.
-	 * @param string $searchField Name of column, where searchText must appear.
+	 * @param SearchData $data
 	 * @return array|bool Array of class Student or FALSE on failure.
 	 * @throws StudentException
 	 */
-	public function getStudents($sortBy = 'surname', $order = 'ASC',
-	                            $offset = 0, $limit = 5,
-	                            $searchText = '', $searchField = '')
+	public function getStudents(SearchData $data)
 	{
+		$text   = $data->getSearchText();    $field  = $data->getSearchField();
+		$sortBy = $data->getSortby();        $order  = $data->getOrder();
+		$limit  = $data->getLimit();         $offset = $data->getOffset();
 		try {
 			$students = array();
 			
 			$this->SQLBuilder->select();
-			if ($searchText !== '') {
-				$this->SQLBuilder->whereLike($searchField);
+			if ($text !== '') {
+				$this->SQLBuilder->whereLike($field);
 			}
 			$this->SQLBuilder->orderBy($sortBy, $order);
 			$this->SQLBuilder->limit($limit, $offset);
@@ -64,8 +60,8 @@ class StudentMapper
 			
 			$stmt = $this->pdo->prepare($sql);
 			$values = array();
-			if ($searchText !== '') {
-				$values[':like'] = "%$searchText%";
+			if ($text !== '') {
+				$values[':like'] = "%$text%";
 			}
 
 			if ( ($stmt->execute($values)) && ($stmt->rowCount() > 0) )  {
