@@ -4,8 +4,4 @@ vendor
 ini/config.xml
 *.log
 errors.log
-test.php
-test.php
 test_bootstrap.php
-errors.log
-errors.log
