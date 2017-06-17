@@ -4,3 +4,4 @@ vendor
 ini/config.xml
 *.log
 errors.log
+test.php
