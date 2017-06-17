@@ -2,9 +2,5 @@
 vendor/
 vendor
 ini/config.xml
-*.log
-errors.log
 test_bootstrap.php
-
-errors.log
 *.log
