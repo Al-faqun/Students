@@ -1,6 +1,7 @@
 {
   "require": {
     "phpunit/phpunit": "6.0.7",
-    "pimple/pimple": "3.0.x-dev"
+    "pimple/pimple": "3.0.x-dev",
+    "twig/twig": "2.x-dev"
   }
 }
