@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 ﻿
 17-Jun-2017 01:54:22 
 Возникла ошибка, выполнение приложения прекращено:
@@ -14,4 +15,6 @@ UserID = 0
 файл: F:\xammp\htdocs\s1.localhost\Students\Shinoa\StudentsList\ErrEvoker.php,
 строка:55.
 UserID = 0
+=======
+>>>>>>> origin/dev-2
 
