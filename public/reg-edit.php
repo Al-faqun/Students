@@ -3,7 +3,7 @@
 	use Shinoa\StudentsList\Loader;
 	use Shinoa\StudentsList\StatusSelector;
 	
-	include_once 'bootstrap.php';
+	include_once '../bootstrap.php';
 
 	$controller = new RegEditController();
 	

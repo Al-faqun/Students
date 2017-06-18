@@ -708,12 +708,12 @@
             "source": {
                 "type": "git",
                 "url": "https://github.com/silexphp/Pimple.git",
-                "reference": "93ec38f1df4d4ad3f0c71bc9273139fa8af29f3e"
+                "reference": "2af86acb99d69fda50fe441cc45574d70c6267b8"
             },
             "dist": {
                 "type": "zip",
-                "url": "https://api.github.com/repos/silexphp/Pimple/zipball/93ec38f1df4d4ad3f0c71bc9273139fa8af29f3e",
-                "reference": "93ec38f1df4d4ad3f0c71bc9273139fa8af29f3e",
+                "url": "https://api.github.com/repos/silexphp/Pimple/zipball/2af86acb99d69fda50fe441cc45574d70c6267b8",
+                "reference": "2af86acb99d69fda50fe441cc45574d70c6267b8",
                 "shasum": ""
             },
             "require": {
@@ -749,7 +749,7 @@
                 "container",
                 "dependency injection"
             ],
-            "time": "2017-03-24 14:13:45"
+            "time": "2017-06-04 15:04:52"
         },
         {
             "name": "sebastian/code-unit-reverse-lookup",

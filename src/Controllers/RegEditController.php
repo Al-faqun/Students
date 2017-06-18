@@ -36,11 +36,11 @@ class RegEditController extends PageController
 			
 		} catch (\Throwable $e) {
 			//класс, заведующий обработкой ошибок
-			$errorHelper = new ErrorHelper( appendFilePath([$root, 'Students', 'templates']) );
+			$errorHelper = new ErrorHelper( appendFilePath([$root, 'templates']) );
 			//предпринимаем действия, в зависимости от режима приложения: 'в разработке' или 'в производстве'
 			switch ($this->appStatus) {
 				case StatusSelector::APP_IN_DEVELOPMENT:
-					$errorHelper->renderExceptionAndExit($e, '/Students');
+					$errorHelper->renderExceptionAndExit($e, '/');
 					break;
 				case StatusSelector::APP_IN_PRODUCTION:
 					$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
@@ -48,9 +48,9 @@ class RegEditController extends PageController
 					$text = ErrorHelper::errorToArray($e);
 					array_unshift($text, date('d-M-Y H:i:s') . ' ');
 					$text[] = 'UserID = ' . $this->userID;
-					$logpath = appendFilePath( [$root, 'Students', 'errors.log'] );
+					$logpath = appendFilePath( [$root, 'public', 'errors.log'] );
 					$errorHelper->addToLog($text, $logpath);
-					$errorHelper->renderErrorPageAndExit($userMes, '/Students');
+					$errorHelper->renderErrorPageAndExit($userMes, '/');
 					break;
 			}
 		}
@@ -84,7 +84,7 @@ class RegEditController extends PageController
 				$student = $dataMapper->findStudentByID( $loginMan->getLoggedID() );
 			};
 		}
-		$view = new RegEditView(Loader::getRoot() . '/Students/templates');
+		$view = new RegEditView(Loader::getRoot() . '/templates');
 		$view->render(['student_data' => $student,
 		               'is_logged'    => $isLogged,
 		               'messages'     => $this->messages,

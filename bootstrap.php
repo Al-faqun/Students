@@ -25,33 +25,13 @@
 		$path = rtrim($path, "\t\n\r\0\x0B\\\/");
 		return $path;
 	}
-	
-	function autoload($className)
-	{
-		//for psr-4: $root эквивалентно $base_dir
-		$base_dir = __DIR__ . DIRECTORY_SEPARATOR;
-		$className = ltrim($className, '\\');
-		$fileName = '';
-		$namespace = '';
-		if ($lastNsPos = strrpos($className, '\\')) {
-			$namespace = substr($className, 0, $lastNsPos);
-			$className = substr($className, $lastNsPos + 1);
-			$fileName = str_replace('\\', DIRECTORY_SEPARATOR, $namespace) . DIRECTORY_SEPARATOR;
-		}
-		$fileName .= str_replace('_', DIRECTORY_SEPARATOR, $className) . '.php';
-		
-		$path = $base_dir  . $fileName;
-		if (file_exists($path)) {
-			require $path;
-		}
-	}
 
 	//бывает, что и в php7 выбрасываются несловимые ошибки
 	function shutDown()
 	{
 		$error = error_get_last();
 		if (isset($error['type']) && $error['type'] === E_ERROR) {
-			$errorHelper = new ErrorHelper( appendFilePath([__DIR__, 'Students','templates']) );
+			$errorHelper = new ErrorHelper( appendFilePath([__DIR__,'templates']) );
 			$errorHelper->renderFatalError($error, '');
 		}
 	}
@@ -62,7 +42,7 @@
 	function errorHandler($errno, $errstr, $errfile, $errline)
 	{
 		$root = dirname(__DIR__);
-		$errorHelper = new ErrorHelper( appendFilePath([$root, 'Students', 'templates']) );
+		$errorHelper = new ErrorHelper( appendFilePath([$root, 'templates']) );
 		$text = array();
 		$text[] = "Возникла ошибка, выполнение приложения могло бы быть продолжено:";
 		$text[] = 'текст: ';
@@ -71,15 +51,15 @@
 		$text[] = 'строка:' . $errline . '.';
 		switch ($GLOBALS['appStatus']) {
 			case APP_IN_DEVELOPMENT:
-				$errorHelper->renderErrorPageAndExit($text, '/Students');
+				$errorHelper->renderErrorPageAndExit($text, '/');
 				break;
 				
 			case APP_IN_PRODUCTION:
 				$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
 				array_unshift($text, date('d-M-Y H:i:s') . ' ');
-				$logpath = appendFilePath( [$root, 'Students', 'errors.log'] );
+				$logpath  = appendFilePath( [$root, 'public', 'errors.log'] );
 				$errorHelper->addToLog($text, $logpath);
-				$errorHelper->renderErrorPageAndExit($userMes, '/Students');
+				$errorHelper->renderErrorPageAndExit($userMes, '/');
 				break;
 		}
 
@@ -90,26 +70,24 @@
 	function exceptionHandler(Throwable $e)
 	{
 		$root = dirname(__DIR__);
-		$errorHelper = new ErrorHelper( appendFilePath([$root, 'Students', 'templates']) );
+		$errorHelper = new ErrorHelper( appendFilePath([$root, 'templates']) );
 		switch ($GLOBALS['appStatus']) {
 			case APP_IN_DEVELOPMENT:
-				$errorHelper->renderExceptionAndExit($e, '/Students');
+				$errorHelper->renderExceptionAndExit($e, '/');
 				break;
 			case APP_IN_PRODUCTION:
 				$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
 				//форматируем текст для записи в лог-файл
 				$text = ErrorHelper::errorToArray($e);
 				array_unshift($text, date('d-M-Y H:i:s') . ' ');
-				$logpath = appendFilePath( [$root, 'Students', 'errors.log'] );
+				$logpath = appendFilePath( [$root, 'public', 'errors.log'] );
 				$errorHelper->addToLog($text, $logpath);
-				$errorHelper->renderExceptionAndExit($e, '/Students');
+				$errorHelper->renderExceptionAndExit($e, '/');
 				break;
 		}
 	}
-	
-	//автозагрузчик
-	spl_autoload_register('autoload');
-    //автозагрузчик для классов Composer'а
+
+    //автозагрузчик Composer'а
     include_once __DIR__ . '/vendor/autoload.php';
 	//на случай, если какая-то фатальная ошибка пробралась и прекратила скрипт
 	register_shutdown_function('shutDown');

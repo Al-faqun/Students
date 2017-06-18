@@ -3,7 +3,8 @@
 	use Shinoa\StudentsList\Loader;
 	use Shinoa\StudentsList\StatusSelector;
 	use Shinoa\StudentsList\ErrEvoker;
-	require_once 'bootstrap.php';
+	require_once '../bootstrap.php';
+	
 	//timezone для логов
 	date_default_timezone_set('Europe/Moscow');
 	
@@ -14,7 +15,7 @@
 		if ( $code !== false) {
 			$statusSelector->save($code);
 		}
-		$c->redirect('/Students/');
+		$c->redirect('/');
 	});
 	
 	$controller->cookie('appStatus', function ($key, $value, ListController $c) {
@@ -24,7 +25,7 @@
 				$c->setAppStatus($code);
 			}
 	});
-	
+
 	$controller->noCookie('appStatus', function ($key, $value, ListController $c) {
 		$statusSelector = new StatusSelector();
 		$code = $statusSelector->getDefaultCode(Loader::getConfig()->app->status);
