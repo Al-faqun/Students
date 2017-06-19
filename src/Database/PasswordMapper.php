@@ -1,8 +1,9 @@
 <?php
-namespace Shinoa\StudentsList;
+namespace Shinoa\StudentsList\Database;
 
 
 use PhpParser\Node\Expr\Variable;
+use Shinoa\StudentsList\Database\PassSQLBuilder;
 use Shinoa\StudentsList\Exceptions\DbException;
 
 /**

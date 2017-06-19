@@ -3,6 +3,8 @@ namespace Shinoa\StudentsList;
 
 
 use Shinoa\StudentsList\Exceptions\LoaderException;
+use Shinoa\StudentsList\LoginManager;
+use Shinoa\StudentsList\Student;
 
 /**
  * This class forms the link between various parts of application,

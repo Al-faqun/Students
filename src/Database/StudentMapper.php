@@ -1,7 +1,11 @@
 <?php
-namespace Shinoa\StudentsList;
+namespace Shinoa\StudentsList\Database;
 use Shinoa\StudentsList\Exceptions\StudentException;
 use InvalidArgumentException;
+use Shinoa\StudentsList\InvalidTypeException;
+use Shinoa\StudentsList\SearchData;
+use Shinoa\StudentsList\Student;
+use Shinoa\StudentsList\Database\StudentSQLBuilder;
 
 /**
  * Class StudentMapper.
@@ -19,6 +23,8 @@ class StudentMapper
 	 * Provides dynamic sql sequences.
 	 */
 	private $SQLBuilder;
+	
+	private $lastCount = 0;
 	
 	/**
 	 * @var \PDO
@@ -71,6 +77,8 @@ class StudentMapper
 			} else {
 				$students = false;
 			}
+			
+			$this->lastCount = $this->foundRows();
 		} catch (\PDOException $e) {
 			throw new StudentException('Ошибка при получении данных студентов', 0, $e);
 		}
@@ -198,6 +206,11 @@ class StudentMapper
 	 */
 	public function getEntriesCount()
 	{
+		return $this->lastCount;
+	}
+	
+	public function foundRows()
+	{
 		try {
 			//initialize default value of result
 			$count = false;
@@ -210,10 +223,10 @@ class StudentMapper
 				if ($stmt->rowCount() == 0) {
 					$count = false;
 				}
-				while ($row = $stmt->fetch(\PDO::FETCH_NUM)) {
-					//on success we get only one item from DB
-					$count = $row[0];
-				}
+				$row = $stmt->fetch(\PDO::FETCH_NUM);
+				//on success we get only one item from DB
+				$count = $row[0];
+				
 			} else {
 				$count = false;
 			}

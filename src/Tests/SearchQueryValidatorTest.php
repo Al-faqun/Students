@@ -1,7 +1,7 @@
 <?php
 namespace Shinoa\StudentsList\Tests;
 use PHPUnit\Framework\TestCase;
-use Shinoa\StudentsList\SearchQueryValidator;
+use Shinoa\StudentsList\Input\SearchQueryValidator;
 
 
 class SearchQueryValidatorTest extends TestCase

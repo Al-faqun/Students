@@ -1,5 +1,5 @@
 <?php
-namespace Shinoa\StudentsList;
+namespace Shinoa\StudentsList\Views;
 
 
 use Shinoa\StudentsList\Exceptions\ViewException;

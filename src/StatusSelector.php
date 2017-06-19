@@ -16,27 +16,6 @@ class StatusSelector
 	{
 	}
 	
-	/*
-	function dataIn(array $input)
-	{
-		if (array_key_exists(self::$key, $input)) {
-			switch ($input[self::$key]) {
-				case '0':
-					$result = self::$texts[0];
-					break;
-				case '1':
-					$result = self::$texts[1];
-					break;
-				default:
-					$result = false;
-					break;
-			}
-		} else $result = false;
-		return $result;
-		
-	}
-	*/
-	
 	function checkCode($value)
 	{
 		switch ($value) {

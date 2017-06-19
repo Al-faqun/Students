@@ -1,18 +1,17 @@
 <?php
 namespace Shinoa\StudentsList\Controllers;
 
-use Shinoa\StudentsList\CommonView;
 use Shinoa\StudentsList\ErrorHelper;
 use Shinoa\StudentsList\Exceptions\ControllerException;
 use Shinoa\StudentsList\Exceptions\StudentException;
 use Shinoa\StudentsList\Loader;
 use Shinoa\StudentsList\LoginManager;
-use Shinoa\StudentsList\PasswordMapper;
-use Shinoa\StudentsList\RegEditView;
+use Shinoa\StudentsList\Database\PasswordMapper;
 use Shinoa\StudentsList\StatusSelector;
 use Shinoa\StudentsList\Student;
-use Shinoa\StudentsList\StudentMapper;
-use Shinoa\StudentsList\StudentValidator;
+use Shinoa\StudentsList\Database\StudentMapper;
+use Shinoa\StudentsList\Input\StudentValidator;
+use Shinoa\StudentsList\Views\RegEditView;
 
 class RegEditController extends PageController
 {

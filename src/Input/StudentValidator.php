@@ -1,8 +1,9 @@
 <?php
-namespace Shinoa\StudentsList;
+namespace Shinoa\StudentsList\Input;
 
-use PhpParser\Node\Expr\Variable;
+use Shinoa\StudentsList\Database\StudentMapper;
 use Shinoa\StudentsList\Exceptions\StudentException;
+use Shinoa\StudentsList\Student;
 
 /**
  * Class StudentValidator

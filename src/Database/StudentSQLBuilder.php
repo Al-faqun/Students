@@ -1,5 +1,5 @@
 <?php
-namespace Shinoa\StudentsList;
+namespace Shinoa\StudentsList\Database;
 
 
 

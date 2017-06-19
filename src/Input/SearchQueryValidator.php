@@ -1,5 +1,7 @@
 <?php
-namespace Shinoa\StudentsList;
+namespace Shinoa\StudentsList\Input;
+use Shinoa\StudentsList\Pager;
+use Shinoa\StudentsList\SearchData;
 
 /**
  * Class SearchQueryValidator

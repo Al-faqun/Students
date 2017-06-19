@@ -1,18 +1,19 @@
 <?php
-namespace Shinoa\StudentsList;
+namespace Shinoa\StudentsList\Views;
 
 
 use Shinoa\StudentsList\Exceptions\StudentException;
 use Shinoa\StudentsList\Exceptions\ViewException;
+use Shinoa\StudentsList\Student;
 
 /**
- * Class StudentView is used to construct and show to user the page: list of students
+ * Class StudentListView is used to construct and show to user the page: list of students
  * @package Shinoa\StudentsList
  */
-class StudentView extends CommonView
+class StudentListView extends CommonView
 {
 	/**
-	 * StudentView constructor.
+	 * StudentListView constructor.
 	 * @param string $templatesDir
 	 */
 	function __construct($templatesDir)

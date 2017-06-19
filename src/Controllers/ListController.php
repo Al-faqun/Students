@@ -1,20 +1,17 @@
 <?php
 namespace Shinoa\StudentsList\Controllers;
 
-
-use Shinoa\StudentsList\CommonView;
 use Shinoa\StudentsList\ErrorHelper;
 use Shinoa\StudentsList\Exceptions\ControllerException;
-use Shinoa\StudentsList\Exceptions\StudentException;
 use Shinoa\StudentsList\Loader;
 use Shinoa\StudentsList\LoginManager;
 use Shinoa\StudentsList\Pager;
-use Shinoa\StudentsList\PasswordMapper;
+use Shinoa\StudentsList\Database\PasswordMapper;
 use Shinoa\StudentsList\SearchData;
-use Shinoa\StudentsList\SearchQueryValidator;
+use Shinoa\StudentsList\Input\SearchQueryValidator;
 use Shinoa\StudentsList\StatusSelector;
-use Shinoa\StudentsList\StudentMapper;
-use Shinoa\StudentsList\StudentView;
+use Shinoa\StudentsList\Database\StudentMapper;
+use Shinoa\StudentsList\Views\StudentListView;
 
 class ListController extends PageController
 {
@@ -72,12 +69,11 @@ class ListController extends PageController
 		$statusText = StatusSelector::codeToText($this->appStatus);
 		$searchData = $validator->genSearchData();
 		
-		$entriesCount = $mapper->getEntriesCount();
 		$students     = $mapper->getStudents($searchData);
+		$entriesCount = $mapper->getEntriesCount();
 		//полное число найденных результатов для последнего поискового запроса
 		$queries = $pager->getQueries($_GET, $entriesCount);
-		
-		$view = new StudentView( appendFilePath([Loader::getRoot(), 'templates']) );
+		$view = new StudentListView( appendFilePath([Loader::getRoot(), 'templates']) );
 		$view->render(['students'    => $students,
 		               'status_text' => $statusText,
 		               'messages'    => $messages,
