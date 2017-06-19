@@ -52,10 +52,9 @@ class ErrorHelper {
 	{
 		header('Content-type: text/html; charset=utf-8');
 		$error = $errorMes;
-		$form_action = $whereToRedirect;
-		$form_method = 'post';
-		$input_value = 'Вернуться';
-		include $this->templateDir . '/error.html.php';	
+		$url = $whereToRedirect;
+		$text = 'Вернуться';
+		include $this->templateDir . '/Errors/error.html.php';
 		exit();
 	}
 	

@@ -75,7 +75,7 @@ class StudentView extends CommonView
 		//загружаем шаблон, который использует вышеописанные переменные
 		//обратите внимание! в начале шаблона прописаны все необходимые для его работы перменные.
 		// Если хоть одна из них не установлена, приложение сваливается с исключением!
-		$filepath = appendFilePath( [$this->templatesDir, 'stud_list.php'] ) ;
+		$filepath = appendFilePath( [$this->templatesDir, 'List', 'stud_list.php'] ) ;
 		if (file_exists($filepath)) {
 			require $filepath;
 		} else throw new ViewException('File doesnt exist.');

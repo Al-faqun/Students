@@ -98,7 +98,7 @@ class RegEditView extends CommonView
 		//вызывает шаблон, который съест выше подготовленные параметры
 		//обратите внимание! в начале шаблона прописаны все необходимые для его работы перменные.
 		// Если хоть одна из них не установлена, приложение сваливается с исключением!
-		$filepath = $this->templatesDir . '/reg-edit-page.php';
+		$filepath = appendFilePath([$this->templatesDir, 'RegEdit', 'reg-edit-page.php']);
 		if (file_exists($filepath)) {
 			include $filepath;
 		} else throw new ViewException('File doesnt exist.');

@@ -1,17 +1,15 @@
 <?php
-	if (!isset($error)
+	if (!isset($url)
 			OR
-		!isset($form_action)  
-			OR 
-		!isset($form_method) 
-			OR 
-		!isset($input_value)) 
+		!isset($text)
+    )
 		throw new Exception('No_var'); 
 ?>
 
 <!DOCTYPE html>
 <html>
 	<head>
+        <link rel="stylesheet" type="text/css" href="/error.css"/>
 		<title>Oops, something went wrong</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 	</head>
@@ -32,8 +30,7 @@
 			<p> <?= $error ?> </p>
 		<?php endif; ?>
 		</blockquote>
-		<form action="<?=$form_action ?>" method="<?=$form_method ?>">
-			<input type="submit" value="<?=$input_value ?>"/>
-		</form>
+        <a href="<?=$url ?>" class="button"><?=$text ?></a>
+		
 	</body>
 </html>
