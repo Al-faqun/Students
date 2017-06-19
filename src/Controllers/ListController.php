@@ -44,7 +44,6 @@ class ListController extends PageController
 				case StatusSelector::APP_IN_DEVELOPMENT:
 					$errorHelper->renderExceptionAndExit($e, '/');
 					break;
-				
 				case StatusSelector::APP_IN_PRODUCTION:
 					$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
 					//форматируем текст для записи в лог-файл
@@ -78,7 +77,7 @@ class ListController extends PageController
 		//полное число найденных результатов для последнего поискового запроса
 		$queries = $pager->getQueries($_GET, $entriesCount);
 		
-		$view = new StudentView( appendFilePath([$root, 'templates']) );
+		$view = new StudentView( appendFilePath([Loader::getRoot(), 'templates']) );
 		$view->render(['students'    => $students,
 		               'status_text' => $statusText,
 		               'messages'    => $messages,

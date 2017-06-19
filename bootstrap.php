@@ -41,7 +41,7 @@
 	//не расчитывайте на них, программируйте обработку ошибок в скриптах
 	function errorHandler($errno, $errstr, $errfile, $errline)
 	{
-		$root = dirname(__DIR__);
+		$root = __DIR__;
 		$errorHelper = new ErrorHelper( appendFilePath([$root, 'templates']) );
 		$text = array();
 		$text[] = "Возникла ошибка, выполнение приложения могло бы быть продолжено:";
@@ -69,7 +69,7 @@
 	
 	function exceptionHandler(Throwable $e)
 	{
-		$root = dirname(__DIR__);
+		$root = __DIR__;
 		$errorHelper = new ErrorHelper( appendFilePath([$root, 'templates']) );
 		switch ($GLOBALS['appStatus']) {
 			case APP_IN_DEVELOPMENT:
@@ -96,7 +96,7 @@
 	//для throwable
 	set_exception_handler('exceptionHandler');
 	//user must see no thing
-	error_reporting(0);
+	//error_reporting(0);
 
 
 

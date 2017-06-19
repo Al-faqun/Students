@@ -4,7 +4,7 @@
 	use Shinoa\StudentsList\StatusSelector;
 	use Shinoa\StudentsList\ErrEvoker;
 	require_once '../bootstrap.php';
-	
+
 	//timezone для логов
 	date_default_timezone_set('Europe/Moscow');
 	

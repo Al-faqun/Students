@@ -7,6 +7,8 @@ use Shinoa\StudentsList\Exceptions\ViewException;
  */
 abstract class CommonView
 {
+	protected $twig;
+	
     /**
      * @var array Array of strings.
      */

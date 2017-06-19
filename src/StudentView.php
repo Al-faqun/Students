@@ -22,6 +22,12 @@ class StudentView extends CommonView
                                  'messages',
                                  'status_text',
 		                         'queries'];
+		$loader = new \Twig_Loader_Filesystem($templatesDir);
+		$this->twig = new \Twig_Environment($loader, array(
+			'cache' => appendFilePath([$templatesDir, 'cache']),
+			'auto_reload' => false,
+			'autoescape' => false
+		));
 	}
 	
 	/**
@@ -55,7 +61,7 @@ class StudentView extends CommonView
 		//вызывает исключение, если нет хотя бы одного аргумента
 		$this->ensureParams($params);
 		$students   = $params['students'];
-		$statusText = $params['status_text'];
+		$appStatusText = $params['status_text'];
 		$messages   = $params['messages'];
 		$queries    = $params['queries'];
 		//таблица со студентами
@@ -69,16 +75,15 @@ class StudentView extends CommonView
 		}
 		//текстовое сообщение пользователю
 		$urgentMessage = $this->mesToHTML($messages);
-		//текст для показа пользователю текущего режима программы
-		$appStatusText = $statusText;
 
 		//загружаем шаблон, который использует вышеописанные переменные
-		//обратите внимание! в начале шаблона прописаны все необходимые для его работы перменные.
-		// Если хоть одна из них не установлена, приложение сваливается с исключением!
-		$filepath = appendFilePath( [$this->templatesDir, 'List', 'stud_list.php'] ) ;
-		if (file_exists($filepath)) {
-			require $filepath;
-		} else throw new ViewException('File doesnt exist.');
+		$template = $this->twig->load(appendFilePath(['List', 'stud_list.html.twig']));
+		echo $template->render(array(
+			'appStatusText' =>  $appStatusText,
+			'urgentMessage' => $urgentMessage,
+			'tbodyContent' => $tbodyContent,
+			'queries' => $queries
+		));
 
 		return ob_get_clean();
 

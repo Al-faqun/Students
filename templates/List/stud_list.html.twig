@@ -45,7 +45,7 @@
 			</div>
 		</form>
 		<div class="appstatchoice">
-			<p>Режим: <?=self::esc($appStatusText)?> </p>
+			<p>Режим: {{ appStatusText|e }}</p>
 			<form action="" method="post">
 				<label for="appStatus">Изменить режим работы приложения:</label>
 				<select name="appStatus">
@@ -66,7 +66,7 @@
 		</div>
 	</div>
 	
-	<?php if (empty($urgentMessage)) : ?>
+	{% if urgentMessage is empty %}
 		<div class="list_stud">
 			<table>
 				<caption>Список абитуриентов</caption>
@@ -83,21 +83,21 @@
 					</tr>
 				</thead>
 				<tbody>
-					<?= $tbodyContent; ?>
+					{{ tbodyContent|raw }}
 				</tbody>
 			</table>
 			<div class="pagination">
 				<form action="" method="get">
-					<?php for ($i = 1; $i <= count($queries); $i++): ?>
-						<a href="?<?=$queries[$i]?>" class="inline-block"> <?=$i?> </a>
-					<?php endfor; ?>
+					{% for query in queries %}
+						<a href="?{{ query }}" class="inline-block"> {{ loop.index }} </a>
+					{% endfor %}
 				</form>
 			</div>
 		</div>
   
-	<?php else: ?>
+	{% else %}
 		<div class="message">
-			<?=$urgentMessage ?>
+			{{ urgentMessage }}
 		</div>
-	<?php endif; ?>
+	{% endif %}
 </body>

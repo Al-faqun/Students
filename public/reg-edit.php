@@ -2,9 +2,8 @@
 	use Shinoa\StudentsList\Controllers\RegEditController;
 	use Shinoa\StudentsList\Loader;
 	use Shinoa\StudentsList\StatusSelector;
+	require_once '../bootstrap.php';
 	
-	include_once '../bootstrap.php';
-
 	$controller = new RegEditController();
 	
 	$controller->get('uploaded', function ($key, $value, RegEditController $c) {

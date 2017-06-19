@@ -84,7 +84,7 @@ class RegEditController extends PageController
 				$student = $dataMapper->findStudentByID( $loginMan->getLoggedID() );
 			};
 		}
-		$view = new RegEditView(Loader::getRoot() . '/templates');
+		$view = new RegEditView(appendFilePath([Loader::getRoot(), '/templates']));
 		$view->render(['student_data' => $student,
 		               'is_logged'    => $isLogged,
 		               'messages'     => $this->messages,

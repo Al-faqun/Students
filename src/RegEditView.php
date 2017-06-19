@@ -15,7 +15,49 @@ class RegEditView extends CommonView
         parent::__construct($templatesDir);
         $this->requiredFields =
             ['student_data', 'is_logged', 'errors', 'messages'];
+	    $loader = new \Twig_Loader_Filesystem($templatesDir);
+	    $this->twig = new \Twig_Environment($loader, array(
+		    'cache' => appendFilePath([$templatesDir, 'cache']),
+		    'auto_reload' => false,
+		    'autoescape' => 'html'
+	    ));
     }
+	
+    /**
+     * Loads all values and preferences for a template, then loads the template into string.
+     * @var $params array Link to the params array, from which are retrieved all the data.
+     * @return string html page
+     * @throws ViewException
+     */
+	public function output($params)
+	{
+		ob_start();
+
+		$isLogged    = $params['is_logged'];
+		$studentData = $params['student_data'];
+		//сообщения об ошибках и прочие уведомления пользователя
+		$errors   =  $params['errors'];
+		$mesagges =  $params['messages'];
+		
+		//заголок тела страницы и названия всяких кнопочек
+		$caption = $isLogged  ? 'Обновить данные' : 'Регистрация';
+		$submitButName = 'Отправить';
+		//поля таблицы, которые отображаются как "значения по умолчанию"
+		//например, текущие значения профиля, которые пользователь может изменить
+		$defFields = [];
+		$this->setFormDefaultValues($studentData, $defFields);
+		//вызывает шаблон, который съест выше подготовленные параметры
+		$template = $this->twig->load( appendFilePath(['RegEdit', 'reg-edit.html.twig']) );
+		echo $template->render(array(
+			'caption' => $caption,
+			'errors' => $errors,
+			'messages' => $mesagges,
+			'defFields' => $defFields,
+			'submitButName' => $submitButName
+		));
+		return ob_get_clean();
+		
+	}
 	
 	/**
 	 * Fills array for output in html page, containing data from Student object.
@@ -68,43 +110,4 @@ class RegEditView extends CommonView
 			}
 		}
 	}
-	
-    /**
-     * Loads all values and preferences for a template, then loads the template into string.
-     * @var $params array Link to the params array, from which are retrieved all the data.
-     * @return string html page
-     * @throws ViewException
-     */
-	public function output($params)
-	{
-		ob_start();
-
-		$isLogged    = $params['is_logged'];
-		$studentData = $params['student_data'];
-		//сообщения об ошибках и прочие уведомления пользователя
-		$error   = $this->mesToHTML( $params['errors'] );
-		$mesagge = $this->mesToHTML( $params['messages'] );
-		
-		//заголок тела страницы и названия всяких кнопочек
-		$caption = $isLogged  ? 'Обновить данные' : 'Регистрация';
-		$submitButName = 'Отправить';
-		//поля таблицы, которые отображаются как "значения по умолчанию"
-		//например, текущие значения профиля, которые пользователь может изменить
-		$defFields = [];
-		$this->setFormDefaultValues($studentData, $defFields);
-		//поля нуждаются в защите
-		self::escAll($defFields);
-		
-		//вызывает шаблон, который съест выше подготовленные параметры
-		//обратите внимание! в начале шаблона прописаны все необходимые для его работы перменные.
-		// Если хоть одна из них не установлена, приложение сваливается с исключением!
-		$filepath = appendFilePath([$this->templatesDir, 'RegEdit', 'reg-edit-page.php']);
-		if (file_exists($filepath)) {
-			include $filepath;
-		} else throw new ViewException('File doesnt exist.');
-		
-		return ob_get_clean();
-		
-	}
-	
 }
