@@ -1,10 +1,40 @@
+html {
+    background-color: #ACCC9F;
+}
+
+a {
+    color: #2125ff;
+}
 form {
     margin-top: 10px;
 }
-caption {
-    left: 0%;
 
+input  {
+    border-radius: 4px;
+    padding: 3px 3px 3px 3px;
+    font-size: 0.9rem;
+    margin-top: 5px;
 }
+
+select {
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+table {
+    display: block;
+    white-space: nowrap;
+    border-collapse: collapse;
+    margin-right: 5px;
+}
+
+caption {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: crimson;
+    left: 50%;
+}
+
 th{
     border-right: 1px solid black;
     color: darkblue;
@@ -17,22 +47,15 @@ td {
     color:brown;
     background-color: lightyellow;
 }
-table {
-	max-width: 70%;
-    display: block;
-    overflow-x: auto;
-    white-space: nowrap;
-    border-collapse: collapse;
 
-}
 tbody {
     display: table-row-group;
-    vertical-align: middle;
-
 }
 
 .search_div {
     float: right;
+    padding: 10px;
+    background-color: #9fbd8c;
 
 }
 
@@ -54,10 +77,10 @@ tbody {
 
 .list_stud {
     position: relative;
-    left: 5%;
-    top: 4em;
+    top: 4rem;
     width: 70%;
 }
+
 
 .message {
     clear: both;
@@ -81,3 +104,12 @@ tbody {
     font-weight: bold;
 }
 
+@media (max-width: 600px) {
+    html {
+        font-size: 0.9rem;
+    }
+    input {
+        font-size: 0.8rem;
+    }
+
+}

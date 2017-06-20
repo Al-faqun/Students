@@ -9,7 +9,7 @@
 <!DOCTYPE html>
 <html>
 	<head>
-        <link rel="stylesheet" type="text/css" href="/error.css"/>
+        <link rel="stylesheet" type="text/css" href="/css/error.css"/>
 		<title>Oops, something went wrong</title>
 		<meta http-equiv="content-type" content="text/html; charset=utf-8"/>
 	</head>

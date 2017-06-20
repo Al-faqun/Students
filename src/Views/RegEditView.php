@@ -15,10 +15,10 @@ class RegEditView extends CommonView
         parent::__construct($templatesDir);
         $this->requiredFields =
             ['student_data', 'is_logged', 'errors', 'messages'];
-	    $loader = new \Twig_Loader_Filesystem($templatesDir);
+	    $loader = new \Twig_Loader_Filesystem(appendFilePath([$templatesDir, 'RegEdit']));
 	    $this->twig = new \Twig_Environment($loader, array(
 		    'cache' => appendFilePath([$templatesDir, 'cache']),
-		    'auto_reload' => false,
+		    'auto_reload' => true,
 		    'autoescape' => 'html'
 	    ));
     }
@@ -47,7 +47,7 @@ class RegEditView extends CommonView
 		$defFields = [];
 		$this->setFormDefaultValues($studentData, $defFields);
 		//вызывает шаблон, который съест выше подготовленные параметры
-		$template = $this->twig->load( appendFilePath(['RegEdit', 'reg-edit.html.twig']) );
+		$template = $this->twig->load('reg-edit.html.twig');
 		echo $template->render(array(
 			'caption' => $caption,
 			'errors' => $errors,

@@ -23,10 +23,10 @@ class StudentListView extends CommonView
                                  'messages',
                                  'status_text',
 		                         'queries'];
-		$loader = new \Twig_Loader_Filesystem($templatesDir);
+		$loader = new \Twig_Loader_Filesystem(appendFilePath([$templatesDir, 'List']));
 		$this->twig = new \Twig_Environment($loader, array(
 			'cache' => appendFilePath([$templatesDir, 'cache']),
-			'auto_reload' => false,
+			'auto_reload' => true,
 			'autoescape' => false
 		));
 	}
@@ -71,19 +71,21 @@ class StudentListView extends CommonView
 			$messages[] = 'Результат: ничего не найдено.';
 		} else {
 			foreach ($students as $student) {
-				$tbodyContent .= $this->getTbodyHtml($student);
+				$content[] = $student->getArray();
 			}
+			$students = $content;
 		}
 		//текстовое сообщение пользователю
 		$urgentMessage = $this->mesToHTML($messages);
 
 		//загружаем шаблон, который использует вышеописанные переменные
-		$template = $this->twig->load(appendFilePath(['List', 'stud_list.html.twig']));
+		$template = $this->twig->load('stud_list.html.twig');
 		echo $template->render(array(
+			'students'      => $students,
 			'appStatusText' =>  $appStatusText,
-			'urgentMessage' => $urgentMessage,
-			'tbodyContent' => $tbodyContent,
-			'queries' => $queries
+			'messages'      => $messages,
+			'tbodyContent'  => $tbodyContent,
+			'queries'       => $queries
 		));
 
 		return ob_get_clean();

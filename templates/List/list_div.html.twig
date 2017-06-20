@@ -1,0 +1,33 @@
+<div class="list_stud">
+	<table>
+		<caption>Список абитуриентов</caption>
+		<thead>
+		<tr>
+			<th>Имя</th>
+			<th>Фамилия</th>
+			<th>Пол</th>
+			<th>Номер группы</th>
+			<th>Почта</th>
+			<th>Сумма баллов</th>
+			<th>Год рожд.</th>
+			<th>Происхождение</th>
+		</tr>
+		</thead>
+		<tbody>
+		{% for student in students %}
+			<tr>
+				{% for field in student %}
+					<td>{{ field|e }}</td>
+				{% endfor %}
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+	<div class="pagination">
+		<form action="" method="get">
+			{% for query in queries %}
+				<a href="?{{ query }}" class="inline-block"> {{ loop.index }} </a>
+			{% endfor %}
+		</form>
+	</div>
+</div>
