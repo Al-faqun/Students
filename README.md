@@ -11,17 +11,19 @@ We use mysql/MariaDB with two tables: one holding data about **profiles**, anoth
 1. PHP 7.1.2
 2. MariaDB 10.1.21
 3. phpmyadmin
-4. Composer
+4. Composer (все зависимости вы можете найти
+5. Twig
 5. PHPUnit
 6. PHPDoc
 
 ## Prerequisites: 
 
-1. PHP >= 7.0
+1. PHP >= 7.0, apache with document root in /public folder.
 2. MySQL/MariaDB with two tables: [here you can download needed dumps](http://zalivalka.ru/359753).
-3. Composer
-3. PHPUnit
-4. PHPDoc 
+3. Composer (all dependencies lie in .json)
+4. Twig templating engine
+5. PHPUnit
+6. PHPDoc 
 
 Now I will say a few words about Project's structure: https://pastebin.com/vmEff7ih
 
@@ -42,9 +44,10 @@ Now I will say a few words about Project's structure: https://pastebin.com/vmEff
 
 ## Зависимости: 
 
-1. PHP >= 7.0
+1. PHP >= 7.0, pache с document root в папке /public.
 2. MySQL/MariaDB с двумя таблицами: [здесь вы можете их загрузить](http://zalivalka.ru/359753).
-3. Composer
+3. Composer (все зависимости можете найти в .json)
+4. Twig templating engine
 4. PHPUnit
 5. PHPDoc
 
