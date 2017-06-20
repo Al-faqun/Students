@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<link rel="stylesheet" type="text/css" href="/css/reg-edit.css"/>
+	<title>Список абитуриентов</title>
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width" >
+</head>
+<body>
+	<div class="left ">
+		<a href="/" class="button">Вернуться</a>
+	</div>
+	<div class="fields">
+		<h1>{{ caption|e }}</h1>
+		{% if errors is empty %}
+			{% for message in mesagges %}
+				<p><strong>{{ message|e }}</strong></p>
+			{% endfor %}
+		{% else %}
+			{% for error in errors %}
+				<span class="error"><strong><p>{{ error|e }}</p></strong></span>
+			{% endfor %}
+		{% endif %}
+		{% include 'form.html.twig' %}
+	</div>
+
+</body>
+

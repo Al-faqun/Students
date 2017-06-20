@@ -1,0 +1,119 @@
+html {
+    background-color: #c1e1b4;
+    font-family: "Trebuchet MS", Helvetica, sans-serif;
+}
+
+a {
+    color: #2125ff;
+    text-decoration: none;
+}
+form {
+    margin-top: 10px;
+}
+
+input  {
+    border-radius: 4px;
+    padding: 5px 5px 5px 5px;
+    font-size: 0.9rem;
+    margin-top: 5px;
+}
+
+select {
+    border-radius: 5px;
+    margin-top: 5px;
+}
+
+table {
+    display: block;
+    white-space: nowrap;
+    border-collapse: collapse;
+    margin-right: 5px;
+}
+
+caption {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+    color: crimson;
+    left: 50%;
+}
+
+th{
+    border-right: 1px solid black;
+    color: darkblue;
+    background-color: lightcyan;
+
+}
+
+td {
+    border-right: 1px solid black;
+    color:brown;
+    background-color: lightyellow;
+}
+
+tbody {
+    display: table-row-group;
+}
+
+.search_div {
+    float: right;
+    padding: 10px;
+    background-color: #9fbd8c;
+
+}
+
+.search_div [type="submit"] {
+    display: block;
+    border: none;
+    background-color: white;
+}
+
+.inline-block {
+    display: inline-block;
+}
+
+.appstatchoice {
+    margin-top: 2em;
+}
+
+.appstatchoice input {
+    display: block;
+}
+
+.list_stud {
+    position: relative;
+    top: 4rem;
+    width: 70%;
+}
+
+
+.message {
+    clear: both;
+    position: absolute;
+    left: 40%;
+
+}
+
+.left {
+    float: left;
+}
+
+.button {
+    display: block;
+    height: 20px;
+    background: #4E9CAF;
+    padding: 10px;
+    text-align: center;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+}
+
+@media (max-width: 600px) {
+    html {
+        font-size: 0.9rem;
+    }
+    input {
+        font-size: 0.8rem;
+    }
+
+}
