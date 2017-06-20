@@ -1,0 +1,22 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+	<link rel="stylesheet" type="text/css" href="/css/list.css"/>
+	<title>Список абитуриентов</title>
+	<meta charset="utf-8">
+</head>
+<body>
+	<div class="left ">
+		<a href="reg-edit.php">Добавить сведения о себе</a>
+	</div>
+	{% include 'search.html.twig' %}
+	{% if messages is empty %}
+		{% include 'list_div.html.twig' %}
+	{% else %}
+		<div class="message">
+			{% for message in mesagges %}
+				<p><strong>{{ message|e }}</strong></p>
+			{% endfor %}
+		</div>
+	{% endif %}
+</body>

@@ -1,0 +1,58 @@
+<div class="reg_edit_form">
+	<form action="" method="post">
+		<div class = "field">
+			<label for="name">Имя: </label>
+			<input type="text" name="name" id="name" size="40" maxlength="100" value="{{ defFields['nameVal']|e }}" required>
+			<span class="description">Буквы, цифры и знаки подчёркивания, длина до ста символов</span>
+		</div>
+		
+		<div class = "field">
+			<label for="surname">Фамилия: </label>
+			<input type="text" name="surname" id="surname" size="40" maxlength="100" value="{{ defFields['surnameVal']|e }}" required>
+			<span class="description">Буквы, цифры и знаки подчёркивания, длина до ста символов</span>
+		</div>
+		
+		<div class = "field">
+			<label for="sex">Пол: </label>
+			<select name="sex" id="sex">
+				<option value="masculine" {{ defFields['mascVal']|e }}>Мужской</option>
+				<option value="feminine" {{ defFields['femVal']|e }}>Женский</option>
+			</select>
+		</div>
+		
+		<div class = "field">
+			<label for="group_num">Номер группы: </label>
+			<input type="text" name="group_num" id="group_num" size="40" maxlength="5" value="{{ defFields['groupVal']|e }}" required>
+			<span class="description">Буквы, цифры и знаки подчёркивания, длина до пяти символов</span>
+		</div>
+		
+		<div class = "field">
+			<label for="email">Почта: </label>
+			<input type="email" name="email" id="email" size="40" maxlength="100" value="{{ defFields['emailVal']|e }}" required>
+			<span class="description">В соответствии с RFC 822, длина до 254 символов. Должна быть уникальной!</span>
+		</div>
+		
+		<div class = "field">
+			<label for="ege_sum">Сумма баллов ЕГЭ: </label>
+			<input type="number" name="ege_sum" id="ege_sum" maxlength="10" value="{{ defFields['egeSumVal']|e }}" required>
+			<span class="description">Число от 1 до 500</span>
+		</div>
+		
+		<div class = "field">
+			<label for="birth_year">Год рождения: </label>
+			<input type="number" name="birth_year" id="birth_year" maxlength="10" value="{{ defFields['birthVal']|e }}" required>
+			<span class="description">Число от 1900 до 2017</span>
+		</div>
+		
+		<div class = "field">
+			<label for="location">Происхождение: </label>
+			<select name="location" id="location">
+				<option value="local" {{ defFields['localVal']|e }}>Местный</option>
+				<option value="non_local" {{ defFields['nonLocalVal']|e }}>Иногородний</option>
+			</select>
+		</div>
+		
+		<input type="submit" value="{{ submitButName|e }}" >
+		<input type="hidden" name="form_sent" value="1">
+	</form>
+</div>
