@@ -119,6 +119,7 @@ abstract class CommonView
 		//отсылаем страницу пользователю
 		$contents = $this->output($params);
 		echo $contents;
+		exit;
 	}
 	
 

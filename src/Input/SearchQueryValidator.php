@@ -54,6 +54,7 @@ class SearchQueryValidator
 		$result = new SearchData($text, $field, $sortby, $order, $offset, $limit);
 		return $result;
 	}
+	
 	/**
 	 * Checks provided earlier input array for specific field,
 	 * that contains name of database field, for which text value will be searched.

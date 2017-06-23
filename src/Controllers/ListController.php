@@ -15,7 +15,6 @@ use Shinoa\StudentsList\Views\StudentListView;
 
 class ListController extends PageController
 {
-	public $loader;
 	private $root;
 	private $userID = 0;
 	
@@ -26,33 +25,12 @@ class ListController extends PageController
 	
 	function start($root)
 	{
-		try {
-			Loader::setRoot($root);
-			$config = Loader::getConfig();
-			$pdo    = Loader::getPDO();
-			$this->execute();
-			$this->listPage($root, $pdo, $config);
-			
-		} catch (\Throwable $e) {
-			//класс, заведующий обработкой ошибок
-			$errorHelper = new ErrorHelper( appendFilePath([$root, 'templates']) );
-			//предпринимаем действия, в зависимости от режима приложения: 'в разработке' или 'в производстве'
-			switch ($this->appStatus) {
-				case StatusSelector::APP_IN_DEVELOPMENT:
-					$errorHelper->renderExceptionAndExit($e, '/');
-					break;
-				case StatusSelector::APP_IN_PRODUCTION:
-					$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
-					//форматируем текст для записи в лог-файл
-					$text = ErrorHelper::errorToArray($e);
-					array_unshift($text, date('d-M-Y H:i:s') . ' ');
-					$text[] = 'UserID = ' . $this->userID;
-					$logpath = appendFilePath( [$root, 'public', 'errors.log'] );
-					$errorHelper->addToLog($text, $logpath);
-					$errorHelper->renderErrorPageAndExit($userMes, '/');
-					break;
-			}
-		}
+		Loader::setRoot($root);
+		$config = Loader::getConfig();
+		$pdo    = Loader::getPDO();
+		$this->setAppStatus(Loader::getStatus());
+		$this->execute();
+		$this->listPage($root, $pdo, $config);
 	}
 	
 	protected function listPage($root, $pdo, $config)

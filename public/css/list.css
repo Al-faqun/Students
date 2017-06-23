@@ -50,6 +50,10 @@ td {
     background-color: lightyellow;
 }
 
+th:last-child, td:last-child {
+    border: none;
+}
+
 tbody {
     display: table-row-group;
 }

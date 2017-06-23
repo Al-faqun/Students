@@ -1,6 +1,8 @@
 <?php
 
 namespace Shinoa\StudentsList;
+use phpDocumentor\Reflection\DocBlock\Tags\ParamTest;
+use Shinoa\StudentsList\Exceptions\StudentException;
 
 /**
  * Class Errorhelper can create error messages and correctly display them to user, or/and log them.
@@ -12,16 +14,50 @@ class ErrorHelper {
 	 * @var string Holds path to folder with templates of pages
 	 */
 	private $templateDir = '';
+	private $logFile = '';
+	private $twig;
+	private $fallBackStatus;
 	
 	/**
 	 * ErrorHelper constructor.
 	 * @param $templateDir
 	 * @throws \Exception
 	 */
-	public function __construct($templateDir) {
-		if (is_dir($templateDir)) {
-			$this->templateDir = $templateDir;
+	public function __construct($templatesDir) {
+		if (is_dir($templatesDir)) {
+			$this->templateDir = $templatesDir;
 		} else throw new \Exception("Error Helper failed to be created");
+		
+		$loader = new \Twig_Loader_Filesystem(appendFilePath([$templatesDir]));
+		$this->twig = new \Twig_Environment($loader, array(
+			'cache' => appendFilePath([$templatesDir, 'cache']),
+			'auto_reload' => true,
+			'autoescape' => 'html'
+		));
+	}
+	
+	function setLogFilePath($logFilePath)
+	{
+		$this->logFile = $logFilePath;
+	}
+	
+	function dispatch(\Throwable $e, $appStatus = StatusSelector::APP_IN_PRODUCTION, $userID = 0)
+	{
+		switch ($appStatus) {
+			case StatusSelector::APP_IN_DEVELOPMENT:
+				$this->renderThrowableAndExit($e, '/');
+				break;
+			case StatusSelector::APP_IN_PRODUCTION:
+				$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
+				//форматируем текст для записи в лог-файл
+				$text = self::excepTextRecursive($e);
+				//добавляем дату в начало
+				array_unshift($text, date('d-M-Y H:i:s') . ' ');
+				$text[] = 'UserID = ' . $userID;
+				$this->addToLog($text, $this->logFile);
+				$this->renderErrorPageAndExit($userMes, '/');
+				break;
+		}
 	}
 	
 	/**
@@ -33,7 +69,7 @@ class ErrorHelper {
 	 * @param string $whereToRedirect Relative URLpath to desired location,
 	 * to which user would be relocated after viewing info about exceptions.
 	 */
-	public function renderExceptionAndExit(\Throwable $e, $whereToRedirect)
+	function renderThrowableAndExit(\Throwable $e, $whereToRedirect)
 	{
 		//get text of exception and it's previous exceptions
 		$output = self::excepTextRecursive($e);
@@ -43,29 +79,34 @@ class ErrorHelper {
 	}
 	
 	/**
-	 * Shows to user designed page about error with desired message and button "Get back"  to specified url.
+	 * Shows to user page with custom message about error.
 	 * @param string|array $errorMes
 	 * @param string $whereToRedirect Relative $whereToRedirect URLpath to desired location,
 	 * to which user would be relocated after viewing info about exceptions.
 	 */
-	public function renderErrorPageAndExit($errorMes, $whereToRedirect) 
+	function renderErrorPageAndExit($errorMes, $whereToRedirect)
 	{
 		header('Content-type: text/html; charset=utf-8');
 		$error = $errorMes;
 		$url = $whereToRedirect;
 		$text = 'Вернуться';
-		include $this->templateDir . '/Errors/error.html.php';
+		$template = $this->twig->load(appendFilePath(['Errors', 'error.html.twig']));
+		echo $template->render(array(
+			'error' => $error,
+			'url' => $url,
+			'text' => $text)
+		);
 		exit();
 	}
 	
 	/**
-	 * Shows to user page with detailedd desctiption of php error.
+	 * Shows to user page with detailed desctiption of php error.
 	 *
 	 * @param array $error PHP error array(old error)
 	 * @param string $whereToRedirect Relative $whereToRedirect URLpath to desired location,
 	 * to which user would be relocated after viewing info about exceptions.
 	 */
-	public function renderFatalError($error, $whereToRedirect)
+	function renderFatalErrorAndExit($error, $whereToRedirect)
 	{
 		$text = array();
 		$text[] = "Произошла фатальная ошибка, выполнение приложения прекращается:";
@@ -78,27 +119,77 @@ class ErrorHelper {
 	}
 	
 	/**
-	 * Render fatal error (Throwable) with text about error, not about exception.
-	 *
-	 * @param \Throwable $error
-	 * @param string $whereToRedirect Relative $whereToRedirect URLpath to desired location,
-	 * to which user would be relocated after viewing info about exceptions.
-	 */
-	public function renderFatalErrorObj(\Throwable $error, $whereToRedirect)
-	{
-		$text = self::errorToArray($error);
-
-		$this->renderErrorPageAndExit($text, $whereToRedirect);
-	}
-	
-	/**
 	 * @param array $message Array of strings, each string would be added to log as new line.
 	 * @param string $logpath Full path to log file.
+	 * @throws StudentException
 	 */
-	public function addToLog($message, $logpath)
+	function addToLog($message, $logpath)
 	{
-		$text = self::arrayToString($message, PHP_EOL, PHP_EOL);
-		error_log($text, 3, $logpath);
+		if (is_writeable($logpath)) {
+			$text = self::arrayToString($message, PHP_EOL, PHP_EOL);
+			error_log($text, 3, $logpath);
+		} else throw new StudentException('Log file location is not writeable');
+	}
+	
+	function registerFallbacks($appStatus = StatusSelector::APP_IN_PRODUCTION)
+	{
+		$this->fallBackStatus = $appStatus;
+		set_exception_handler(array($this, 'exceptionHandler'));
+		set_error_handler(array($this,'errorHandler'), E_ALL);
+		register_shutdown_function(array($this, 'shutDown'));
+	}
+	
+	public function exceptionHandler(\Throwable $e)
+	{
+		$this->dispatch($e, $this->fallBackStatus);
+	}
+	
+	public function errorHandler($errno, $errstr, $errfile, $errline)
+	{
+		$text = array();
+		$text[] = "Возникла ошибка, выполнение приложения могло бы быть продолжено:";
+		$text[] = 'текст: ';
+		$text[] = ErrorHelper::splitErrMes($errstr);
+		$text[] = 'файл: ' . $errfile . ',';
+		$text[] = 'строка:' . $errline . '.';
+		switch ($this->fallBackStatus) {
+			case StatusSelector::APP_IN_DEVELOPMENT:
+				//отображаем ошибку пользователю
+				$this->renderErrorPageAndExit($text, '');
+				break;
+			case StatusSelector::APP_IN_PRODUCTION:
+				//пишем ошибку в лог
+				$this->addToLog($text, $this->logFile);
+		}
+	}
+	
+	public function shutDown()
+	{
+		$error = error_get_last();
+		if (isset($error['type']) && $error['type'] === E_ERROR) {
+			switch ($this->fallBackStatus) {
+				case StatusSelector::APP_IN_DEVELOPMENT:
+					//отображаем ошибку пользователю
+					$this->renderFatalErrorAndExit($error, '');
+					break;
+				case StatusSelector::APP_IN_PRODUCTION:
+					//пишем ошибку в лог
+					$text = self::errorToArray($error);
+					$this->addToLog($text, $this->logFile);
+			}
+		}
+	}
+	
+	public static function errorToArray($error)
+	{
+		$text = array();
+		$text[] = "Возникла ошибка, выполнение приложения прекращено:";
+		$text[] = 'текст: ';
+		$text[] = self::splitErrMes($error->getMessage());
+		$text[] = 'файл: ' . $error->getFile() . ',';
+		$text[] = 'строка:' . $error->getLine() . '.';
+		
+		return $text;
 	}
 	
 	/**
@@ -124,12 +215,8 @@ class ErrorHelper {
 			$text[] = 'текст: ' . "'" . $e->getMessage() . "'" . ',';
 			$text[] = 'файл: ' . $e->getFile() . ',';
 			$text[] = 'строка:' . $e->getLine() . '.';
-			$trace = explode('#', $e->getTraceAsString());
-			foreach ($trace as $line) {
-				if (!empty($line)) {
-					$text[] = '#' . $line;
-				}
-			}
+			$trace = self::splitErrMes($e->getTraceAsString());
+			array_merge($text, $trace);
 			$output[] = $text;
 			$i--;
 			$previous = $e->getPrevious();
@@ -150,7 +237,9 @@ class ErrorHelper {
 		$lines = [];
 		$array = explode('#', $message);
 		foreach ($array as $line) {
-			$lines[] = '#' . $line;
+			if (!empty($line)) {
+				$lines[] = '#' . $line;
+			}
 		}
 		return $lines;
 	}
@@ -178,23 +267,6 @@ class ErrorHelper {
 			$string .= $blockSeparator;
 		}
 		return $string;
-	}
-	
-	/**
-	 * Returns array of text strings.
-	 * @param \Throwable $e
-	 * @return array
-	 */
-	public static function errorToArray(\Throwable $e)
-	{
-		$text = array();
-		$text[] = "Возникла ошибка, выполнение приложения прекращено:";
-		$text[] = 'текст: ';
-		$text[] = self::splitErrMes($e->getMessage());
-		$text[] = 'файл: ' . $e->getFile() . ',';
-		$text[] = 'строка:' . $e->getLine() . '.';
-		
-		return $text;
 	}
 }
 

@@ -76,15 +76,15 @@ class StatusSelector
 		}
 	}
 	
-	function getDefaultCode($statusFromConfig)
+	static function getDefaultCode($statusFromConfig)
 	{
 		if (isset($statusFromConfig)) {
 			switch ($statusFromConfig) {
 				case 'APP_IN_DEVELOPMENT':
-					$status = APP_IN_DEVELOPMENT;
+					$status = self::APP_IN_DEVELOPMENT;
 					break;
 				case 'APP_IN_PRODUCTION':
-					$status = APP_IN_PRODUCTION;
+					$status = self::APP_IN_PRODUCTION;
 					break;
 				default:
 					throw new StudentException('App status is not properly loaded');

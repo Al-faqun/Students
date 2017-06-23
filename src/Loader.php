@@ -61,8 +61,14 @@ class Loader
 				self::$config = $configFactory(self::$root);
 			} else throw new LoaderException('Failed to create config: root is not defined.');
 		}
-		//var_dump(self::$config); exit;
 		return self::$config;
+	}
+	
+	public static function getStatus()
+	{
+		$config = self::getConfig();
+		$status = StatusSelector::getDefaultCode($config->app->status);
+		return $status;
 	}
 	
 	public static function getDSN()

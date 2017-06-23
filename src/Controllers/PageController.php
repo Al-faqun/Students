@@ -15,7 +15,6 @@ class PageController
 	{
 	}
 	
-	
 	function get($key, callable $call)
 	{
 		$this->requests[] = new Request($_GET, $key, $call, $this);
