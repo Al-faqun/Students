@@ -32,6 +32,10 @@ input {
     background-color: #9fbd8c;
 }
 
+[type="submit"]:hover {
+    background-color: #5ead52;
+}
+
 select {
     display: inline;
     height: 2.0em;
@@ -71,7 +75,7 @@ select {
     height: 0.6em;
     line-height: 0.6em;
     vertical-align: middle;
-    background: #aae0ff;
+    background-color: #aae0ff;
     padding: 10px;
     text-align: center;
     border-radius: 5px;
@@ -79,6 +83,10 @@ select {
     font-weight: bold;
     font-size: 1.4rem;
     text-decoration: none;
+}
+
+.button:hover {
+    background-color: #82d2ff;
 }
 
 @media (max-width: 1100px) AND (min-width: 600px) {
