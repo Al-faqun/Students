@@ -3,6 +3,7 @@ namespace Shinoa\StudentsList\Controllers;
 
 use Shinoa\StudentsList\ErrorHelper;
 use Shinoa\StudentsList\Exceptions\ControllerException;
+use Shinoa\StudentsList\FileSystem;
 use Shinoa\StudentsList\Loader;
 use Shinoa\StudentsList\LoginManager;
 use Shinoa\StudentsList\Pager;
@@ -51,7 +52,7 @@ class ListController extends PageController
 		$entriesCount = $mapper->getEntriesCount();
 		//полное число найденных результатов для последнего поискового запроса
 		$queries = $pager->getQueries($_GET, $entriesCount);
-		$view = new StudentListView( appendFilePath([Loader::getRoot(), 'templates']) );
+		$view = new StudentListView( FileSystem::append([Loader::getRoot(), 'templates']) );
 		$view->render(['students'    => $students,
 		               'status_text' => $statusText,
 		               'messages'    => $messages,

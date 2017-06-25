@@ -4,6 +4,7 @@ namespace Shinoa\StudentsList\Views;
 
 use Shinoa\StudentsList\Exceptions\StudentException;
 use Shinoa\StudentsList\Exceptions\ViewException;
+use Shinoa\StudentsList\FileSystem;
 use Shinoa\StudentsList\Student;
 
 /**
@@ -23,31 +24,12 @@ class StudentListView extends CommonView
                                  'messages',
                                  'status_text',
 		                         'queries'];
-		$loader = new \Twig_Loader_Filesystem(appendFilePath([$templatesDir, 'List']));
+		$loader = new \Twig_Loader_Filesystem(FileSystem::append([$templatesDir, 'List']));
 		$this->twig = new \Twig_Environment($loader, array(
-			'cache' => appendFilePath([$templatesDir, 'cache']),
+			'cache' => FileSystem::append([$templatesDir, 'cache']),
 			'auto_reload' => true,
 			'autoescape' => false
 		));
-	}
-	
-	/**
-	 * Return table-body code (one row), ready for use in html. Just paste it between tbody /tbody tags.
-	 *
-	 * @param Student $student Object to convert into table row.
-	 * @return string One table row.
-	 */
-	public function getTbodyHtml(Student $student)
-	{
-		$contents = $student->getArray();
-		$tbody = '<tr>';
-		foreach ($contents as $field) {
-			$field = self::esc($field);
-			$tbody.= "<td>{$field}</td>";
-		}
-		$tbody.= '</tr>';
-		
-		return $tbody;
 	}
 	
 	/**
@@ -66,7 +48,7 @@ class StudentListView extends CommonView
 		$messages   = $params['messages'];
 		$queries    = $params['queries'];
 		//таблица со студентами
-		$tbodyContent = '';
+		$deletethis = $this->mesafromhtml();
 		if ($params['students'] === false) {
 			$messages[] = 'Результат: ничего не найдено.';
 		} else {
@@ -75,16 +57,13 @@ class StudentListView extends CommonView
 			}
 			$students = $content;
 		}
-		//текстовое сообщение пользователю
-		$urgentMessage = $this->mesToHTML($messages);
 
 		//загружаем шаблон, который использует вышеописанные переменные
 		$template = $this->twig->load('stud_list.html.twig');
 		echo $template->render(array(
 			'students'      => $students,
-			'appStatusText' =>  $appStatusText,
+			'appStatusText' => $appStatusText,
 			'messages'      => $messages,
-			'tbodyContent'  => $tbodyContent,
 			'queries'       => $queries
 		));
 

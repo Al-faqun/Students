@@ -40,6 +40,7 @@ select {
     display: inline;
     height: 2.0em;
     padding: 0px 5px 5px 5px;
+    border: 1px solid black;
     border-radius: 4px;
     margin-bottom: 10px;
     font-size: 1rem;

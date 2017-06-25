@@ -3,6 +3,7 @@ namespace Shinoa\StudentsList\Views;
 
 
 use Shinoa\StudentsList\Exceptions\ViewException;
+use Shinoa\StudentsList\FileSystem;
 
 class RegEditView extends CommonView
 {
@@ -15,9 +16,9 @@ class RegEditView extends CommonView
         parent::__construct($templatesDir);
         $this->requiredFields =
             ['student_data', 'is_logged', 'errors', 'messages'];
-	    $loader = new \Twig_Loader_Filesystem(appendFilePath([$templatesDir, 'RegEdit']));
+	    $loader = new \Twig_Loader_Filesystem(FileSystem::append([$templatesDir, 'RegEdit']));
 	    $this->twig = new \Twig_Environment($loader, array(
-		    'cache' => appendFilePath([$templatesDir, 'cache']),
+		    'cache' => FileSystem::append([$templatesDir, 'cache']),
 		    'auto_reload' => true,
 		    'autoescape' => 'html'
 	    ));

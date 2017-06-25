@@ -4,6 +4,7 @@ namespace Shinoa\StudentsList\Controllers;
 use Shinoa\StudentsList\ErrorHelper;
 use Shinoa\StudentsList\Exceptions\ControllerException;
 use Shinoa\StudentsList\Exceptions\StudentException;
+use Shinoa\StudentsList\FileSystem;
 use Shinoa\StudentsList\Loader;
 use Shinoa\StudentsList\LoginManager;
 use Shinoa\StudentsList\Database\PasswordMapper;
@@ -61,7 +62,7 @@ class RegEditController extends PageController
 				$student = $dataMapper->findStudentByID( $loginMan->getLoggedID() );
 			};
 		}
-		$view = new RegEditView(appendFilePath([Loader::getRoot(), '/templates']));
+		$view = new RegEditView(FileSystem::append([Loader::getRoot(), '/templates']));
 		$view->render(['student_data' => $student,
 		               'is_logged'    => $isLogged,
 		               'messages'     => $this->messages,

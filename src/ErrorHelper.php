@@ -1,7 +1,7 @@
 <?php
 
 namespace Shinoa\StudentsList;
-use phpDocumentor\Reflection\DocBlock\Tags\ParamTest;
+use Shinoa\StudentsList\FileSystem;
 use Shinoa\StudentsList\Exceptions\StudentException;
 
 /**
@@ -28,9 +28,9 @@ class ErrorHelper {
 			$this->templateDir = $templatesDir;
 		} else throw new \Exception("Error Helper failed to be created");
 		
-		$loader = new \Twig_Loader_Filesystem(appendFilePath([$templatesDir]));
+		$loader = new \Twig_Loader_Filesystem(FileSystem::append([$templatesDir]));
 		$this->twig = new \Twig_Environment($loader, array(
-			'cache' => appendFilePath([$templatesDir, 'cache']),
+			'cache' => FileSystem::append([$templatesDir, 'cache']),
 			'auto_reload' => true,
 			'autoescape' => 'html'
 		));
@@ -90,7 +90,7 @@ class ErrorHelper {
 		$error = $errorMes;
 		$url = $whereToRedirect;
 		$text = 'Вернуться';
-		$template = $this->twig->load(appendFilePath(['Errors', 'error.html.twig']));
+		$template = $this->twig->load(FileSystem::append(['Errors', 'error.html.twig']));
 		echo $template->render(array(
 			'error' => $error,
 			'url' => $url,
@@ -215,8 +215,9 @@ class ErrorHelper {
 			$text[] = 'текст: ' . "'" . $e->getMessage() . "'" . ',';
 			$text[] = 'файл: ' . $e->getFile() . ',';
 			$text[] = 'строка:' . $e->getLine() . '.';
+			$text[] = 'traceback: ';
 			$trace = self::splitErrMes($e->getTraceAsString());
-			array_merge($text, $trace);
+			$text = array_merge($text, $trace);
 			$output[] = $text;
 			$i--;
 			$previous = $e->getPrevious();
@@ -238,6 +239,7 @@ class ErrorHelper {
 		$array = explode('#', $message);
 		foreach ($array as $line) {
 			if (!empty($line)) {
+				$line = trim(preg_replace('/\s+/', ' ', $line));
 				$lines[] = '#' . $line;
 			}
 		}

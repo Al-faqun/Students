@@ -4,7 +4,7 @@ namespace Shinoa\StudentsList;
 
 use Shinoa\StudentsList\Database\PasswordMapper;
 use Shinoa\StudentsList\Exceptions\StudentException;
-
+use Shinoa\StudentsList\FileSystem;
 class LoginManager
 {
 	/**

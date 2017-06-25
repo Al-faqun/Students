@@ -3,7 +3,7 @@ namespace Shinoa\StudentsList;
 
 
 use Shinoa\StudentsList\Exceptions\LoaderException;
-
+use Shinoa\StudentsList\FileSystem;
 class Loader
 {
 	//единственный экземпляр класса
@@ -44,10 +44,10 @@ class Loader
 	public static function getConfig()
 	{
 		$configFactory = function ($root) {
-			if (file_exists(appendFilePath([$root, 'ini', 'config.xml']))) {
-				$configPath = appendFilePath([$root, 'ini', 'config.xml']);
-			} elseif (file_exists(appendFilePath([$root, 'ini', 'config_test.xml']))) {
-				$configPath = appendFilePath([$root, 'ini', 'config_test.xml']);
+			if (file_exists(FileSystem::append([$root, 'ini', 'config.xml']))) {
+				$configPath = FileSystem::append([$root, 'ini', 'config.xml']);
+			} elseif (file_exists(FileSystem::append([$root, 'ini', 'config_test.xml']))) {
+				$configPath = FileSystem::append([$root, 'ini', 'config_test.xml']);
 			} else {
 				throw new LoaderException('Cannot load config!');
 			}

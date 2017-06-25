@@ -64,49 +64,6 @@ abstract class CommonView
         } else $result = false;
         return $result;
     }
-    
-	/**
-	 * Escapes value for html use.
-	 *
-	 * @param $value
-	 * @return string Value ready for html output.
-	 */
-	public static function esc($value)
-	{
-		$result = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-		return $result;
-	}
-	
-	/**
-	 * Escapes value of every member of array.
-	 *
-	 * @param array $array (by ref) A. of strings, every string to be escaped.
-	 */
-	public static function escAll(&$array)
-	{
-		foreach ($array as $key => $value) {
-			$value = htmlspecialchars($value, ENT_QUOTES, 'UTF-8');
-			$array[$key] = $value;
-		}
-	}
-	
-	/**
-	 * Converts array to use in html (escapes, puts each line into <p> etc).
-	 *
-	 * @param array $messages
-	 * @return string
-	 */
-    function mesToHTML($messages)
-	{
-		$result = '';
-		if (!empty($messages)) {
-			foreach ($messages as $message) {
-				$message = self::esc($message);
-				$result .= "<p>$message</p>";
-			}
-		}
-		return $result;
-	}
 	
 	/**
 	 * Outputs page to user.

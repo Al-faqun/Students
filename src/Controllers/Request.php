@@ -10,7 +10,7 @@ class Request
 	private $controller;
 	private $invert;
 	
-	function __construct($input, $key, callable $call, PageController $controller, $invert = false)
+	function __construct($input, $key, callable $call, $controller, $invert = false)
 	{
 		$this->input = $input;
 		$this->key = $key;

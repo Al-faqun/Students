@@ -95,7 +95,7 @@ class StatusSelector
 	
 	function useDefaultText($statusFromConfig)
 	{
-		return self::codeToText( $this->useDefaultCode($statusFromConfig) );
+		return self::codeToText( self::getDefaultCode($statusFromConfig) );
 	}
 	
 	public static function textToCode($statusText)
