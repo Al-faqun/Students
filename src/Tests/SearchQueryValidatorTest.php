@@ -23,7 +23,6 @@ class SearchQueryValidatorTest extends TestCase
 		$array = array('кусь' => 'кусьvalue', 'цап' => 'цапvalue', 'sort_by' => 'ege_sum');
 		$validator = new SearchQueryValidator($array);
 		$sort_by = $validator->checkSortBy();
-		echo $sort_by . PHP_EOL;
 
 		$this->assertContains($sort_by, $this->sortbyWhitelist, 'Значение sort_by не из разрешённого списка');
 	}
@@ -34,7 +33,6 @@ class SearchQueryValidatorTest extends TestCase
 		$array = array('кусь' => 'кусьvalue', 'цап' => 'цапvalue', 'sort_by' => $expectedValue);
 		$validator = new SearchQueryValidator($array);
 		$sort_by = $validator->checkSortBy();
-		echo $sort_by . PHP_EOL;
 		
 		$this->assertEquals($expectedValue, $sort_by);
 	}
@@ -44,7 +42,6 @@ class SearchQueryValidatorTest extends TestCase
 		$array = array('кусь' => 'кусьvalue', 'цап' => 'цапvalue', 'sort_by' => 5);
 		$validator = new SearchQueryValidator($array);
 		$sort_by = $validator->checkSortBy();
-		echo $sort_by . PHP_EOL;
 
 		$this->assertContains($sort_by, $this->sortbyWhitelist, 'Значение sort_by не из разрешённого списка');
 	}
@@ -54,7 +51,6 @@ class SearchQueryValidatorTest extends TestCase
 		$array = array('кусь' => 'кусьvalue', 'цап' => 'цапvalue', 'order' => 'asc');
 		$validator = new SearchQueryValidator($array);
 		$order = $validator->checkOrder();
-		echo $order . PHP_EOL;
 
 		$this->assertContains($order, $this->orderWhiteList, 'Значение order не из разрешённого списка');
 	}
@@ -65,7 +61,6 @@ class SearchQueryValidatorTest extends TestCase
 		$array = array('кусь' => 'кусьvalue', 'цап' => 'цапvalue', 'order' => $expectedValue);
 		$validator = new SearchQueryValidator($array);
 		$order = $validator->checkOrder();
-		echo $order . PHP_EOL;
 		
 		$this->assertEquals($expectedValue, $order, '',  0, 10, false, true);
 	}
@@ -75,7 +70,6 @@ class SearchQueryValidatorTest extends TestCase
 		$array = array('кусь' => 'кусьvalue', 'цап' => 'цапvalue', 'order' => 5);
 		$validator = new SearchQueryValidator($array);
 		$order = $validator->checkOrder();
-		echo $order . PHP_EOL;
 
 		$this->assertContains($order, $this->orderWhiteList, 'Значение order не из разрешённого списка');
 	}
@@ -85,7 +79,6 @@ class SearchQueryValidatorTest extends TestCase
 		$array = array('кусь' => 'кусьvalue', 'цап' => 'цапvalue', 'page' => '3');
 		$validator = new SearchQueryValidator($array);
 		$validator->checkPage($offset, $limit);
-		echo $offset . ' ' . $limit . PHP_EOL;
 
 		$this->assertInternalType('int', $offset);
 		$this->assertInternalType('int', $limit);
@@ -96,7 +89,6 @@ class SearchQueryValidatorTest extends TestCase
 		$array = array('кусь' => 'кусьvalue', 'цап' => 'цапvalue', 'page' => '0');
 		$validator = new SearchQueryValidator($array);
 		$validator->checkPage($offset, $limit);
-		echo $offset . ' ' . $limit . PHP_EOL;
 
 		$this->assertInternalType('int', $offset);
 		$this->assertInternalType('int', $limit);
@@ -107,7 +99,6 @@ class SearchQueryValidatorTest extends TestCase
 		$array = array('кусь' => 'кусьvalue', 'цап' => 'цапvalue', 'page' => '6.6');
 		$validator = new SearchQueryValidator($array);
 		$validator->checkPage($offset, $limit);
-		echo $offset . ' ' . $limit . PHP_EOL;
 
 		$this->assertInternalType('int', $offset);
 		$this->assertInternalType('int', $limit);
@@ -118,7 +109,6 @@ public function testCheckPageFailString()
 		$array = array('кусь' => 'кусьvalue', 'цап' => 'цапvalue', 'page' => 'волшебство');
 		$validator = new SearchQueryValidator($array);
 		$validator->checkPage($offset, $limit);
-		echo $offset . ' ' . $limit . PHP_EOL;
 
 		$this->assertInternalType('int', $offset);
 		$this->assertInternalType('int', $limit);

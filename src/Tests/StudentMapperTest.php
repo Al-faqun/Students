@@ -2,8 +2,10 @@
 namespace Shinoa\StudentsList\Tests;
 
 use PHPUnit\Framework\TestCase;
+use Shinoa\StudentsList\Database\StudentMapper;
 use Shinoa\StudentsList\Exceptions\StudentException;
-use Shinoa\StudentsList\StudentMapper;
+use Shinoa\StudentsList\Input\SearchQueryValidator;
+use Shinoa\StudentsList\SearchData;
 use Shinoa\StudentsList\Student;
 use UnexpectedValueException;
 use InvalidArgumentException;
@@ -17,41 +19,51 @@ class StudentMapperTest extends TestCase
 	public function setUp()
 	{
 		$this->pdo = $GLOBALS['test_pdo'];
+		$this->pdo->beginTransaction();
 		$this->SM = new StudentMapper($this->pdo);
+		
 	}
 
 	public function tearDown()
 	{
-		if ( !empty($this->insertedIds)) {
-			foreach ($this->insertedIds as $id) {
-				$this->SM->deleteStudentByID($id);
-			}
-		}
+		$this->pdo->rollBack();
 	}
 
 	public function testGetStudents()
 	{
-		$students = $this->SM->getStudents();
+		$validator = new SearchQueryValidator(array());
+		$searchData = $validator->genSearchData();
+		$students = $this->SM->getStudents($searchData);
 		$this->assertNotFalse($students);
 	}
 	
-	public function testGetStudentsWrongNameFail()
+	public function testGetStudentsWrongFieldFail()
 	{
+		$validator = new SearchQueryValidator(array());
+		$searchData = $validator->genSearchData();
+		$searchData->setSearchText('sometext');
+		$searchData->setSearchField('nonexistant_name');
 		$this->expectException(StudentException::class);
-		
-		$students = $this->SM->getStudents('nonexistant_name');
+		$students = $this->SM->getStudents($searchData);
 	}
 	
-	public function testGetStudentsWrongLimitFailExc()
+	public function testGetStudentsWrongOffsetFailExc()
 	{
+		$validator = new SearchQueryValidator(array());
+		$searchData = $validator->genSearchData();
+		$searchData->setOffset(-5);
+		$searchData->setLimit(5);
 		$this->expectException(StudentException::class);
-
-		$students = $this->SM->getStudents('surname', 'ASC', -5, 5);
+		$students = $this->SM->getStudents($searchData);
 	}
 	
 	public function testGetStudentsLimitAsString()
 	{
-		$students = $this->SM->getStudents('surname', 'ASC', '1', '5');
+		$validator = new SearchQueryValidator(array());
+		$searchData = $validator->genSearchData();
+		$searchData->setOffset('1');
+		$searchData->setLimit('5');
+		$students = $this->SM->getStudents($searchData);
 		$this->assertNotFalse($students);
 	}
 

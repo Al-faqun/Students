@@ -47,8 +47,6 @@ class StudentListView extends CommonView
 		$appStatusText = $params['status_text'];
 		$messages   = $params['messages'];
 		$queries    = $params['queries'];
-		//таблица со студентами
-		$deletethis = $this->mesafromhtml();
 		if ($params['students'] === false) {
 			$messages[] = 'Результат: ничего не найдено.';
 		} else {

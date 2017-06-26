@@ -1,9 +1,9 @@
 <?php
 namespace Shinoa\StudentsList\Tests;
 
+use Shinoa\StudentsList\Database\StudentMapper;
+use Shinoa\StudentsList\Input\StudentValidator;
 use Shinoa\StudentsList\Student;
-use Shinoa\StudentsList\StudentMapper;
-use Shinoa\StudentsList\StudentValidator;
 use PHPUnit\Framework\TestCase;
 
 class StudentValidatorTest extends TestCase

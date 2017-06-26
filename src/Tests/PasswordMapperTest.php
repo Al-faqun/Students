@@ -1,8 +1,8 @@
 <?php
 namespace Shinoa\StudentsList\Tests;
 
+use Shinoa\StudentsList\Database\PasswordMapper;
 use Shinoa\StudentsList\Exceptions\DbException;
-use Shinoa\StudentsList\PasswordMapper;
 use PHPUnit\Framework\TestCase;
 
 class PasswordMapperTest extends TestCase
@@ -14,16 +14,13 @@ class PasswordMapperTest extends TestCase
 	public function setUp()
 	{
 		$this->pdo = $GLOBALS['test_pdo'];
+		$this->pdo->beginTransaction();
 		$this->mapper = new PasswordMapper($this->pdo);
 	}
 	
 	public function tearDown()
 	{
-		if ( !empty($this->insertedIds)) {
-			foreach ($this->insertedIds as $userId) {
-				$this->mapper->deleteHash($userId);
-			}
-		}
+		$this->pdo->rollBack();
 	}
 	
 	public function testGetHash()
