@@ -20,7 +20,7 @@ class ErrorHelper {
 	
 	/**
 	 * ErrorHelper constructor.
-	 * @param $templateDir
+	 * @param $templatesDir
 	 * @throws \Exception
 	 */
 	public function __construct($templatesDir) {
@@ -108,13 +108,8 @@ class ErrorHelper {
 	 */
 	function renderFatalErrorAndExit($error, $whereToRedirect)
 	{
-		$text = array();
-		$text[] = "Произошла фатальная ошибка, выполнение приложения прекращается:";
-		$text[] = 'текст: ';
-		$text[] = self::splitErrMes($error['message']);
-		$text[] = 'файл: ' . $error['file'] . ',';
-		$text[] = 'строка:' . $error['line'] . '.';
-		
+		$text = array("Произошла фатальная ошибка, выполнение приложения прекращается: ");
+		$text = array_merge($text, self::errorToArray($error));
 		$this->renderErrorPageAndExit($text, $whereToRedirect);
 	}
 	
@@ -174,7 +169,8 @@ class ErrorHelper {
 					break;
 				case StatusSelector::APP_IN_PRODUCTION:
 					//пишем ошибку в лог
-					$text = self::errorToArray($error);
+					$text = array("Возникла ошибка, выполнение приложения прекращено:");
+					$text = array_merge($text, self::errorToArray($error));
 					$this->addToLog($text, $this->logFile);
 			}
 		}
@@ -183,11 +179,10 @@ class ErrorHelper {
 	public static function errorToArray($error)
 	{
 		$text = array();
-		$text[] = "Возникла ошибка, выполнение приложения прекращено:";
 		$text[] = 'текст: ';
-		$text[] = self::splitErrMes($error->getMessage());
-		$text[] = 'файл: ' . $error->getFile() . ',';
-		$text[] = 'строка:' . $error->getLine() . '.';
+		$text[] = self::splitErrMes($error['message']);
+		$text[] = 'файл: ' . $error['file'] . ',';
+		$text[] = 'строка:' . $error['line'] . '.';
 		
 		return $text;
 	}

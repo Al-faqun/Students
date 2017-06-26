@@ -14,7 +14,7 @@
 		date_default_timezone_set('Europe/Moscow');
 		Loader::setRoot($root);
 		$errorHelper->setLogFilePath(FileSystem::append([$root, 'public', 'errors.log']));
-		//$errorHelper->registerFallbacks(Loader::getStatus());
+		$errorHelper->registerFallbacks(Loader::getStatus());
 		
 		$controller = new ListController();
 		$controller->post('appStatus', function ($key, $value, ListController $c) {
