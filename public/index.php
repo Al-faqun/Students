@@ -8,12 +8,13 @@
 	
 	require_once '../bootstrap.php';
 	$root = dirname(__DIR__);
+	$public = __DIR__;
 	$errorHelper = new ErrorHelper(FileSystem::append([$root, 'templates']));
 	try {
 		//timezone для логов
 		date_default_timezone_set('Europe/Moscow');
 		Loader::setRoot($root);
-		$errorHelper->setLogFilePath(FileSystem::append([$root, 'public', 'errors.log']));
+		$errorHelper->setLogFilePath(FileSystem::append([$public, 'errors.log']));
 		$errorHelper->registerFallbacks(Loader::getStatus());
 		
 		$controller = new ListController();
