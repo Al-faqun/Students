@@ -43,7 +43,7 @@ A few words about Project's structure: https://pastebin.com/Zj1c993A
 
 ## Зависимости: 
 
-1. PHP >= 7.0, pache с document root в папке /public.
+1. PHP >= 7.0, apache с document root в папке /public.
 2. MySQL/MariaDB с двумя таблицами: [здесь вы можете их загрузить](http://zalivalka.ru/359753).
 3. Composer (все зависимости можете найти в .json)
 4. Twig templating engine
