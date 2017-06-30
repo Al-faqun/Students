@@ -10,9 +10,8 @@ We use mysql/MariaDB with two tables: one holding data about **profiles**, anoth
 
 1. PHP 7.1.2
 2. MariaDB 10.1.21
-3. phpmyadmin
-4. Composer (все зависимости вы можете найти
-5. Twig
+3. Composer 
+4. Twig
 5. PHPUnit
 6. PHPDoc
 
@@ -25,7 +24,7 @@ We use mysql/MariaDB with two tables: one holding data about **profiles**, anoth
 5. PHPUnit
 6. PHPDoc 
 
-Now I will say a few words about Project's structure: https://pastebin.com/vmEff7ih
+A few words about Project's structure: https://pastebin.com/Zj1c993A
 
 --- 
 
@@ -37,8 +36,8 @@ Now I will say a few words about Project's structure: https://pastebin.com/vmEff
 
 1. PHP 7.1.2
 2. MariaDB 10.1.21
-3. phpmyadmin
-4. Composer
+3. Composer 
+4. Twig
 5. PHPUnit
 6. PHPDoc
 
@@ -48,9 +47,9 @@ Now I will say a few words about Project's structure: https://pastebin.com/vmEff
 2. MySQL/MariaDB с двумя таблицами: [здесь вы можете их загрузить](http://zalivalka.ru/359753).
 3. Composer (все зависимости можете найти в .json)
 4. Twig templating engine
-4. PHPUnit
-5. PHPDoc
+5. PHPUnit
+6. PHPDoc
 
-Несколько слов о структуре проекта для простоты понимания: https://pastebin.com/qqr8QZ46
+Несколько слов о классах проекта: https://pastebin.com/Zj1c993A
 
 
