@@ -1,6 +1,7 @@
 # Students  
-
 (русская версия ниже)
+
+[Try this site](http://shinoa.web44.net/): http://shinoa.web44.net/
 
 Educational project: you can **browse** list of students, use **search**, add **your** own data, which will give you cookie token, so you could **edit** your 'Student profile' later.
 
@@ -27,6 +28,8 @@ We use mysql/MariaDB with two tables: one holding data about **profiles**, anoth
 A few words about Project's structure: https://pastebin.com/Zj1c993A
 
 --- 
+
+[Рабочая копию этого сайта (последний релиз)](http://shinoa.web44.net/): http://shinoa.web44.net/
 
 Учебный проект: вы можете просматривать список студентов, пользоваться поиском, добавлять свои собственые данные на сайт, тем самым получая "членство", сохраняемое в куки; посредством этого вы можете в дальнейшем редактировать свои данные в удобной форме.
 
