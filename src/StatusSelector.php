@@ -3,6 +3,11 @@ namespace Shinoa\StudentsList;
 
 
 use Shinoa\StudentsList\Exceptions\StudentException;
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
+use Dflydev\FigCookies\FigRequestCookies;
+use Dflydev\FigCookies\FigResponseCookies;
+use Dflydev\FigCookies\SetCookie;
 
 class StatusSelector
 {
@@ -68,12 +73,20 @@ class StatusSelector
 		return $text;
 	}
 	
-	function save($value)
+	function save($value, Request $request, Response $response)
 	{
-		if ( !array_key_exists(self::$key, $_COOKIE) || ($_COOKIE[self::$key] !== $value) ) {
-			setcookie(self::$key, $value, time() + 60 * 60 * 24 * 360,
-				 null, null, null, true);
+		$cookie = FigRequestCookies::get($request, self::$key);
+		if ( ($cookie->getValue() === null) || ($cookie->getValue() !== $value) ) {
+			$response = FigResponseCookies::set($response, SetCookie::create(self::$key)
+				->withValue($value)
+				->withExpires(time() + 60 * 60 * 24 * 360)
+				->withPath('/')
+				->withDomain('.' . $request->getUri()->getHost())
+				->withSecure(false)
+				->withHttpOnly(true)
+			);
 		}
+		return $response;
 	}
 	
 	static function getDefaultCode($statusFromConfig)

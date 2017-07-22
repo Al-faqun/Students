@@ -2,12 +2,14 @@
 namespace Shinoa\StudentsList;
 
 
+use Shinoa\StudentsList\Database\PasswordMapper;
 use Shinoa\StudentsList\Exceptions\LoaderException;
 use Shinoa\StudentsList\FileSystem;
 class Loader
 {
 	//единственный экземпляр класса
-	public static $root;
+	private static $root;
+	private static $status;
 	private static $instance;
 	private static $config;
 	private static $dsn;
@@ -64,10 +66,19 @@ class Loader
 		return self::$config;
 	}
 	
+	public static function setStatus($status)
+	{
+		self::$status = $status;
+	}
+	
 	public static function getStatus()
 	{
-		$config = self::getConfig();
-		$status = StatusSelector::getDefaultCode($config->app->status);
+		if (!isset(self::$status)) {
+			$config = self::getConfig();
+			$status = StatusSelector::getDefaultCode($config->app->status);
+		} else {
+			$status = self::$status;
+		}
 		return $status;
 	}
 	

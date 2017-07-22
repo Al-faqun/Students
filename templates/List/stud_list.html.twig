@@ -7,14 +7,14 @@
 </head>
 <body>
 	<div class="left ">
-		<a href="reg-edit.php">Добавить сведения о себе</a>
+		<a href="/reg-edit">Добавить сведения о себе</a>
 	</div>
 	{% include 'search.html.twig' %}
 	{% if messages is empty %}
 		{% include 'list_div.html.twig' %}
 	{% else %}
 		<div class="message">
-			{% for message in mesagges %}
+			{% for message in messages %}
 				<p><strong>{{ message|e }}</strong></p>
 			{% endfor %}
 		</div>

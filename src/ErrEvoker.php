@@ -15,34 +15,9 @@ class ErrEvoker
 {
 	public static $keyError = 'evokeError';
 	public static $keyExcep = 'evokeException';
+	
 	function __construct()
 	{
-	}
-	
-	/**
-	 * Checks whether command to evoke error exists in provided user input.
-	 * @param array $array User input.
-	 * @return bool True if command to evoke error exists, else false.
-	 */
-	function isErrorIn(array $array)
-	{
-		if ( array_key_exists(self::$keyError, $array) ) {
-			$result = true;
-		} else $result = false;
-		return $result;
-	}
-	
-	/**
-	 * Checks whether command to evoke exception exists in provided user input.
-	 * @param array $array User input.
-	 * @return bool True if command to evoke exception exists, else false.
-	 */
-	function isExceptionIn(array $array)
-	{
-		if ( array_key_exists(self::$keyExcep, $array) ) {
-			$result = true;
-		} else $result = false;
-		return $result;
 	}
 	
 	/**

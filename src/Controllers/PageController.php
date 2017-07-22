@@ -3,60 +3,41 @@ namespace Shinoa\StudentsList\Controllers;
 
 
 use Shinoa\StudentsList\Exceptions\ControllerException;
+use Shinoa\StudentsList\Loader;
 use Shinoa\StudentsList\StatusSelector;
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
 
 class PageController
 {
+	protected $twig;
 	protected $appStatus = StatusSelector::APP_IN_DEVELOPMENT;
 	protected $requests;
 	protected $messages;
 	
-	protected function __construct()
+	protected function __construct($twig)
 	{
+		$this->twig = $twig;
 	}
 	
-	function get($key, callable $call)
+	function input($input, $key, callable $call, $default = false)
 	{
-		$this->requests[] = new Request($_GET, $key, $call, $this);
+		if (array_key_exists($key, $input)) {
+			return ($call)($key, $input[$key], $this);
+		} else return $default;
 	}
 	
-	function post($key, callable $call)
+	function noInput($input, $key, callable $call, $default = false)
 	{
-		$this->requests[] = new Request($_POST, $key, $call, $this);
+		if (!array_key_exists($key, $input)) {
+			return ($call)($key, null, $this);
+		} else return $default;
 	}
 	
-	function cookie($key, callable $call)
+	function redirect($address, Response $response)
 	{
-		$this->requests[] = new Request($_COOKIE, $key, $call, $this);
-	}
-	
-	function noGet($key, callable $call)
-	{
-		$this->requests[] = new Request($_GET, $key, $call, $this, true);
-	}
-	
-	function noPost($key, callable $call)
-	{
-		$this->requests[] = new Request($_POST, $key, $call, $this, true);
-	}
-	
-	function noCookie($key, callable $call)
-	{
-		$this->requests[] = new Request($_COOKIE, $key, $call, $this, true);
-	}
-	
-	function execute()
-	{
-		if (!empty($this->requests) AND is_array($this->requests))
-		foreach ($this->requests as $request) {
-			$request->call();
-		}
-	}
-	
-	function redirect($address)
-	{
-		header('Location: ' . $address, true, 303);
-		exit();
+		$response = $response->withHeader('Location', $address);
+		return $response;
 	}
 	
 	/**
@@ -65,6 +46,7 @@ class PageController
 	public function setAppStatus(int $appStatus)
 	{
 		$this->appStatus = $appStatus;
+		Loader::setStatus($appStatus);
 	}
 	
 	/**

@@ -2,7 +2,10 @@
   "require": {
     "phpunit/phpunit": "6.0.7",
     "pimple/pimple": "3.0.x-dev",
-    "twig/twig": "2.x-dev"
+    "twig/twig": "2.x-dev",
+    "slim/slim": "3.8.1",
+    "slim/twig-view": "2.2.0",
+    "dflydev/fig-cookies": "v1.0.2"
   },
 
   "autoload": {

@@ -4,7 +4,11 @@ namespace Shinoa\StudentsList;
 
 use Shinoa\StudentsList\Database\PasswordMapper;
 use Shinoa\StudentsList\Exceptions\StudentException;
-use Shinoa\StudentsList\FileSystem;
+use \Psr\Http\Message\ServerRequestInterface as Request;
+use \Psr\Http\Message\ResponseInterface as Response;
+use Dflydev\FigCookies\FigRequestCookies;
+use Dflydev\FigCookies\FigResponseCookies;
+use Dflydev\FigCookies\SetCookie;
 class LoginManager
 {
 	/**
@@ -42,13 +46,28 @@ class LoginManager
 	 * Be careful, this method cannot check whether ID is valid and non-duplicate, so do it yourself.
 	 * @param string|int $userId You need to get valid (non-duplicate) id of user.
 	 */
-	function logIn($userId)
+	function logIn($userID, Request $request, Response $response, $args)
 	{
 		$password = self::genRandString(32);
 		$hash = password_hash($password, PASSWORD_DEFAULT);
-		$this->mapper->addHash($userId, $hash);
-		setcookie('pass',   $password, time()+60*60*24*360, null, null, null, true);
-		setcookie('userid', $userId,   time()+60*60*24*360, null, null, null, true);
+		$this->mapper->addHash($userID, $hash);
+		$response = FigResponseCookies::set($response, SetCookie::create('pass')
+			->withValue($password)
+			->withExpires(time()+60*60*24*360)
+			->withPath('/')
+			->withDomain('.' . $request->getUri()->getHost())
+			->withSecure(false)
+			->withHttpOnly(true)
+		);
+		$response = FigResponseCookies::set($response, SetCookie::create('userid')
+			->withValue($password)
+			->withExpires(time()+60*60*24*360)
+			->withPath('/')
+			->withDomain('.' . $request->getUri()->getHost())
+			->withSecure(false)
+			->withHttpOnly(true)
+		);
+		return $response;
 	}
 	
 	

@@ -13,20 +13,14 @@ abstract class CommonView
      * @var array Array of strings.
      */
     protected $requiredFields;
-    
-    
-    /**
-     * @var string Full path to the folder with templates
-     */
-	protected $templatesDir = '';
 	
 	/**
 	 * CommonView constructor.
 	 * @param string $templatesDir
 	 */
-	function __construct($templatesDir)
+	function __construct($twig)
 	{
-		$this->templatesDir = $templatesDir;
+		$this->twig = $twig;
 	}
 	
 	/**

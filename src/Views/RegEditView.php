@@ -11,17 +11,11 @@ class RegEditView extends CommonView
 	 * RegEditView constructor.
      * @param string $templatesDir
      */
-    function __construct($templatesDir)
+	function __construct($twig)
     {
-        parent::__construct($templatesDir);
+        parent::__construct($twig);
         $this->requiredFields =
             ['student_data', 'is_logged', 'errors', 'messages'];
-	    $loader = new \Twig_Loader_Filesystem(FileSystem::append([$templatesDir, 'RegEdit']));
-	    $this->twig = new \Twig_Environment($loader, array(
-		    'cache' => FileSystem::append([$templatesDir, 'cache']),
-		    'auto_reload' => true,
-		    'autoescape' => 'html'
-	    ));
     }
 	
     /**
@@ -30,10 +24,8 @@ class RegEditView extends CommonView
      * @return string html page
      * @throws ViewException
      */
-	public function output($params)
+	public function output(\Psr\Http\Message\ResponseInterface $response, $params)
 	{
-		ob_start();
-
 		$isLogged    = $params['is_logged'];
 		$studentData = $params['student_data'];
 		//сообщения об ошибках и прочие уведомления пользователя
@@ -47,17 +39,16 @@ class RegEditView extends CommonView
 		//например, текущие значения профиля, которые пользователь может изменить
 		$defFields = [];
 		$this->setFormDefaultValues($studentData, $defFields);
-		//вызывает шаблон, который съест выше подготовленные параметры
-		$template = $this->twig->load('reg-edit.html.twig');
-		echo $template->render(array(
+		//заполняем ответ сервера
+		$response = $this->twig->render($response, 'reg-edit.html.twig', array(
 			'caption' => $caption,
 			'errors' => $errors,
 			'messages' => $mesagges,
 			'defFields' => $defFields,
 			'submitButName' => $submitButName
 		));
-		return ob_get_clean();
 		
+		return $response;
 	}
 	
 	/**

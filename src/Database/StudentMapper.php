@@ -134,7 +134,7 @@ class StudentMapper
 	/**
 	 * Retrieves student from database by it's ID.
 	 * @param string|int $id String or integer
-	 * @return bool|Student Student on succes, else FALSE
+	 * @return bool|Student Student on success, else FALSE
 	 * @throws StudentException|InvalidTypeException
 	 */
 	public function findStudentByID($id)

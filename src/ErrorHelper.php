@@ -1,9 +1,7 @@
 <?php
-
 namespace Shinoa\StudentsList;
 use Shinoa\StudentsList\FileSystem;
 use Shinoa\StudentsList\Exceptions\StudentException;
-
 /**
  * Class Errorhelper can create error messages and correctly display them to user, or/and log them.
  *
@@ -86,16 +84,19 @@ class ErrorHelper {
 	 */
 	function renderErrorPageAndExit($errorMes, $whereToRedirect)
 	{
+		ob_start();
 		header('Content-type: text/html; charset=utf-8');
 		$error = $errorMes;
 		$url = $whereToRedirect;
 		$text = 'Вернуться';
 		$template = $this->twig->load(FileSystem::append(['Errors', 'error.html.twig']));
+		http_response_code(500);
 		echo $template->render(array(
-			'error' => $error,
-			'url' => $url,
-			'text' => $text)
+				'error' => $error,
+				'url' => $url,
+				'text' => $text)
 		);
+		ob_end_flush();
 		exit();
 	}
 	
@@ -155,6 +156,9 @@ class ErrorHelper {
 			case StatusSelector::APP_IN_PRODUCTION:
 				//пишем ошибку в лог
 				$this->addToLog($text, $this->logFile);
+				$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
+				$this->renderErrorPageAndExit($userMes, '/');
+				break;
 		}
 	}
 	
@@ -172,6 +176,9 @@ class ErrorHelper {
 					$text = array("Возникла ошибка, выполнение приложения прекращено:");
 					$text = array_merge($text, self::errorToArray($error));
 					$this->addToLog($text, $this->logFile);
+					$userMes = 'Encountered error, logs are sent to developer. Please, try again later!';
+					$this->renderErrorPageAndExit($userMes, '/');
+					break;
 			}
 		}
 	}
@@ -266,4 +273,3 @@ class ErrorHelper {
 		return $string;
 	}
 }
-

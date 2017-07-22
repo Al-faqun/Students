@@ -4,5 +4,5 @@ ini/config.xml
 test_bootstrap.php
 *.log
 test.php
-templates/cache/
+**/cache/
 

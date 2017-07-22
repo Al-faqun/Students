@@ -17,33 +17,28 @@ class StudentListView extends CommonView
 	 * StudentListView constructor.
 	 * @param string $templatesDir
 	 */
-	function __construct($templatesDir)
+	function __construct($twig)
 	{
-		parent::__construct($templatesDir);
+		parent::__construct($twig);
 		$this->requiredFields = ['students',
                                  'messages',
                                  'status_text',
 		                         'queries'];
-		$loader = new \Twig_Loader_Filesystem(FileSystem::append([$templatesDir, 'List']));
-		$this->twig = new \Twig_Environment($loader, array(
-			'cache' => FileSystem::append([$templatesDir, 'cache']),
-			'auto_reload' => true,
-			'autoescape' => false
-		));
+		$this->twig = $twig;
 	}
 	
 	/**
 	 * Loads all values and preferences for a template, then loads the template into string.
+	 * @var \Psr\Http\Message\ResponseInterface $response
 	 * @var $params array Link to the params array, from which are retrieved all the data.
      * @return string html page
 	 * @throws ViewException
 	 */
-	public function output($params)
+	public function output(\Psr\Http\Message\ResponseInterface $response, $params)
 	{
-		ob_start();
 		//вызывает исключение, если нет хотя бы одного аргумента
 		$this->ensureParams($params);
-		$students   = $params['students'];
+		$students      = $params['students'];
 		$appStatusText = $params['status_text'];
 		$messages   = $params['messages'];
 		$queries    = $params['queries'];
@@ -55,18 +50,16 @@ class StudentListView extends CommonView
 			}
 			$students = $content;
 		}
-
+		
 		//загружаем шаблон, который использует вышеописанные переменные
-		$template = $this->twig->load('stud_list.html.twig');
-		echo $template->render(array(
+		$response = $this->twig->render($response, 'stud_list.html.twig', array(
 			'students'      => $students,
 			'appStatusText' => $appStatusText,
 			'messages'      => $messages,
 			'queries'       => $queries
 		));
 
-		return ob_get_clean();
-
+		return $response;
 	}
 	
 }
