@@ -17,33 +17,6 @@ class ErrEvokerTest extends TestCase
 	{
 	}
 	
-	function testIsErrorIn()
-	{
-		$input = array(ErrEvoker::$keyError => '');
-		$result = $this->errorEvoker->isErrorIn($input);
-		$this->assertTrue($result);
-	}
-	
-	function testIsErrorInFail()
-	{
-		$input = array(ErrEvoker::$keyError . 'now not the key' => '');
-		$result = $this->errorEvoker->isErrorIn($input);
-		$this->assertFalse($result);
-	}
-	
-	function testIsExceptionIn()
-	{
-		$input = array(ErrEvoker::$keyExcep => '');
-		$result = $this->errorEvoker->isExceptionIn($input);
-		$this->assertTrue($result);
-	}
-	
-	function testIsExceptionInFail()
-	{
-		$input = array(ErrEvoker::$keyExcep . 'now not the key' => '');
-		$result = $this->errorEvoker->isExceptionIn($input);
-		$this->assertFalse($result);
-	}
 	
 	function testEvokeError()
 	{

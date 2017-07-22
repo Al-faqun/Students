@@ -30,6 +30,8 @@ class LoaderTest extends TestCase
 	
 	function testGetConfig()
 	{
+		$root = dirname(__FILE__, 3);
+		Loader::setRoot($root);
 		$config = Loader::getConfig();
 		$this->assertInstanceOf(\SimpleXMLElement::class, $config);
 	}
