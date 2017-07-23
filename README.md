@@ -1,9 +1,11 @@
 # Students  
 (русская версия ниже)
 
-[Try this site](http://shinoa.web44.net/): http://shinoa.web44.net/
+Try this site: http://shinoa.web44.net/
 
 Educational project: you can **browse** list of students, use **search**, add **your** own data, which will give you cookie token, so you could **edit** your 'Student profile' later.
+
+There're currently two versions: written without use of frameworks and psr-7, and the Slim version (Slim is tiny framework). Big framework will come next!
 
 We use mysql/MariaDB with two tables: one holding data about **profiles**, another manipulates **password** hashes.
 
@@ -34,6 +36,8 @@ A few words about Project's structure: https://pastebin.com/Zj1c993A
 Учебный проект: вы можете просматривать список студентов, пользоваться поиском, добавлять свои собственые данные на сайт, тем самым получая "членство", сохраняемое в куки; посредством этого вы можете в дальнейшем редактировать свои данные в удобной форме.
 
 Мы используем для этой цели mysql/MariaDB с двумя таблицами: одна хранит данные о студентах, другая - о хэшах их паролей.
+
+Есть две ветки проекта: master (старая) версия без использования фреймворков и psr-7, и Slim, с использованием одноименного микро-фреймворка.
 
 ## Использованные технологии
 
