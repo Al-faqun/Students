@@ -24,6 +24,7 @@
 		];
 		$app = new \Slim\App($config);
 		$c = $app->getContainer();
+		
 		//отключаем встроенный обработчик ошибок Slim, т.к. все ошибки обрабатывает мой класс.
 		unset($c['errorHandler']);
 		unset($c['phpErrorHandler']);
@@ -35,7 +36,8 @@
 				array(
 					'cache' => FileSystem::append([$templatesDir, 'cache']),
 					'auto_reload' => true,
-					'autoescape' => false
+					'autoescape' => true,
+					'strict_variables' => true
 				)
 			);
 			$basePath = rtrim(str_ireplace('index.php', '', $c['request']->getUri()->getBasePath()), '/');
@@ -56,6 +58,7 @@
 			);
 			return $controller;
 		};
+		
 		//маршруты сайта
 		$app->get('/', function (Request $request, Response $response, $args) {
 			$controller = $this->ListController;

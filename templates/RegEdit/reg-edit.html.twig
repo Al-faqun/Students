@@ -13,7 +13,7 @@
 	<div class="fields">
 		<h1>{{ caption|e }}</h1>
 		{% if errors is empty %}
-			{% for message in mesagges %}
+			{% for message in messages %}
 				<p><strong>{{ message|e }}</strong></p>
 			{% endfor %}
 		{% else %}

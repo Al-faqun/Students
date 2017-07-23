@@ -30,7 +30,7 @@ class RegEditView extends CommonView
 		$studentData = $params['student_data'];
 		//сообщения об ошибках и прочие уведомления пользователя
 		$errors   =  $params['errors'];
-		$mesagges =  $params['messages'];
+		$messages =  $params['messages'];
 		
 		//заголок тела страницы и названия всяких кнопочек
 		$caption = $isLogged  ? 'Обновить данные' : 'Регистрация';
@@ -43,7 +43,7 @@ class RegEditView extends CommonView
 		$response = $this->twig->render($response, 'reg-edit.html.twig', array(
 			'caption' => $caption,
 			'errors' => $errors,
-			'messages' => $mesagges,
+			'messages' => $messages,
 			'defFields' => $defFields,
 			'submitButName' => $submitButName
 		));

@@ -21,7 +21,7 @@ class RegEditController extends PageController
 	private $response;
 	private $request;
 	private $args;
-	private $errors;
+	private $errors = array();
 	public $userID = 0;
 	public $loader;
 	
