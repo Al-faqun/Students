@@ -5,7 +5,7 @@ Try this site: http://shinoa.web44.net/
 
 Educational project: you can **browse** list of students, use **search**, add **your** own data, which will give you cookie token, so you could **edit** your 'Student profile' later.
 
-There're currently two versions: written without use of frameworks and psr-7, and the Slim version (Slim is tiny framework). Big framework will come next!
+There're currently two versions: one written without use of frameworks and psr-7, and the Slim version (Slim is tiny framework). Big framework will come next!
 
 We use mysql/MariaDB with two tables: one holding data about **profiles**, another manipulates **password** hashes.
 
