@@ -142,6 +142,7 @@ class ErrorHelper {
 	
 	public function errorHandler($errno, $errstr, $errfile, $errline)
 	{
+	    throw new \ErrorException($errstr); exit;
 		$text = array();
 		$text[] = "Возникла ошибка, выполнение приложения могло бы быть продолжено:";
 		$text[] = 'текст: ';

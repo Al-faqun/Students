@@ -6,3 +6,4 @@ test_bootstrap.php
 test.php
 **/cache/
 
+composer.lock
