@@ -83,7 +83,7 @@ class PasswordMapper
 			} else $result = false;
 			
 		} catch (\PDOException $e) {
-			throw new DbException('Ошибка при получении хешей', 0, $e);
+			throw new DbException('Ошибка при добавлении хешей', 0, $e);
 		}
 		return $result;
 	}

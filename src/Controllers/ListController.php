@@ -104,8 +104,7 @@ class ListController extends PageController
 			$cookie,
 			'appStatus',
 			function ($key, $value, ListController $c) use ($request, $response, $args) {
-				$statusSelector = new StatusSelector();
-				$code = $statusSelector->getDefaultCode(Loader::getStatus());
+				$code = Loader::getStatus();
 				$c->setAppStatus($code);
                 return $response;
 			},

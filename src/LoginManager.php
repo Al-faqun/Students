@@ -60,7 +60,7 @@ class LoginManager
 			->withHttpOnly(true)
 		);
 		$response = FigResponseCookies::set($response, SetCookie::create('userid')
-			->withValue($password)
+			->withValue($userID)
 			->withExpires(time()+60*60*24*360)
 			->withPath('/')
 			->withDomain('.' . $request->getUri()->getHost())

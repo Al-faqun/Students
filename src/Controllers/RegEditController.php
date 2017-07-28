@@ -170,8 +170,7 @@ class RegEditController extends PageController
 			$cookie,
 			'appStatus',
 			function ($key, $value, RegEditController $c) use ($request, $response, $args) {
-				$statusSelector = new StatusSelector();
-				$code = $statusSelector->getDefaultCode(Loader::getStatus());
+				$code = Loader::getStatus();
 				$c->setAppStatus($code);
 				return $response;
 			},
