@@ -24,7 +24,6 @@ class StudentListView extends CommonView
                                  'messages',
                                  'status_text',
 		                         'queries'];
-		$this->twig = $twig;
 	}
 	
 	/**

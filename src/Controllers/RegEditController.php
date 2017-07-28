@@ -173,6 +173,7 @@ class RegEditController extends PageController
 				$statusSelector = new StatusSelector();
 				$code = $statusSelector->getDefaultCode(Loader::getStatus());
 				$c->setAppStatus($code);
+				return $response;
 			},
 			$response
 		);

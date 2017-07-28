@@ -107,10 +107,11 @@ class ListController extends PageController
 				$statusSelector = new StatusSelector();
 				$code = $statusSelector->getDefaultCode(Loader::getStatus());
 				$c->setAppStatus($code);
+                return $response;
 			},
 			$response
 		);
-		return $response;
+        return $response;
 	}
 	
 	public function getExceptionAction(Request $request, Response $response, $args)
