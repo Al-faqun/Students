@@ -3,6 +3,7 @@ vendor/
 ini/config.xml
 test_bootstrap.php
 *.log
+composer.lock
 test.php
 templates/cache/
 
