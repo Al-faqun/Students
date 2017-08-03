@@ -11,7 +11,7 @@ We use mysql/MariaDB with two tables: one holding data about **profiles**, anoth
 
 ## Used technologies
 
-1. PHP 7.1.2
+1. PHP 7.1.2 + mb_string + simple_xml
 2. MariaDB 10.1.21
 3. Composer 
 4. Twig
@@ -20,6 +20,10 @@ We use mysql/MariaDB with two tables: one holding data about **profiles**, anoth
 
 ## Prerequisites: 
 
+0. Users of linux, pay attention: some php extensions like mb_string or simple_xml are not installed by default. To run this prject you need to install them manually with 
+```
+$ sudo apt-get install php7.0-mb_string 
+```
 1. PHP >= 7.0, apache with document root in /public folder.
 2. MySQL/MariaDB with two tables: [here you can download needed dumps](http://zalivalka.ru/359753).
 3. Composer (all dependencies lie in .json)
@@ -41,7 +45,7 @@ A few words about Project's structure: https://pastebin.com/Zj1c993A
 
 ## Использованные технологии
 
-1. PHP 7.1.2
+1. PHP 7.1.2 + mb_string + simple_xml
 2. MariaDB 10.1.21
 3. Composer 
 4. Twig
@@ -50,6 +54,10 @@ A few words about Project's structure: https://pastebin.com/Zj1c993A
 
 ## Зависимости: 
 
+0. Пользователям linux: некоторые расширения php типа mb_string и simple_xml не устанавливаются с sudo apt-get install php7 по умолчанию. Вам может понадобиться установить их вручную, например:
+``` 
+$ sudo apt-get install php7.0-mb_string 
+```
 1. PHP >= 7.0, apache с document root в папке /public.
 2. MySQL/MariaDB с двумя таблицами: [здесь вы можете их загрузить](http://zalivalka.ru/359753).
 3. Composer (все зависимости можете найти в .json)
